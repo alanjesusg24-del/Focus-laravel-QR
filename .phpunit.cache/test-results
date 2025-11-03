@@ -1,0 +1,1 @@
+{"version":2,"defects":{"Tests\\Feature\\ExampleTest::test_root_redirects_to_login":7},"times":{"Tests\\Unit\\ExampleTest::test_example":0.008,"Tests\\Feature\\ExampleTest::test_root_redirects_to_login":0.049}}

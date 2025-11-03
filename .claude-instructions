@@ -1,0 +1,141 @@
+﻿# Claude Code Instructions for This Project
+
+## CRITICAL: Mandatory Standards Compliance
+
+This Laravel project MUST follow CETAM (Centro de Desarrollo Tecnológico Aplicado de México) coding standards.
+
+### 🎯 Primary Directive
+
+**ALWAYS consult the laravel-cetam-standards skill before writing any code.**
+
+This skill contains comprehensive standards for:
+- Database design and nomenclature (MySQL)
+- Laravel coding conventions
+- Blade template structure
+- TailwindCSS usage guidelines
+- API response formats
+- CETAM design system (colors, buttons, layouts)
+
+### ⚡ Quick Reference
+
+**Before ANY code task:**
+1. Read the relevant section from laravel-cetam-standards skill
+2. Verify nomenclature follows conventions
+3. Check that code placement is correct
+4. Ensure English-only naming
+
+### 🔑 Key Standards Summary
+
+**Language:** English ONLY (code, comments, database objects)
+
+**Database:**
+- Tables: plural snake_case (users, orders)
+- Columns: singular snake_case (user_id, first_name)
+- Foreign keys: {table_singular}_id
+- Booleans: is_* or has_* prefix
+
+**Laravel:**
+- Controllers: PascalCase + Controller (UserController)
+- Models: PascalCase singular (User)
+- Routes: kebab-case with /p/{proj-slug}/ prefix
+- Methods: camelCase (getUserList)
+- Variables: camelCase ()
+- Constants: UPPER_SNAKE_CASE (MAX_ATTEMPTS)
+
+**Code Style:**
+- Maximum 120 characters per line
+- PSR-12 compliance mandatory
+- 4 spaces indentation (no tabs)
+- Strong typing when possible
+- PHPDoc for all public methods
+
+**Architecture:**
+- Strict MVC pattern
+- Business logic in Services/Repositories
+- NO business logic in controllers or views
+- Controllers maximum 300 lines
+
+**Frontend:**
+- TailwindCSS utility classes ONLY (no custom CSS)
+- CETAM color palette: blue (#1d4976), orange (#de5629), gray (#7b96ab)
+- Responsive design with breakpoint prefixes
+- Component-based Blade architecture
+
+### 🚫 Common Mistakes to Avoid
+
+1. ❌ Using Spanish in code or database
+2. ❌ Placing business logic in controllers
+3. ❌ Creating custom CSS files
+4. ❌ Exceeding 120 character line length without justification
+5. ❌ Missing PHPDoc comments
+6. ❌ Incorrect nomenclature conventions
+7. ❌ Not using snake_case for database objects
+8. ❌ Using project code in class names (e.g., CSUserController is WRONG)
+
+### 📋 Validation Checklist
+
+Before completing ANY task, verify:
+
+- [ ] All names are in English
+- [ ] Correct nomenclature applied (snake_case, camelCase, PascalCase)
+- [ ] Code follows PSR-12 standards
+- [ ] Database follows 3NF normalization
+- [ ] Foreign keys have ON UPDATE/ON DELETE clauses
+- [ ] Controllers are RESTful and lean
+- [ ] Views use only TailwindCSS utilities
+- [ ] API responses use camelCase keys
+- [ ] Documentation and comments present
+- [ ] No line exceeds 120 characters (unless justified)
+
+### 📚 Getting Detailed Information
+
+For comprehensive specifications and examples:
+
+**Database work:**
+Read the database-standards reference from laravel-cetam-standards skill
+
+**Laravel development:**
+Read the laravel-standards reference from laravel-cetam-standards skill
+
+### 🎨 CETAM Design System
+
+**Colors:**
+- Primary: bg-institucional-azul (#1d4976)
+- Accent: bg-institucional-naranja (#de5629)
+- Support: bg-institucional-gris (#7b96ab)
+
+**Buttons:**
+- Primary: Blue background
+- Secondary: Gray background
+- Destructive: Orange border, transparent background
+
+**Typography:**
+- Font: Sans-serif (font-sans)
+- Base size: text-base (16px)
+- Titles: text-xl (20px), font-bold
+
+### 🔧 Project Identification
+
+This project uses code: **VOLT** (2-4 letters)
+
+**Usage:**
+- Namespaces: Cetam\VOLT\Http\Controllers
+- Routes: /p/volt/...
+- Route names: volt.module.action
+
+**NOT in class names!**
+
+---
+
+## 🤖 Instructions for Claude Code
+
+When working on this project:
+
+1. **Always invoke the laravel-cetam-standards skill first**
+2. Read relevant sections before coding
+3. Follow ALL conventions without exception
+4. Ask for clarification if standards conflict
+5. Validate against checklist before completion
+6. Document all changes with prologue headers
+
+**This is not optional. These standards are mandatory for all CETAM projects.**
