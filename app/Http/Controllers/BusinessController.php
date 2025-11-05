@@ -71,7 +71,7 @@ class BusinessController extends Controller
             ]);
 
             return redirect()
-                ->route('login')
+                ->route('business.login')
                 ->with('success', 'Registro exitoso. Ya puedes iniciar sesión con tu cuenta.');
         } catch (\Exception $e) {
             Log::error('Business registration failed: ' . $e->getMessage());
@@ -239,7 +239,7 @@ class BusinessController extends Controller
         Auth::logout();
 
         return redirect()
-            ->route('login')
+            ->route('business.login')
             ->with('success', 'Cuenta desactivada exitosamente');
     }
 }

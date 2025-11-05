@@ -59,7 +59,7 @@ class OrderController extends Controller
             $order = $this->orderService->createOrder($businessId, $validated);
 
             return redirect()
-                ->route('orders.show', $order->order_id)
+                ->route('business.orders.show', $order->order_id)
                 ->with('success', 'Orden creada exitosamente con código QR');
         } catch (\Exception $e) {
             return back()
@@ -102,7 +102,7 @@ class OrderController extends Controller
         $order->update($validated);
 
         return redirect()
-            ->route('orders.show', $order->order_id)
+            ->route('business.orders.show', $order->order_id)
             ->with('success', 'Orden actualizada exitosamente');
     }
 

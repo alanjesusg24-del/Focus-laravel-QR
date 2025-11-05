@@ -70,7 +70,7 @@ class SupportTicketController extends Controller
         ]);
 
         return redirect()
-            ->route('support.show', $ticket->support_ticket_id)
+            ->route('business.support.show', $ticket->support_ticket_id)
             ->with('success', 'Ticket de soporte creado exitosamente. Te contactaremos pronto.');
     }
 
@@ -94,7 +94,7 @@ class SupportTicketController extends Controller
         // Only allow editing if ticket is still open
         if ($supportTicket->status !== 'open') {
             return redirect()
-                ->route('support.show', $supportTicket->support_ticket_id)
+                ->route('business.support.show', $supportTicket->support_ticket_id)
                 ->with('error', 'No se pueden editar tickets que no están abiertos');
         }
 
@@ -121,7 +121,7 @@ class SupportTicketController extends Controller
         $supportTicket->update($validated);
 
         return redirect()
-            ->route('support.show', $supportTicket->support_ticket_id)
+            ->route('business.support.show', $supportTicket->support_ticket_id)
             ->with('success', 'Ticket actualizado exitosamente');
     }
 
@@ -142,7 +142,7 @@ class SupportTicketController extends Controller
         ]);
 
         return redirect()
-            ->route('support.index')
+            ->route('business.support.index')
             ->with('success', 'Ticket cerrado exitosamente');
     }
 
@@ -163,7 +163,7 @@ class SupportTicketController extends Controller
         ]);
 
         return redirect()
-            ->route('support.show', $supportTicket->support_ticket_id)
+            ->route('business.support.show', $supportTicket->support_ticket_id)
             ->with('success', 'Ticket reabierto exitosamente');
     }
 
@@ -188,7 +188,7 @@ class SupportTicketController extends Controller
         $supportTicket->delete();
 
         return redirect()
-            ->route('support.index')
+            ->route('business.support.index')
             ->with('success', 'Ticket eliminado exitosamente');
     }
 }

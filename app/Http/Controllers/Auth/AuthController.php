@@ -32,7 +32,7 @@ class AuthController extends Controller
         if (Auth::guard('business')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('dashboard.index'));
+            return redirect()->intended(route('business.dashboard.index'));
         }
 
         throw ValidationException::withMessages([
@@ -50,6 +50,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('business.login');
     }
 }

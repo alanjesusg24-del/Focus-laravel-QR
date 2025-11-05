@@ -147,7 +147,7 @@ class PaymentController extends Controller
             );
 
             return redirect()
-                ->route('payments.show', $payment->payment_id)
+                ->route('business.payments.show', $payment->payment_id)
                 ->with('success', 'Pago procesado exitosamente');
         } catch (\Exception $e) {
             Log::error('Payment creation failed: ' . $e->getMessage());
@@ -201,7 +201,7 @@ class PaymentController extends Controller
             );
 
             return redirect()
-                ->route('payments.subscription')
+                ->route('business.payments.subscription')
                 ->with('success', 'Suscripción creada exitosamente');
         } catch (\Exception $e) {
             Log::error('Subscription creation failed: ' . $e->getMessage());
@@ -222,7 +222,7 @@ class PaymentController extends Controller
 
             if ($cancelled) {
                 return redirect()
-                    ->route('payments.subscription')
+                    ->route('business.payments.subscription')
                     ->with('success', 'Suscripción cancelada exitosamente');
             }
 

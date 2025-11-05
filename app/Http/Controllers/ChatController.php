@@ -18,7 +18,7 @@ class ChatController extends Controller
         // Check if business has chat module enabled
         if (!$business->has_chat_module) {
             return redirect()
-                ->route('dashboard.index')
+                ->route('business.dashboard.index')
                 ->with('error', 'El módulo de chat no está activado para tu cuenta.');
         }
 
