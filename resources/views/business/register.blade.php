@@ -1,45 +1,42 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Registrar Negocio - Order QR System</title>
-    <link href="{{ mix('css/volt.css') }}" rel="stylesheet">
-    <style>
-        :root {
-            --institutional-blue: #1d4976;
-            --institutional-orange: #de5629;
-            --institutional-gray: #7b96ab;
-        }
-        .bg-institutional-blue { background-color: var(--institutional-blue) !important; }
-        .text-institutional-blue { color: var(--institutional-blue) !important; }
-        .btn-institutional-blue {
-            background-color: var(--institutional-blue) !important;
-            border-color: var(--institutional-blue) !important;
-            color: white !important;
-        }
-        .btn-institutional-blue:hover {
-            background-color: #163a5f !important;
-            border-color: #163a5f !important;
-        }
+@extends('layouts.base')
+
+@section('title', 'Registrar Negocio - Order QR System')
+
+@section('content')
+<style>
+    :root {
+        --institutional-blue: #1d4976;
+        --institutional-orange: #de5629;
+        --institutional-gray: #7b96ab;
+    }
+    .bg-institutional-blue { background-color: var(--institutional-blue) !important; }
+    .text-institutional-blue { color: var(--institutional-blue) !important; }
+    .btn-institutional-blue {
+        background-color: var(--institutional-blue) !important;
+        border-color: var(--institutional-blue) !important;
+        color: white !important;
+    }
+    .btn-institutional-blue:hover {
+        background-color: #163a5f !important;
+        border-color: #163a5f !important;
+    }
+    .form-bg-image {
+        background: url('/assets/img/illustrations/signin.svg') no-repeat center right;
+        background-size: cover;
+    }
+    @media (max-width: 992px) {
         .form-bg-image {
-            background: url('/assets/img/illustrations/signin.svg') no-repeat center right;
-            background-size: cover;
+            background: none;
         }
-        @media (max-width: 992px) {
-            .form-bg-image {
-                background: none;
-            }
-        }
-    </style>
-</head>
+    }
+</style>
+
 <body>
     <main>
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
                 <p class="text-center">
-                    <a href="{{ route('login') }}" class="d-flex align-items-center justify-content-center">
+                    <a href="{{ route('business.login') }}" class="d-flex align-items-center justify-content-center">
                         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
                         </svg>
@@ -77,7 +74,7 @@
                             @endif
 
                             <!-- Registration Form -->
-                            <form method="POST" action="{{ route('order-qr.business.store') }}" class="mt-4">
+                            <form method="POST" action="{{ route('business.register') }}" class="mt-4">
                                 @csrf
 
                                 <div class="row">
@@ -260,7 +257,7 @@
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     ¿Ya tienes cuenta?
-                                    <a href="{{ route('login') }}" class="fw-bold text-institutional-blue">Inicia sesión aquí</a>
+                                    <a href="{{ route('business.login') }}" class="fw-bold text-institutional-blue">Inicia sesión aquí</a>
                                 </span>
                             </div>
                         </div>
@@ -270,37 +267,39 @@
         </section>
     </main>
 
-    <script src="{{ mix('js/app.js') }}"></script>
-    <script>
-        function updatePrice() {
-            const basePrice = 299.00;
-            const chatModulePrice = 150.00;
-            const retentionPrices = {
-                1: 0,
-                3: 100.00,
-                6: 250.00,
-                12: 550.00
-            };
+    @include('layouts.footer2')
+@endsection
 
-            let total = basePrice;
+@section('scripts')
+<script>
+    function updatePrice() {
+        const basePrice = 299.00;
+        const chatModulePrice = 150.00;
+        const retentionPrices = {
+            1: 0,
+            3: 100.00,
+            6: 250.00,
+            12: 550.00
+        };
 
-            // Add chat module if checked
-            if (document.getElementById('has_chat_module').checked) {
-                total += chatModulePrice;
-            }
+        let total = basePrice;
 
-            // Add retention cost
-            const retention = parseInt(document.getElementById('data_retention_months').value);
-            total += retentionPrices[retention];
-
-            // Update display
-            document.getElementById('total_price').textContent = '$' + total.toFixed(2) + ' MXN';
+        // Add chat module if checked
+        if (document.getElementById('has_chat_module').checked) {
+            total += chatModulePrice;
         }
 
-        // Initialize price on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePrice();
-        });
-    </script>
-</body>
-</html>
+        // Add retention cost
+        const retention = parseInt(document.getElementById('data_retention_months').value);
+        total += retentionPrices[retention];
+
+        // Update display
+        document.getElementById('total_price').textContent = '$' + total.toFixed(2) + ' MXN';
+    }
+
+    // Initialize price on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updatePrice();
+    });
+</script>
+@endsection

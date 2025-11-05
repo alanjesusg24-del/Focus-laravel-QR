@@ -1,40 +1,37 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Login - Order QR System</title>
-    <link href="{{ mix('css/volt.css') }}" rel="stylesheet">
-    <style>
-        :root {
-            --institutional-blue: #1d4976;
-            --institutional-orange: #de5629;
-            --institutional-gray: #7b96ab;
-        }
-        .bg-institutional-blue { background-color: var(--institutional-blue) !important; }
-        .text-institutional-blue { color: var(--institutional-blue) !important; }
-        .btn-institutional-blue {
-            background-color: var(--institutional-blue) !important;
-            border-color: var(--institutional-blue) !important;
-            color: white !important;
-        }
-        .btn-institutional-blue:hover {
-            background-color: #163a5f !important;
-            border-color: #163a5f !important;
-        }
-        .text-institutional-orange { color: var(--institutional-orange) !important; }
+@extends('layouts.base')
+
+@section('title', 'Login - Order QR System')
+
+@section('content')
+<style>
+    :root {
+        --institutional-blue: #1d4976;
+        --institutional-orange: #de5629;
+        --institutional-gray: #7b96ab;
+    }
+    .bg-institutional-blue { background-color: var(--institutional-blue) !important; }
+    .text-institutional-blue { color: var(--institutional-blue) !important; }
+    .btn-institutional-blue {
+        background-color: var(--institutional-blue) !important;
+        border-color: var(--institutional-blue) !important;
+        color: white !important;
+    }
+    .btn-institutional-blue:hover {
+        background-color: #163a5f !important;
+        border-color: #163a5f !important;
+    }
+    .text-institutional-orange { color: var(--institutional-orange) !important; }
+    .form-bg-image {
+        background: url('/assets/img/illustrations/signin.svg') no-repeat center right;
+        background-size: cover;
+    }
+    @media (max-width: 992px) {
         .form-bg-image {
-            background: url('/assets/img/illustrations/signin.svg') no-repeat center right;
-            background-size: cover;
+            background: none;
         }
-        @media (max-width: 992px) {
-            .form-bg-image {
-                background: none;
-            }
-        }
-    </style>
-</head>
+    }
+</style>
+
 <body>
     <main>
         <section class="vh-lg-100 mt-4 mt-lg-0 bg-soft d-flex align-items-center">
@@ -65,7 +62,7 @@
                             @endif
 
                             <!-- Login Form -->
-                            <form method="POST" action="{{ route('login') }}" class="mt-4">
+                            <form method="POST" action="{{ route('business.login') }}" class="mt-4">
                                 @csrf
 
                                 <!-- Email -->
@@ -134,7 +131,7 @@
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal text-gray">
                                     ¿No tienes cuenta?
-                                    <a href="{{ route('order-qr.business.register') }}" class="fw-bold text-institutional-blue">
+                                    <a href="{{ route('business.register') }}" class="fw-bold text-institutional-blue">
                                         Registra tu negocio
                                     </a>
                                 </span>
@@ -160,17 +157,5 @@
         </section>
     </main>
 
-    <!-- Footer -->
-    <footer class="footer section py-4 bg-white border-top">
-        <div class="container">
-            <div class="row">
-                <div class="col-12 text-center">
-                    <p class="mb-0 text-gray-600 small">
-                        &copy; {{ date('Y') }} Order QR System - Centro de Desarrollo Tecnológico Aplicado de México (CETAM)
-                    </p>
-                </div>
-            </div>
-        </div>
-    </footer>
-</body>
-</html>
+    @include('layouts.footer2')
+@endsection
