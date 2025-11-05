@@ -6,7 +6,7 @@
 <div class="space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-institutional-blue">Payment History</h1>
-        <a href="{{ route('order-qr.payment.index') }}" class="text-institutional-blue hover:underline">
+        <a href="{{ route('business.payments.index') }}" class="text-institutional-blue hover:underline">
             ← Back to plans
         </a>
     </div>
@@ -92,7 +92,7 @@
                 </svg>
                 <p class="text-lg font-semibold mb-2">No payment history found</p>
                 <p class="mb-4">You haven't made any payments yet</p>
-                <a href="{{ route('order-qr.payment.index') }}" class="text-institutional-blue hover:underline">
+                <a href="{{ route('business.payments.index') }}" class="text-institutional-blue hover:underline">
                     View available plans →
                 </a>
             </div>

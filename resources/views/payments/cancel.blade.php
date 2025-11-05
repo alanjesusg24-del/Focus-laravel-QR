@@ -22,7 +22,7 @@
         </p>
 
         <div class="space-y-3">
-            <a href="{{ route('order-qr.payment.index') }}" class="block px-6 py-3 text-base font-medium text-white bg-institutional-blue hover:bg-institutional-blue/80 rounded-full transition-transform duration-150 active:scale-95">
+            <a href="{{ route('business.payments.index') }}" class="block px-6 py-3 text-base font-medium text-white bg-institutional-blue hover:bg-institutional-blue/80 rounded-full transition-transform duration-150 active:scale-95">
                 Try Again
             </a>
 

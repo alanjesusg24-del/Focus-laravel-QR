@@ -1,133 +1,159 @@
-@extends('layouts.order-qr')
+@extends('layouts.business-app')
 
 @section('title', 'Chat de Órdenes')
-@section('page-title', 'Chat de Órdenes')
 
-@section('content')
-<div class="flex gap-6 h-[calc(100vh-180px)]">
-    {{-- Left Panel: Orders List --}}
-    <div class="w-96 bg-white rounded-lg shadow flex flex-col">
-        {{-- Search Bar --}}
-        <div class="p-4 border-b border-gray-200">
-            <input type="text"
-                   id="search-orders"
-                   placeholder="Buscar orden..."
-                   class="w-full px-4 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-        </div>
-
-        {{-- Orders List --}}
-        <div class="flex-1 overflow-y-auto divide-y divide-gray-200">
-            @forelse($activeOrders as $order)
-                <div class="p-4 hover:bg-gray-50 cursor-pointer transition order-item"
-                     data-order-id="{{ $order->order_id }}"
-                     onclick="selectOrder('{{ $order->order_id }}', '{{ $order->customer_name }}', '{{ $order->status }}')">
-                    <div class="flex items-start justify-between mb-2">
-                        <div class="flex items-center space-x-2">
-                            <span class="font-bold text-gray-900">#{{ $order->order_number }}</span>
-                            @if($order->status === 'pending')
-                                <span class="px-2 py-0.5 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">Pendiente</span>
-                            @elseif($order->status === 'ready')
-                                <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Lista</span>
-                            @elseif($order->status === 'in_progress')
-                                <span class="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-semibold rounded-full">En progreso</span>
-                            @endif
-                        </div>
-                        <span class="text-xs text-gray-500">{{ $order->created_at->format('H:i') }}</span>
-                    </div>
-                    <p class="text-sm font-medium text-gray-700 mb-1">{{ $order->customer_name }}</p>
-                    <p class="text-xs text-gray-500 truncate">{{ Str::limit($order->items, 50) }}</p>
-                    <div class="flex items-center justify-between mt-2">
-                        <span class="text-sm font-bold text-blue-600">${{ number_format($order->total_amount, 2) }} MXN</span>
-                        <span class="flex items-center space-x-1 text-xs text-gray-500">
-                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
-                            </svg>
-                            <span>Chat</span>
-                        </span>
-                    </div>
-                </div>
-            @empty
-                <div class="p-8 text-center">
-                    <svg class="w-16 h-16 mx-auto text-gray-300 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                    </svg>
-                    <p class="text-gray-500 text-sm mb-2">No hay órdenes activas</p>
-                    <a href="{{ route('orders.create') }}" class="text-blue-600 hover:text-blue-700 text-sm font-semibold">
-                        Crear nueva orden
-                    </a>
-                </div>
-            @endforelse
-        </div>
-
-        {{-- Info Note --}}
-        <div class="p-4 bg-blue-50 border-t border-blue-100">
-            <div class="flex items-start space-x-2 text-xs text-blue-800">
-                <svg class="w-4 h-4 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                </svg>
-                <p>Selecciona una orden para ver el chat. Solo órdenes activas de hoy.</p>
-            </div>
+@section('page')
+<div class="py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
+        <div class="d-block mb-4 mb-md-0">
+            <h2 class="h4">Chat de Órdenes</h2>
+            <p class="mb-0">Comunícate con tus clientes en tiempo real</p>
         </div>
     </div>
 
-    {{-- Right Panel: Chat Window --}}
-    <div class="flex-1 bg-white rounded-lg shadow flex flex-col" id="chat-panel">
-        {{-- Empty State (when no order selected) --}}
-        <div id="empty-state" class="flex-1 flex items-center justify-center">
-            <div class="text-center">
-                <svg class="w-24 h-24 mx-auto text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
-                </svg>
-                <h3 class="text-xl font-semibold text-gray-700 mb-2">Selecciona una orden</h3>
-                <p class="text-gray-500">Haz clic en una orden de la lista para ver la conversación</p>
+    <div class="row" style="height: calc(100vh - 250px);">
+        <!-- Left Panel: Orders List -->
+        <div class="col-12 col-lg-4 mb-4 mb-lg-0">
+            <div class="card border-0 shadow h-100 d-flex flex-column">
+                <!-- Search Bar -->
+                <div class="card-header border-bottom">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text">
+                            <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
+                            </svg>
+                        </span>
+                        <input type="text" id="search-orders" class="form-control" placeholder="Buscar orden...">
+                    </div>
+                </div>
+
+                <!-- Orders List -->
+                <div class="flex-fill overflow-auto" style="max-height: calc(100vh - 400px);">
+                    @forelse($activeOrders as $order)
+                    <div class="p-3 border-bottom order-item"
+                         style="cursor: pointer;"
+                         data-order-id="{{ $order->order_id }}"
+                         onclick="selectOrder('{{ $order->order_id }}', '{{ $order->folio_number }}', '{{ $order->status }}')">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="fw-bold text-gray-900">{{ $order->folio_number }}</span>
+                                @php
+                                    $statusConfig = [
+                                        'pending' => ['class' => 'bg-warning', 'label' => 'Pendiente'],
+                                        'ready' => ['class' => 'bg-success', 'label' => 'Listo'],
+                                        'delivered' => ['class' => 'bg-info', 'label' => 'Entregado'],
+                                    ];
+                                    $config = $statusConfig[$order->status] ?? ['class' => 'bg-secondary', 'label' => 'Desconocido'];
+                                @endphp
+                                <span class="badge {{ $config['class'] }} badge-sm">{{ $config['label'] }}</span>
+                            </div>
+                            <small class="text-muted">{{ $order->created_at->format('H:i') }}</small>
+                        </div>
+                        <p class="text-sm text-gray-700 mb-1">{{ Str::limit($order->description ?? 'Sin descripción', 40) }}</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-primary fw-bold">Token: {{ $order->pickup_token }}</small>
+                            <small class="text-muted">
+                                <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
+                                </svg>
+                                Chat
+                            </small>
+                        </div>
+                    </div>
+                    @empty
+                    <div class="p-4 text-center">
+                        <svg class="icon icon-xl text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="text-muted small mb-2">No hay órdenes activas</p>
+                        <a href="{{ route('business.orders.create') }}" class="btn btn-sm btn-primary">Crear nueva orden</a>
+                    </div>
+                    @endforelse
+                </div>
+
+                <!-- Info Note -->
+                <div class="card-footer bg-soft border-top">
+                    <div class="d-flex align-items-start gap-2">
+                        <svg class="icon icon-xs text-info mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                        </svg>
+                        <small class="text-muted">Selecciona una orden para ver el chat. Solo órdenes activas de hoy.</small>
+                    </div>
+                </div>
             </div>
         </div>
 
-        {{-- Chat Interface (hidden initially) --}}
-        <div id="chat-interface" class="hidden flex-1 flex flex-col">
-            {{-- Chat Header --}}
-            <div class="p-4 border-b border-gray-200 bg-gray-50">
-                <div class="flex items-center justify-between">
-                    <div>
-                        <h3 class="font-bold text-gray-900 text-lg" id="chat-order-number">#ORD-001</h3>
-                        <p class="text-sm text-gray-600" id="chat-customer-name">Cliente</p>
+        <!-- Right Panel: Chat Window -->
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow h-100 d-flex flex-column" id="chat-panel">
+                <!-- Empty State -->
+                <div id="empty-state" class="flex-fill d-flex align-items-center justify-content-center">
+                    <div class="text-center p-5">
+                        <svg class="icon icon-xxl text-gray-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                        </svg>
+                        <h4 class="h5 mb-2">Selecciona una orden</h4>
+                        <p class="text-muted">Haz clic en una orden de la lista para ver la conversación</p>
                     </div>
-                    <span id="chat-status-badge" class="px-3 py-1 bg-yellow-100 text-yellow-800 text-xs font-semibold rounded-full">Pendiente</span>
                 </div>
-            </div>
 
-            {{-- Messages Area --}}
-            <div id="chat-messages" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50">
-                {{-- Messages will be loaded here dynamically --}}
-                <div class="text-center text-gray-500 text-sm">
-                    <svg class="w-12 h-12 mx-auto text-gray-300 mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
-                    </svg>
-                    <p>Cargando conversación...</p>
+                <!-- Chat Interface -->
+                <div id="chat-interface" class="d-none flex-fill d-flex flex-column">
+                    <!-- Chat Header -->
+                    <div class="card-header bg-light border-bottom">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h5 class="mb-1" id="chat-order-number">#ORD-001</h5>
+                                <small class="text-muted" id="chat-customer-info">Información del cliente</small>
+                            </div>
+                            <span id="chat-status-badge" class="badge bg-warning">Pendiente</span>
+                        </div>
+                    </div>
+
+                    <!-- Messages Area -->
+                    <div id="chat-messages" class="flex-fill overflow-auto p-4 bg-soft" style="max-height: calc(100vh - 450px);">
+                        <div class="text-center text-muted py-5">
+                            <svg class="icon icon-lg text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path>
+                            </svg>
+                            <p>Cargando conversación...</p>
+                        </div>
+                    </div>
+
+                    <!-- Message Input -->
+                    <div class="card-footer border-top bg-white">
+                        <form id="chat-form" onsubmit="sendMessage(event)">
+                            <div class="input-group">
+                                <input type="text"
+                                       id="chat-input"
+                                       class="form-control"
+                                       placeholder="Escribe un mensaje al cliente..."
+                                       autocomplete="off">
+                                <button type="submit" class="btn btn-primary">
+                                    <svg class="icon icon-xs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                    </svg>
+                                    Enviar
+                                </button>
+                            </div>
+                            <small class="text-muted d-block mt-2">Presiona Enter para enviar</small>
+                        </form>
+                    </div>
                 </div>
-            </div>
-
-            {{-- Message Input --}}
-            <div class="border-t border-gray-200 p-4 bg-white">
-                <form id="chat-form" onsubmit="sendMessage(event)" class="flex space-x-3">
-                    <input type="text"
-                           id="chat-input"
-                           placeholder="Escribe un mensaje al cliente..."
-                           class="flex-1 border border-gray-300 rounded-lg px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           autocomplete="off">
-                    <button type="submit"
-                            class="bg-blue-600 hover:bg-blue-700 text-white rounded-lg px-6 py-3 transition flex-shrink-0 font-semibold">
-                        Enviar
-                    </button>
-                </form>
-                <p class="text-xs text-gray-500 mt-2">Presiona Enter para enviar</p>
             </div>
         </div>
     </div>
 </div>
 
 <style>
+    .order-item:hover {
+        background-color: #f8f9fa;
+    }
+    .order-item.selected {
+        background-color: #e7f3ff;
+        border-left: 4px solid #0d6efd !important;
+    }
     #chat-messages::-webkit-scrollbar {
         width: 8px;
     }
@@ -141,31 +167,26 @@
     #chat-messages::-webkit-scrollbar-thumb:hover {
         background: #555;
     }
-
-    .order-item.selected {
-        background-color: #EFF6FF;
-        border-left: 4px solid #2563EB;
-    }
 </style>
 
 <script>
     let currentOrderId = null;
 
-    function selectOrder(orderId, customerName, status) {
+    function selectOrder(orderId, folioNumber, status) {
         currentOrderId = orderId;
 
         // Update UI
-        document.getElementById('empty-state').classList.add('hidden');
-        document.getElementById('chat-interface').classList.remove('hidden');
+        document.getElementById('empty-state').classList.add('d-none');
+        document.getElementById('chat-interface').classList.remove('d-none');
 
         // Update header
-        document.getElementById('chat-order-number').textContent = '#' + orderId;
-        document.getElementById('chat-customer-name').textContent = customerName;
+        document.getElementById('chat-order-number').textContent = folioNumber;
+        document.getElementById('chat-customer-info').textContent = 'Token: ' + orderId;
 
         // Update status badge
         const statusBadge = document.getElementById('chat-status-badge');
         statusBadge.textContent = getStatusText(status);
-        statusBadge.className = 'px-3 py-1 text-xs font-semibold rounded-full ' + getStatusClass(status);
+        statusBadge.className = 'badge ' + getStatusClass(status);
 
         // Highlight selected order
         document.querySelectorAll('.order-item').forEach(item => {
@@ -180,40 +201,39 @@
     function getStatusText(status) {
         const statusMap = {
             'pending': 'Pendiente',
-            'ready': 'Lista',
-            'in_progress': 'En progreso',
-            'delivered': 'Entregada'
+            'ready': 'Listo',
+            'delivered': 'Entregado',
+            'cancelled': 'Cancelado'
         };
         return statusMap[status] || status;
     }
 
     function getStatusClass(status) {
         const classMap = {
-            'pending': 'bg-yellow-100 text-yellow-800',
-            'ready': 'bg-green-100 text-green-800',
-            'in_progress': 'bg-blue-100 text-blue-800',
-            'delivered': 'bg-gray-100 text-gray-800'
+            'pending': 'bg-warning',
+            'ready': 'bg-success',
+            'delivered': 'bg-info',
+            'cancelled': 'bg-danger'
         };
-        return classMap[status] || 'bg-gray-100 text-gray-800';
+        return classMap[status] || 'bg-secondary';
     }
 
     function loadMessages(orderId) {
         const messagesContainer = document.getElementById('chat-messages');
-        messagesContainer.innerHTML = '<div class="text-center text-gray-500"><p>Cargando mensajes...</p></div>';
+        messagesContainer.innerHTML = '<div class="text-center text-muted py-5"><p>Cargando mensajes...</p></div>';
 
-        // TODO: Replace with actual API call
-        // For now, load demo messages
+        // Demo messages
         setTimeout(() => {
             messagesContainer.innerHTML = '';
 
             const demoMessages = [
-                { sender: 'customer', message: '¿Cuánto tiempo falta para mi orden?', time: '10:35 AM', initials: 'CL' },
+                { sender: 'customer', message: '¿Cuánto tiempo falta para mi orden?', time: '10:35 AM' },
                 { sender: 'business', message: 'Tu orden estará lista en aproximadamente 10 minutos. Te avisaremos cuando esté lista.', time: '10:36 AM' },
-                { sender: 'customer', message: 'Perfecto, gracias!', time: '10:37 AM', initials: 'CL' }
+                { sender: 'customer', message: 'Perfecto, gracias!', time: '10:37 AM' }
             ];
 
             demoMessages.forEach(msg => {
-                addMessageToDOM(msg.message, msg.sender, msg.time, msg.initials);
+                addMessageToDOM(msg.message, msg.sender, msg.time);
             });
         }, 500);
     }
@@ -235,31 +255,33 @@
         input.value = '';
 
         // TODO: Send to API
-        // sendMessageToAPI(currentOrderId, message);
     }
 
-    function addMessageToDOM(message, sender, time, initials = 'NE') {
+    function addMessageToDOM(message, sender, time) {
         const messagesContainer = document.getElementById('chat-messages');
 
         const messageDiv = document.createElement('div');
+        messageDiv.className = 'mb-3';
 
         if (sender === 'business') {
-            messageDiv.className = 'flex justify-end';
             messageDiv.innerHTML = `
-                <div class="bg-blue-600 text-white rounded-lg p-4 shadow-sm max-w-[70%]">
-                    <p class="text-sm leading-relaxed">${message}</p>
-                    <span class="text-xs text-blue-100 mt-2 block">${time}</span>
+                <div class="d-flex justify-content-end">
+                    <div class="bg-primary text-white rounded p-3 shadow-sm" style="max-width: 70%;">
+                        <p class="mb-1 small">${message}</p>
+                        <small class="opacity-75">${time}</small>
+                    </div>
                 </div>
             `;
         } else {
-            messageDiv.className = 'flex items-start space-x-3';
             messageDiv.innerHTML = `
-                <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-sm font-bold flex-shrink-0">
-                    ${initials}
-                </div>
-                <div class="bg-white rounded-lg p-4 shadow-sm max-w-[70%] border border-gray-200">
-                    <p class="text-sm text-gray-800 leading-relaxed">${message}</p>
-                    <span class="text-xs text-gray-500 mt-2 block">${time}</span>
+                <div class="d-flex align-items-start gap-2">
+                    <div class="avatar bg-secondary text-white d-flex align-items-center justify-content-center rounded-circle" style="width: 40px; height: 40px; flex-shrink: 0;">
+                        <span class="fw-bold">CL</span>
+                    </div>
+                    <div class="bg-white border rounded p-3 shadow-sm" style="max-width: 70%;">
+                        <p class="mb-1 small text-gray-800">${message}</p>
+                        <small class="text-muted">${time}</small>
+                    </div>
                 </div>
             `;
         }
@@ -292,11 +314,5 @@
             });
         }
     });
-
-    // TODO: Integration points
-    // - loadMessages(orderId) - Load real messages from API
-    // - sendMessageToAPI(orderId, message) - Send message via API
-    // - WebSocket integration for real-time updates
-    // - Notification sound when new message arrives
 </script>
 @endsection

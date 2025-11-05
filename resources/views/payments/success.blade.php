@@ -24,13 +24,13 @@
         @endif
 
         <div class="space-y-3">
-            <a href="{{ route('dashboard.index') }}" class="inline-block px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition">
+            <a href="{{ route('business.dashboard.index') }}" class="inline-block px-8 py-3 text-base font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition">
                 Ir al Dashboard
             </a>
 
             <br>
 
-            <a href="{{ route('orders.index') }}" class="inline-block px-8 py-3 text-base font-medium text-blue-600 bg-transparent border-2 border-blue-600 hover:bg-blue-50 rounded-lg transition">
+            <a href="{{ route('business.orders.index') }}" class="inline-block px-8 py-3 text-base font-medium text-blue-600 bg-transparent border-2 border-blue-600 hover:bg-blue-50 rounded-lg transition">
                 Crear Órdenes
             </a>
 

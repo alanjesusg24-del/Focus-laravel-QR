@@ -32,7 +32,7 @@ class AuthController extends Controller
         if (Auth::guard('business')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('business.dashboard.index'));
+            return redirect()->intended(route('business.orders.index'));
         }
 
         throw ValidationException::withMessages([

@@ -6,7 +6,7 @@
 <div class="max-w-2xl mx-auto space-y-6">
     <div class="flex justify-between items-center">
         <h1 class="text-2xl font-bold text-institutional-blue">Checkout</h1>
-        <a href="{{ route('order-qr.payment.index') }}" class="text-institutional-blue hover:underline">
+        <a href="{{ route('business.payments.index') }}" class="text-institutional-blue hover:underline">
             ← Back to plans
         </a>
     </div>

@@ -40,7 +40,7 @@ class PaymentController extends Controller
     {
         if (!$plan->is_active) {
             return redirect()
-                ->route('order-qr.payment.index')
+                ->route('business.payments.index')
                 ->with('error', 'Selected plan is not available');
         }
 

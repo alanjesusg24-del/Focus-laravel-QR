@@ -142,7 +142,7 @@ class BusinessController extends Controller
         $business->update($validated);
 
         return redirect()
-            ->route('business.profile')
+            ->route('business.profile.index')
             ->with('success', 'Perfil actualizado exitosamente');
     }
 
@@ -177,7 +177,7 @@ class BusinessController extends Controller
         ]);
 
         return redirect()
-            ->route('business.profile')
+            ->route('business.profile.index')
             ->with('success', 'Contraseña actualizada exitosamente');
     }
 
@@ -213,7 +213,7 @@ class BusinessController extends Controller
         $business->update(['theme' => $validated['theme']]);
 
         return redirect()
-            ->route('business.profile')
+            ->route('business.profile.index')
             ->with('success', 'Tema actualizado exitosamente');
     }
 

@@ -38,7 +38,7 @@ class OrderPolicy
     public function update(Business $business, Order $order): bool
     {
         return $order->business_id === $business->business_id &&
-               in_array($order->status, ['pending', 'preparing']);
+               in_array($order->status, ['pending', 'preparing', 'ready']);
     }
 
     /**

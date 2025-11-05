@@ -1,20 +1,6 @@
 <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
   <div class="container-fluid px-0">
-    <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
-      {{-- Search form --}}
-      <div class="d-flex align-items-center">
-        <form class="navbar-search form-inline" id="navbar-search-main" action="{{ route('business.orders.index') }}" method="GET">
-          <div class="input-group input-group-merge search-bar">
-            <span class="input-group-text" id="topbar-addon">
-              <svg class="icon icon-xs" x-description="Heroicon name: solid/search" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
-              </svg>
-            </span>
-            <input type="text" name="search" class="form-control" id="topbarInputIconLeft" placeholder="Search orders..." aria-label="Search" aria-describedby="topbar-addon">
-          </div>
-        </form>
-      </div>
-
+    <div class="d-flex justify-content-end w-100" id="navbarSupportedContent">
       {{-- Navbar links --}}
       <ul class="navbar-nav align-items-center">
         {{-- Notifications --}}
@@ -82,9 +68,9 @@
             </a>
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.profile.change-password') }}">
               <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
               </svg>
-              Settings
+              Change Password
             </a>
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.support.index') }}">
               <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

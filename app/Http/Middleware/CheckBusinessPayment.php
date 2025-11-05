@@ -33,16 +33,16 @@ class CheckBusinessPayment
 
         // Allow access to payment and profile routes
         $allowedRoutes = [
-            'order-qr.payment.index',
-            'order-qr.payment.checkout',
-            'order-qr.payment.create-checkout-session',
-            'order-qr.payment.success',
-            'order-qr.payment.cancel',
-            'order-qr.payment.history',
-            'order-qr.business.profile',
-            'order-qr.business.edit',
-            'order-qr.business.update',
-            'logout',
+            'business.payments.index',
+            'business.payments.checkout',
+            'business.payments.create-checkout-session',
+            'business.payments.success',
+            'business.payments.cancel',
+            'business.payments.history',
+            'business.profile.index',
+            'business.profile.edit',
+            'business.profile.update',
+            'business.logout',
         ];
 
         if (in_array($request->route()->getName(), $allowedRoutes)) {
@@ -52,14 +52,14 @@ class CheckBusinessPayment
         // Check if payment is expired
         if ($this->paymentService->isPaymentExpired($business)) {
             return redirect()
-                ->route('order-qr.payment.index')
+                ->route('business.payments.index')
                 ->with('warning', 'Your payment has expired. Please renew your plan to continue using the system.');
         }
 
         // Check if business is active
         if (!$business->is_active) {
             return redirect()
-                ->route('order-qr.payment.index')
+                ->route('business.payments.index')
                 ->with('error', 'Your account is inactive. Please contact support or renew your subscription.');
         }
 
