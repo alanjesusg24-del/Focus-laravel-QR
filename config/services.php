@@ -30,4 +30,20 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Stripe Payment Gateway
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for Stripe payment processing
+    | Get your API keys from: https://dashboard.stripe.com/apikeys
+    |
+    */
+
+    'stripe' => [
+        'key' => env('STRIPE_KEY'),
+        'secret' => env('STRIPE_SECRET'),
+        'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
+    ],
+
 ];

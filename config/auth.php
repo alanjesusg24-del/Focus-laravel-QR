@@ -14,8 +14,8 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
-        'passwords' => 'users',
+        'guard' => 'business',
+        'passwords' => 'businesses',
     ],
 
     /*
@@ -39,6 +39,11 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+        ],
+
+        'business' => [
+            'driver' => 'session',
+            'provider' => 'businesses',
         ],
 
         'api' => [
@@ -69,6 +74,11 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
+        ],
+
+        'businesses' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Business::class,
         ],
 
         // 'users' => [

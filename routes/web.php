@@ -78,3 +78,83 @@ Route::prefix("p/{$slug}")
             Route::get('/typography', Typography::class)->name('ui.typography');
         });
     });
+
+/*
+|--------------------------------------------------------------------------
+| Order QR System Routes
+|--------------------------------------------------------------------------
+|
+| Rutas para el sistema de gestión de órdenes con QR siguiendo
+| estándares CETAM - Centro de Desarrollo Tecnológico Aplicado de México
+|
+*/
+
+// Authentication routes (public)
+Route::get('/login', [App\Http\Controllers\Auth\AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [App\Http\Controllers\Auth\AuthController::class, 'login']);
+Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])->name('logout');
+
+// Redirect root to login
+Route::get('/', function () {
+    return redirect()->route('login');
+});
+
+// Public routes
+Route::group(['prefix' => 'order-qr', 'as' => 'order-qr.'], function () {
+    // Business Registration
+    Route::get('/register', [App\Http\Controllers\BusinessController::class, 'register'])->name('business.register');
+    Route::post('/register', [App\Http\Controllers\BusinessController::class, 'store'])->name('business.store');
+});
+
+// Authenticated routes - Business Dashboard
+Route::middleware(['auth'])->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/analytics', [App\Http\Controllers\DashboardController::class, 'analytics'])->name('dashboard.analytics');
+
+    // Chat (only for businesses with chat module enabled)
+    Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/messages/{order}', [App\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
+    Route::post('/chat/send/{order}', [App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+
+    // Orders Management
+    Route::resource('orders', App\Http\Controllers\OrderController::class);
+    Route::post('/orders/{order}/mark-ready', [App\Http\Controllers\OrderController::class, 'markAsReady'])->name('orders.markAsReady');
+    Route::post('/orders/{order}/mark-delivered', [App\Http\Controllers\OrderController::class, 'markAsDelivered'])->name('orders.markAsDelivered');
+    Route::post('/orders/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::get('/orders/{order}/download-qr', [App\Http\Controllers\OrderController::class, 'downloadQr'])->name('orders.downloadQr');
+    Route::get('/orders-statistics', [App\Http\Controllers\OrderController::class, 'statistics'])->name('orders.statistics');
+
+    // Payments Management
+    Route::prefix('payment')->as('order-qr.payment.')->group(function () {
+        Route::get('/', [App\Http\Controllers\PaymentController::class, 'index'])->name('index');
+        Route::get('/plans/{plan}/checkout', [App\Http\Controllers\PaymentController::class, 'create'])->name('checkout');
+        Route::post('/plans/{plan}/checkout-session', [App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])->name('create-checkout-session');
+        Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('success');
+        Route::get('/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('cancel');
+        Route::get('/history', [App\Http\Controllers\PaymentController::class, 'history'])->name('history');
+        Route::delete('/subscription/cancel', [App\Http\Controllers\PaymentController::class, 'cancelSubscription'])->name('cancel-subscription');
+        Route::get('/statistics', [App\Http\Controllers\PaymentController::class, 'statistics'])->name('statistics');
+    });
+
+    // Support Tickets
+    Route::resource('support', App\Http\Controllers\SupportTicketController::class)->parameters([
+        'support' => 'supportTicket'
+    ]);
+    Route::post('/support/{supportTicket}/close', [App\Http\Controllers\SupportTicketController::class, 'close'])->name('support.close');
+    Route::post('/support/{supportTicket}/reopen', [App\Http\Controllers\SupportTicketController::class, 'reopen'])->name('support.reopen');
+
+    // Business Profile Management
+    Route::get('/business/profile', [App\Http\Controllers\BusinessController::class, 'profile'])->name('business.profile');
+    Route::get('/business/edit', [App\Http\Controllers\BusinessController::class, 'edit'])->name('business.edit');
+    Route::put('/business/update', [App\Http\Controllers\BusinessController::class, 'update'])->name('business.update');
+    Route::get('/business/change-password', [App\Http\Controllers\BusinessController::class, 'showChangePassword'])->name('business.changePassword');
+    Route::put('/business/password', [App\Http\Controllers\BusinessController::class, 'updatePassword'])->name('business.updatePassword');
+    // Theme routes removed - CETAM institutional standards must be maintained
+    // Route::get('/business/theme', [App\Http\Controllers\BusinessController::class, 'showTheme'])->name('business.theme');
+    // Route::put('/business/theme', [App\Http\Controllers\BusinessController::class, 'updateTheme'])->name('business.updateTheme');
+    Route::post('/business/deactivate', [App\Http\Controllers\BusinessController::class, 'deactivate'])->name('business.deactivate');
+});
+
+// Public webhook endpoint (no auth required)
+Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'webhook'])->name('webhook.stripe');

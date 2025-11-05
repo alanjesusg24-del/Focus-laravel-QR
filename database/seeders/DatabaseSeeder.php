@@ -13,9 +13,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+        // Order QR System Seeders - CETAM Standards
         $this->call([
-            UserSeeder::class
+            PlanSeeder::class,
+            SuperAdminSeeder::class,
+            BusinessSeeder::class,
+            OrderSeeder::class,
+            PaymentSeeder::class,
+            SupportTicketSeeder::class,
         ]);
+
+        $this->command->info('✅ Order QR System seeded successfully!');
     }
 }
