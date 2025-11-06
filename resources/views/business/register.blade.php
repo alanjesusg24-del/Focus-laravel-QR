@@ -93,6 +93,9 @@
                                                     value="{{ old('business_name') }}"
                                                     placeholder="Mi Negocio SA" required autofocus>
                                             </div>
+                                            @error('business_name')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -111,6 +114,9 @@
                                                     value="{{ old('rfc') }}"
                                                     placeholder="ABC123456XYZ" maxlength="13" required>
                                             </div>
+                                            @error('rfc')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -130,6 +136,9 @@
                                                     value="{{ old('email') }}"
                                                     placeholder="contacto@minegocio.com" required>
                                             </div>
+                                            @error('email')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -148,6 +157,9 @@
                                                     value="{{ old('phone') }}"
                                                     placeholder="5512345678" required>
                                             </div>
+                                            @error('phone')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 
@@ -163,8 +175,11 @@
                                                 </span>
                                                 <input type="password" class="form-control @error('password') is-invalid @enderror"
                                                     id="password" name="password"
-                                                    placeholder="••••••••" required>
+                                                    placeholder="Mínimo 8 caracteres" required>
                                             </div>
+                                            @error('password')
+                                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                     </div>
 

@@ -35,8 +35,9 @@ class BusinessController extends Controller
             'phone' => 'required|string|max:15',
             'rfc' => 'required|string|min:12|max:13|unique:businesses,rfc',
             'plan_id' => 'required|exists:plans,plan_id',
-            'has_chat_module' => 'nullable|boolean',
+            'has_chat_module' => 'sometimes',
             'data_retention_months' => 'required|integer|in:1,3,6,12',
+            'terms' => 'required|accepted',
         ]);
 
         try {
