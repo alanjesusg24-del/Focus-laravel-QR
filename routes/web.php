@@ -168,3 +168,8 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
 
 // Public webhook endpoint (no auth required)
 Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'webhook'])->name('webhook.stripe');
+
+// Test QR Scanner
+Route::get('/test-scanner', function() {
+    return view('test-scanner');
+})->name('test.scanner');

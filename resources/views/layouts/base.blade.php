@@ -98,7 +98,7 @@
     <!-- Volt JS -->
     <script src="{{ asset('assets/js/volt.js') }}"></script>
 
-    @if(env('IS_DEMO')) 
+    @if(env('IS_DEMO'))
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141734189-6"></script>
         <script>
@@ -118,7 +118,6 @@
         })(window, document, 'script', 'dataLayer', 'GTM-THQTXJ7');</script>
         <!-- End Google Tag Manager -->
     @endif
-
 
 </head>
 
@@ -142,6 +141,180 @@
     @endif
 
     @yield('scripts')
+
+    <!-- QR Scanner Global Listener -->
+    <script>
+        (function() {
+            // Variables para detectar el escaneo
+            let scanBuffer = '';
+            let scanTimeout = null;
+            const SCAN_TIMEOUT = 100; // ms entre caracteres del scanner
+            const MIN_TOKEN_LENGTH = 10; // longitud mínima del token
+
+            // Inicializar Notyf para notificaciones
+            const notyf = new Notyf({
+                duration: 5000,
+                position: {
+                    x: 'right',
+                    y: 'top',
+                }
+            });
+
+            // Listener global de teclado - usando keydown para compatibilidad con más escáneres
+            document.addEventListener('keydown', function(e) {
+                console.log('[QR Scanner] KeyDown detected:', e.key, 'Code:', e.code, 'Target:', e.target.tagName);
+
+                // Ignorar si está en un input/textarea
+                if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+                    console.log('[QR Scanner] Ignored - Inside input/textarea');
+                    return;
+                }
+
+                // Ignorar teclas especiales (excepto Enter)
+                if (e.key.length > 1 && e.key !== 'Enter') {
+                    console.log('[QR Scanner] Ignored - Special key');
+                    return;
+                }
+
+                // Acumular caracteres
+                if (e.key !== 'Enter') {
+                    scanBuffer += e.key;
+                    console.log('[QR Scanner] Buffer:', scanBuffer, 'Length:', scanBuffer.length);
+                }
+
+                // Resetear timeout
+                clearTimeout(scanTimeout);
+
+                // Detectar fin de escaneo (Enter o timeout)
+                if (e.key === 'Enter') {
+                    console.log('[QR Scanner] Enter detected - Processing scan');
+                    e.preventDefault(); // Prevenir submit de forms
+                    if (scanBuffer.length > 0) {
+                        processScan(scanBuffer);
+                    }
+                    scanBuffer = '';
+                } else {
+                    scanTimeout = setTimeout(function() {
+                        console.log('[QR Scanner] Timeout - Buffer length:', scanBuffer.length);
+                        if (scanBuffer.length >= MIN_TOKEN_LENGTH) {
+                            processScan(scanBuffer);
+                        }
+                        scanBuffer = '';
+                    }, SCAN_TIMEOUT);
+                }
+            });
+
+            // Procesar el código escaneado
+            function processScan(scannedData) {
+                console.log('[QR Scanner] Processing scan:', scannedData);
+                const trimmedData = scannedData.trim();
+
+                if (trimmedData.length < MIN_TOKEN_LENGTH) {
+                    console.log('[QR Scanner] Data too short:', trimmedData.length, '- Need at least:', MIN_TOKEN_LENGTH);
+                    return;
+                }
+
+                // Extraer el token del dato escaneado
+                let pickupToken = extractToken(trimmedData);
+                console.log('[QR Scanner] Extracted token:', pickupToken);
+
+                if (!pickupToken) {
+                    console.log('[QR Scanner] No valid token extracted');
+                    return;
+                }
+
+                // Mostrar notificación de procesando
+                notyf.success('Procesando código QR...');
+
+                // Enviar al servidor
+                validateDelivery(pickupToken);
+            }
+
+            // Extraer token del dato escaneado (puede ser URL o token directo)
+            function extractToken(data) {
+                // Si es una URL que contiene /storage/qr_codes/
+                if (data.includes('/storage/qr_codes/')) {
+                    // Extraer el token del nombre del archivo
+                    // Formato: /storage/qr_codes/{business_id}/order_{order_id}_{TOKEN}.svg
+                    const match = data.match(/order_\d+_([a-zA-Z0-9\-_]+)\.(svg|png)/);
+                    if (match && match[1]) {
+                        return match[1]; // Este es el qr_token, no el pickup_token
+                    }
+                    return null;
+                }
+
+                // Si contiene "pickup/" o similar
+                if (data.includes('/pickup/')) {
+                    const match = data.match(/\/pickup\/([a-zA-Z0-9\-_]+)/);
+                    if (match && match[1]) {
+                        return match[1];
+                    }
+                }
+
+                // Validar formato básico del token directo (letras, números, guiones)
+                if (/^[a-zA-Z0-9\-_]+$/.test(data)) {
+                    return data;
+                }
+
+                return null;
+            }
+
+            // Validar entrega en el servidor
+            function validateDelivery(pickupToken) {
+                fetch('{{ url("/api/v1/scanner/validate-delivery") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        pickup_token: pickupToken
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Notificación de éxito
+                        notyf.success('Orden ' + data.data.folio_number + ' entregada exitosamente');
+
+                        // Reproducir sonido de éxito (opcional)
+                        playSuccessSound();
+
+                        // Recargar la página si estamos en la vista de órdenes
+                        if (window.location.href.includes('/orders')) {
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
+                        }
+                    } else {
+                        // Notificación de error
+                        notyf.error(data.message);
+                        playErrorSound();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    notyf.error('Error al procesar el código QR');
+                    playErrorSound();
+                });
+            }
+
+            // Reproducir sonido de éxito
+            function playSuccessSound() {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAo=');
+                audio.play().catch(() => {}); // Ignorar errores de audio
+            }
+
+            // Reproducir sonido de error
+            function playErrorSound() {
+                const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=');
+                audio.play().catch(() => {}); // Ignorar errores de audio
+            }
+
+            console.log('✓ QR Scanner listener initialized - Ready to scan');
+        })();
+    </script>
 </body>
 
 </html>

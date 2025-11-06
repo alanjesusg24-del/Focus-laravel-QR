@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\V1\MobileController;
 // use App\Http\Controllers\Api\MobileOrderController;
 // use App\Http\Controllers\Api\MobileDeviceController;
 // use App\Http\Controllers\Api\MobileAuthController;
@@ -32,6 +33,41 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 */
 
 Route::prefix('v1')->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mobile App API Routes
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('mobile')->group(function () {
+        // Registro de dispositivo (sin autenticación)
+        Route::post('/register', [MobileController::class, 'registerDevice']);
+
+        // Rutas protegidas (requieren X-Device-ID header)
+        Route::middleware(['mobile.device'])->group(function () {
+            // Asociar orden escaneando QR
+            Route::post('/orders/associate', [MobileController::class, 'associateOrder']);
+
+            // Obtener órdenes del dispositivo
+            Route::get('/orders', [MobileController::class, 'getOrders']);
+
+            // Obtener detalle de una orden
+            Route::get('/orders/{orderId}', [MobileController::class, 'getOrderDetail']);
+
+            // Actualizar FCM Token
+            Route::put('/update-token', [MobileController::class, 'updateFcmToken']);
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scanner QR desde Dashboard (Web)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('scanner')->group(function () {
+        // Validar y marcar orden como entregada escaneando QR del cliente
+        Route::post('/validate-delivery', [MobileController::class, 'validateDelivery']);
+    });
 
     // TODO: Implement Mobile API Controllers
     // Public endpoints (no authentication required)
