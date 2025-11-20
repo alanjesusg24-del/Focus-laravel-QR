@@ -45,8 +45,8 @@ class SupportTicketController extends Controller
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'description' => 'required|string|max:2000',
-            'priority' => 'required|in:low,medium,high',
-            'attachment' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf,doc,docx',
+            'priority' => 'nullable|in:low,medium,high',
+            'attachment' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf',
         ]);
 
         $businessId = Auth::id();
@@ -64,7 +64,7 @@ class SupportTicketController extends Controller
             'business_id' => $businessId,
             'subject' => $validated['subject'],
             'description' => $validated['description'],
-            'priority' => $validated['priority'],
+            'priority' => $validated['priority'] ?? 'medium', // Default to medium if not provided
             'status' => 'open',
             'attachment_url' => $attachmentUrl,
         ]);
@@ -115,7 +115,6 @@ class SupportTicketController extends Controller
 
         $validated = $request->validate([
             'description' => 'required|string|max:2000',
-            'priority' => 'required|in:low,medium,high',
         ]);
 
         $supportTicket->update($validated);

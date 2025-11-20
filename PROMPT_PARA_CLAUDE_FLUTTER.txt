@@ -1,0 +1,49 @@
+═══════════════════════════════════════════════════════════════
+COPIA Y PEGA ESTO EN CLAUDE CODE DE TU PROYECTO FLUTTER:
+═══════════════════════════════════════════════════════════════
+
+Necesito modificar la URL del API en mi app Flutter para usar ngrok.
+
+CONTEXTO:
+- Actualmente la app usa una IP local hardcodeada
+- Necesito cambiarla a una URL fija de ngrok
+- El backend es Laravel y está en: http://[TU_IP]:8000/api/v1
+
+TAREA:
+
+1. Busca en el proyecto donde está definida la URL base del API
+   Puede estar en archivos como:
+   - lib/services/api_service.dart
+   - lib/config/api_config.dart
+   - lib/utils/constants.dart
+
+   Busca líneas como:
+   - const String baseUrl = "http://..."
+   - final String API_URL = "http://..."
+   - static const String baseUrl = "http://..."
+
+2. Reemplaza TODAS las IPs locales que encuentres por:
+   https://[DOMINIO-NGROK].ngrok-free.app/api/v1
+
+   Donde [DOMINIO-NGROK] lo voy a obtener después.
+
+3. Verifica que android/app/src/main/AndroidManifest.xml tenga:
+   <uses-permission android:name="android.permission.INTERNET"/>
+
+4. Busca en TODO el proyecto si hay otras referencias a:
+   - 192.168.x.x
+   - 10.0.x.x
+   - localhost
+   - http://[números]
+
+5. Muéstrame un resumen de:
+   - Qué archivos modificaste
+   - Qué cambios hiciste en cada uno
+   - Si encontraste otras IPs que deba actualizar manualmente
+
+IMPORTANTE:
+- Usa HTTPS (no HTTP) para ngrok
+- Mantén /api/v1 al final de la URL
+- No cambies nada más, solo las URLs
+
+═══════════════════════════════════════════════════════════════

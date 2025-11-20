@@ -35,7 +35,8 @@
     <meta name="msapplication-config" content="{{ asset('assets/img/favicons/browserconfig.xml') }}">
     <meta name="theme-color" content="#563d7c">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Apex Charts -->
     <link type="text/css" href="{{ asset('vendor/apexcharts/apexcharts.css') }}" rel="stylesheet">
 
@@ -141,6 +142,7 @@
     @endif
 
     @yield('scripts')
+    @stack('scripts')
 
     <!-- QR Scanner Global Listener -->
     <script>

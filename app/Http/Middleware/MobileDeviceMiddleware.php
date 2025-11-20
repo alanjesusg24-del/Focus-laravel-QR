@@ -16,8 +16,24 @@ class MobileDeviceMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
+        // Si el usuario está autenticado con Sanctum, el device_id es opcional
+        $user = $request->user('sanctum');
         $deviceId = $request->header('X-Device-ID');
 
+        // Si hay usuario autenticado, continuar sin requerir device_id
+        if ($user) {
+            // Intentar obtener mobile_user si hay device_id (opcional)
+            if ($deviceId) {
+                $mobileUser = MobileUser::where('device_id', $deviceId)->first();
+                if ($mobileUser) {
+                    $mobileUser->update(['last_seen_at' => now()]);
+                    $request->merge(['mobile_user' => $mobileUser]);
+                }
+            }
+            return $next($request);
+        }
+
+        // Sin autenticación: requerir device_id
         if (!$deviceId) {
             return response()->json([
                 'success' => false,

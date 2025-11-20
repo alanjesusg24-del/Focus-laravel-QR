@@ -17,7 +17,7 @@
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
               </svg>
-              Sign Out
+              Cerrar Sesión
             </button>
           </form>
         </div>
@@ -44,7 +44,7 @@
               <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
             </svg>
           </span>
-          <span class="sidebar-text">Orders</span>
+          <span class="sidebar-text">Órdenes</span>
         </a>
       </li>
 
@@ -70,7 +70,7 @@
               <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
             </svg>
           </span>
-          <span class="sidebar-text">Payments</span>
+          <span class="sidebar-text">Pagos</span>
         </a>
       </li>
 
@@ -82,7 +82,7 @@
               <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd"></path>
             </svg>
           </span>
-          <span class="sidebar-text">Support</span>
+          <span class="sidebar-text">Soporte</span>
         </a>
       </li>
 
@@ -96,11 +96,12 @@
               <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
             </svg>
           </span>
-          <span class="sidebar-text">Profile</span>
+          <span class="sidebar-text">Perfil</span>
         </a>
       </li>
 
-      {{-- Chat --}}
+      {{-- Chat (solo si el plan lo incluye) --}}
+      @if(auth()->guard('business')->user()->plan && auth()->guard('business')->user()->plan->has_chat_module)
       <li class="nav-item {{ request()->routeIs('business.chat.*') ? 'active' : '' }}">
         <a href="{{ route('business.chat.index') }}" class="nav-link">
           <span class="sidebar-icon">
@@ -111,6 +112,7 @@
           <span class="sidebar-text">Chat</span>
         </a>
       </li>
+      @endif
     </ul>
   </div>
 </nav>

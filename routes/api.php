@@ -3,9 +3,11 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\MobileController;
+use App\Http\Controllers\Api\BusinessApiController;
+use App\Http\Controllers\Api\ChatApiController;
+use App\Http\Controllers\Api\MobileAuthController;
 // use App\Http\Controllers\Api\MobileOrderController;
 // use App\Http\Controllers\Api\MobileDeviceController;
-// use App\Http\Controllers\Api\MobileAuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +38,29 @@ Route::prefix('v1')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Authentication Routes (Mobile App)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('auth')->group(function () {
+        // Public routes (no authentication required)
+        Route::post('/register', [MobileAuthController::class, 'register']);
+        Route::post('/login', [MobileAuthController::class, 'login']);
+        Route::post('/login/google', [MobileAuthController::class, 'loginWithGoogle']);
+        Route::post('/password/forgot', [MobileAuthController::class, 'forgotPassword']);
+        Route::post('/password/reset', [MobileAuthController::class, 'resetPassword']);
+
+        // Protected routes (require authentication)
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/logout', [MobileAuthController::class, 'logout']);
+            Route::get('/me', [MobileAuthController::class, 'me']);
+            Route::post('/verify-email', [MobileAuthController::class, 'verifyEmail']);
+            Route::post('/resend-verification', [MobileAuthController::class, 'resendVerification']);
+            Route::post('/password/change', [MobileAuthController::class, 'changePassword']);
+        });
+    });
+
+    /*
+    |--------------------------------------------------------------------------
     | Mobile App API Routes
     |--------------------------------------------------------------------------
     */
@@ -43,12 +68,12 @@ Route::prefix('v1')->group(function () {
         // Registro de dispositivo (sin autenticación)
         Route::post('/register', [MobileController::class, 'registerDevice']);
 
-        // Rutas protegidas (requieren X-Device-ID header)
-        Route::middleware(['mobile.device'])->group(function () {
+        // Rutas con autenticación opcional (acepta tanto token como device_id)
+        Route::middleware(['auth.optional', 'mobile.device'])->group(function () {
             // Asociar orden escaneando QR
             Route::post('/orders/associate', [MobileController::class, 'associateOrder']);
 
-            // Obtener órdenes del dispositivo
+            // Obtener órdenes del dispositivo/usuario
             Route::get('/orders', [MobileController::class, 'getOrders']);
 
             // Obtener detalle de una orden
@@ -56,6 +81,15 @@ Route::prefix('v1')->group(function () {
 
             // Actualizar FCM Token
             Route::put('/update-token', [MobileController::class, 'updateFcmToken']);
+
+            // Chat - Obtener mensajes de una orden
+            Route::get('/orders/{orderId}/messages', [ChatApiController::class, 'getMessages']);
+
+            // Chat - Enviar mensaje desde la app móvil
+            Route::post('/orders/{orderId}/messages', [ChatApiController::class, 'sendMessage']);
+
+            // Chat - Marcar mensajes como leídos
+            Route::put('/orders/{orderId}/messages/mark-read', [ChatApiController::class, 'markAsRead']);
         });
     });
 
@@ -67,6 +101,20 @@ Route::prefix('v1')->group(function () {
     Route::prefix('scanner')->group(function () {
         // Validar y marcar orden como entregada escaneando QR del cliente
         Route::post('/validate-delivery', [MobileController::class, 'validateDelivery']);
+    });
+
+    /*
+    |--------------------------------------------------------------------------
+    | Business Location API (Public - para app móvil)
+    |--------------------------------------------------------------------------
+    */
+    Route::prefix('businesses')->group(function () {
+        // Obtener lista de negocios activos con ubicación
+        // Query params opcionales: user_lat, user_lng, radius (km)
+        Route::get('/', [BusinessApiController::class, 'index']);
+
+        // Obtener detalles de un negocio específico
+        Route::get('/{id}', [BusinessApiController::class, 'show']);
     });
 
     // TODO: Implement Mobile API Controllers

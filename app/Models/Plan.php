@@ -17,6 +17,13 @@ class Plan extends Model
         'retention_days',
         'description',
         'is_active',
+        'has_chat_module',
+        'has_realerts',
+        'realert_interval_minutes',
+        'realert_max_count',
+        'realert_days',
+        'realert_hours',
+        'realert_minutes',
     ];
 
     protected $casts = [
@@ -24,6 +31,13 @@ class Plan extends Model
         'duration_days' => 'integer',
         'retention_days' => 'integer',
         'is_active' => 'boolean',
+        'has_chat_module' => 'boolean',
+        'has_realerts' => 'boolean',
+        'realert_interval_minutes' => 'integer',
+        'realert_max_count' => 'integer',
+        'realert_days' => 'integer',
+        'realert_hours' => 'integer',
+        'realert_minutes' => 'integer',
     ];
 
     /**

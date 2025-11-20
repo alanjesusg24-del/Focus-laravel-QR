@@ -86,7 +86,7 @@
             </div>
 
             <!-- Plan Information -->
-            <div class="card border-0 shadow">
+            <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom">
                     <h5 class="mb-0">Información del Plan</h5>
                 </div>
@@ -154,6 +154,38 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Business Location Map -->
+            <div class="card border-0 shadow">
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0">Ubicación del Negocio</h5>
+                </div>
+                <div class="card-body">
+                    @if($business->latitude && $business->longitude)
+                        <div id="map" style="height: 350px; width: 100%; border-radius: 0.5rem;" class="mb-3"></div>
+                        @if($business->location_description)
+                        <div class="d-flex align-items-start">
+                            <svg class="icon icon-xs text-gray-600 me-2 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                            </svg>
+                            <p class="text-gray-700 mb-0">{{ $business->location_description }}</p>
+                        </div>
+                        @endif
+                    @else
+                        <div class="text-center py-5">
+                            <div class="icon icon-shape icon-lg bg-gray-200 text-gray-600 rounded-circle mb-3 mx-auto">
+                                <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <p class="text-gray-600 mb-3">No has configurado tu ubicación aún</p>
+                            <a href="{{ route('business.profile.edit') }}" class="btn btn-sm btn-primary">
+                                Configurar Ubicación
+                            </a>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
 
         <!-- Sidebar -->
@@ -185,6 +217,36 @@
                             Gestionar Plan
                         </a>
                     </div>
+                </div>
+            </div>
+
+            <!-- Business Photo -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0">Foto del Negocio</h5>
+                </div>
+                <div class="card-body text-center">
+                    @if($business->photo)
+                        <img src="{{ asset('storage/' . $business->photo) }}"
+                             alt="{{ $business->business_name }}"
+                             class="img-fluid rounded shadow mb-3"
+                             style="max-height: 250px; width: 100%; object-fit: cover;">
+                    @else
+                        <div class="py-5">
+                            <div class="icon icon-shape icon-xl bg-gray-200 text-gray-600 rounded-circle mb-3 mx-auto">
+                                <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <p class="text-gray-600 mb-0">Sin foto</p>
+                        </div>
+                    @endif
+                    <a href="{{ route('business.profile.edit') }}" class="btn btn-sm btn-outline-primary">
+                        <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                        </svg>
+                        Cambiar Foto
+                    </a>
                 </div>
             </div>
 
@@ -230,3 +292,59 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+@if($business->latitude && $business->longitude)
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}"></script>
+<script>
+    function initMap() {
+        const businessLocation = {
+            lat: {{ $business->latitude }},
+            lng: {{ $business->longitude }}
+        };
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: businessLocation,
+            zoom: 15,
+            disableDefaultUI: false,
+            zoomControl: true,
+            mapTypeControl: false,
+            scaleControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
+            gestureHandling: 'cooperative',
+            styles: [
+                {
+                    featureType: 'poi',
+                    elementType: 'labels',
+                    stylers: [{ visibility: 'on' }]
+                }
+            ]
+        });
+
+        const marker = new google.maps.Marker({
+            position: businessLocation,
+            map: map,
+            title: '{{ $business->business_name }}',
+            draggable: false,
+            animation: google.maps.Animation.DROP
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+            content: '<div style="padding: 10px;"><strong>{{ $business->business_name }}</strong><br>{{ $business->address ?? "Mi negocio" }}</div>'
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+    }
+
+    if (typeof google !== 'undefined') {
+        initMap();
+    } else {
+        window.addEventListener('load', initMap);
+    }
+</script>
+@endif
+@endpush

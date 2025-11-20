@@ -63,5 +63,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'mobile.device' => \App\Http\Middleware\MobileDeviceMiddleware::class,
+        'auth.optional' => \App\Http\Middleware\OptionalSanctumAuth::class,
+        'subscription.active' => \App\Http\Middleware\CheckActiveSubscription::class,
     ];
 }

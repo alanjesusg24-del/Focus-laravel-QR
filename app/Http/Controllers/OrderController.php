@@ -59,7 +59,7 @@ class OrderController extends Controller
             $order = $this->orderService->createOrder($businessId, $validated);
 
             return redirect()
-                ->route('business.orders.show', $order->order_id)
+                ->route('business.orders.index')
                 ->with('success', 'Orden creada exitosamente con código QR');
         } catch (\Exception $e) {
             return back()
@@ -193,5 +193,19 @@ class OrderController extends Controller
         $stats = $this->orderService->getOrderStatistics($businessId, $days);
 
         return response()->json($stats);
+    }
+
+    /**
+     * Check if order is linked to mobile user
+     */
+    public function checkLinked(Order $order)
+    {
+        $this->authorize('view', $order);
+
+        return response()->json([
+            'is_linked' => !is_null($order->mobile_user_id),
+            'mobile_user_id' => $order->mobile_user_id,
+            'associated_at' => $order->associated_at?->toIso8601String(),
+        ]);
     }
 }

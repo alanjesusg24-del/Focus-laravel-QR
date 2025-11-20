@@ -1,0 +1,133 @@
+╔══════════════════════════════════════════════════════════════╗
+║                                                              ║
+║     📱 CAMBIOS EN LA APP MÓVIL FLUTTER - RESUMEN           ║
+║                                                              ║
+╚══════════════════════════════════════════════════════════════╝
+
+🎯 PROBLEMA ACTUAL:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Tu app tiene esto:
+  final String baseUrl = "http://192.168.1.100:8000/api/v1";
+
+Esto NO funciona con ngrok porque la URL cambia cada vez:
+  https://abc123.ngrok.io/api/v1  (hoy)
+  https://xyz789.ngrok.io/api/v1  (mañana)
+
+
+✅ SOLUCIÓN: Hacer la URL configurable
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Opción 1: Escanear QR (RECOMENDADO) ⭐
+  • La app escanea el QR de /mobile-config
+  • Guarda la URL automáticamente
+  • Perfecto para demos
+
+Opción 2: Ingresar manualmente
+  • Usuario escribe la URL
+  • La app la guarda
+  • Útil como backup
+
+
+🔧 QUÉ CAMBIAR EN TU APP FLUTTER:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1. Agregar dependencias (pubspec.yaml):
+   ✓ shared_preferences: ^2.2.2
+   ✓ qr_code_scanner: ^1.0.1
+
+2. Crear archivo: lib/config/api_config.dart
+   ✓ Guarda/lee URL usando SharedPreferences
+   (Código completo en: CONFIGURAR_APP_MOVIL.md)
+
+3. Crear pantalla: lib/screens/setup_screen.dart
+   ✓ Permite escanear QR o ingresar URL manual
+   (Código completo en: CONFIGURAR_APP_MOVIL.md)
+
+4. Modificar: lib/main.dart
+   ✓ Mostrar setup_screen la primera vez
+   ✓ Guardar configuración permanentemente
+
+5. Actualizar: lib/services/api_service.dart
+   ANTES:
+     final url = Uri.parse('http://192.168.1.100:8000/api/v1/...');
+
+   DESPUÉS:
+     final baseUrl = await ApiConfig.getBaseUrl();
+     final url = Uri.parse('$baseUrl/...');
+
+
+📋 CÓDIGO COMPLETO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Ver archivo: CONFIGURAR_APP_MOVIL.md
+
+Contiene:
+  • Código completo de api_config.dart
+  • Código completo de setup_screen.dart
+  • Código de ejemplo para api_service.dart
+  • Pantalla de scanner QR
+  • Todo listo para copiar y pegar
+
+
+⚡ ALTERNATIVA RÁPIDA (Sin cambios en la app):
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Si NO quieres modificar la app, usa URL fija de ngrok:
+
+1. Crea cuenta gratis en: https://dashboard.ngrok.com/
+2. Obtén un authtoken
+3. Ejecuta:
+   ngrok config add-authtoken TU_TOKEN_AQUI
+
+4. Reserva un dominio gratis (ej: tu-proyecto.ngrok-free.app)
+
+5. En la app, usa:
+   final String baseUrl = "https://tu-proyecto.ngrok-free.app/api/v1";
+
+6. Siempre inicia con:
+   ngrok http 8000 --domain=tu-proyecto.ngrok-free.app
+
+VENTAJA: La URL NUNCA cambia
+DESVENTAJA: Requiere cuenta de ngrok
+
+
+🎓 RECOMENDACIÓN PARA TU PRESENTACIÓN:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Si tienes TIEMPO (1-2 horas):
+  ✅ Implementa la Opción 1 (escanear QR)
+  ✅ Más profesional
+  ✅ Mejor experiencia de usuario
+  ✅ Funciona para cualquier servidor
+
+Si NO tienes tiempo:
+  ✅ Usa la alternativa rápida (URL fija de ngrok)
+  ✅ Solo necesitas cuenta gratuita
+  ✅ 5 minutos de configuración
+  ✅ Ya puedes presentar
+
+
+📞 SIGUIENTE PASO:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+¿Qué prefieres?
+
+A) Modificar la app (1-2 horas, más profesional)
+   → Lee: CONFIGURAR_APP_MOVIL.md
+
+B) Usar URL fija de ngrok (5 minutos, más rápido)
+   → Crea cuenta en: https://dashboard.ngrok.com/
+   → Obtén authtoken
+   → Reserva dominio gratis
+
+
+═══════════════════════════════════════════════════════════════
+
+Una vez que elijas, solo ejecuta:
+
+    start-with-ngrok.bat
+
+Y tu app funcionará en cualquier red! 🚀
+
+═══════════════════════════════════════════════════════════════

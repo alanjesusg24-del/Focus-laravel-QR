@@ -1,107 +1,161 @@
-@extends('layouts.order-qr')
+@extends('layouts.business-app')
 
-@section('title', 'Ticket #' . $supportTicket->support_ticket_id)
+@section('title', 'Ticket #' . $supportTicket->support_ticket_id . ' - Order QR System')
 
-@section('content')
-<div class="container mx-auto px-4 py-6 max-w-4xl">
-    <div class="mb-6">
-        <a href="{{ route('business.support.index') }}" class="text-institutional-blue hover:underline flex items-center">
-            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
-            </svg>
-            Volver a Tickets
-        </a>
+@section('page')
+<div class="py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('business.dashboard.index') }}">
+                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                            </svg>
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('business.support.index') }}">Tickets de Soporte</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Ticket #{{ $supportTicket->support_ticket_id }}</li>
+                </ol>
+            </nav>
+            <h2 class="h4">Ticket #{{ $supportTicket->support_ticket_id }}</h2>
+            <p class="mb-0">Detalles de tu solicitud de soporte</p>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            @if($supportTicket->status === 'open')
+                <a href="{{ route('business.support.edit', $supportTicket->support_ticket_id) }}" class="btn btn-sm btn-outline-primary me-2">
+                    <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
+                    </svg>
+                    Editar
+                </a>
+                <form method="POST" action="{{ route('business.support.close', $supportTicket->support_ticket_id) }}" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-success">
+                        <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        Cerrar Ticket
+                    </button>
+                </form>
+            @elseif($supportTicket->status === 'closed')
+                <form method="POST" action="{{ route('business.support.reopen', $supportTicket->support_ticket_id) }}" class="d-inline">
+                    @csrf
+                    <button type="submit" class="btn btn-sm btn-primary">
+                        <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                        </svg>
+                        Reabrir Ticket
+                    </button>
+                </form>
+            @endif
+        </div>
     </div>
 
+    <!-- Alerts -->
     @if(session('success'))
-        <x-alert type="success" class="mb-4">{{ session('success') }}</x-alert>
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+            </svg>
+            {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
     @if(session('error'))
-        <x-alert type="error" class="mb-4">{{ $session('error') }}</x-alert>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+            </svg>
+            {{ session('error') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
     @endif
 
-    <div class="bg-white rounded-lg shadow-lg">
-        <!-- Header -->
-        <div class="border-b border-gray-200 p-6">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-900">{{ $supportTicket->subject }}</h1>
-                    <p class="text-sm text-gray-500 mt-1">Ticket #{{ $supportTicket->support_ticket_id }}</p>
+    <!-- Ticket Details Card -->
+    <div class="card border-0 shadow mb-4">
+        <div class="card-header border-bottom">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="h5 mb-0">{{ $supportTicket->subject }}</h3>
                 </div>
-                <div class="flex gap-2">
-                    @if($supportTicket->status === 'open')
-                        <a href="{{ route('support.edit', $supportTicket->support_ticket_id) }}">
-                            <x-button variant="outline" size="sm">Editar</x-button>
-                        </a>
-                        <form method="POST" action="{{ route('support.close', $supportTicket->support_ticket_id) }}" class="inline">
-                            @csrf
-                            <x-button variant="success" size="sm" type="submit">Cerrar Ticket</x-button>
-                        </form>
-                    @elseif($supportTicket->status === 'closed')
-                        <form method="POST" action="{{ route('support.reopen', $supportTicket->support_ticket_id) }}" class="inline">
-                            @csrf
-                            <x-button variant="primary" size="sm" type="submit">Reabrir</x-button>
-                        </form>
-                    @endif
+                <div class="col-auto">
+                    @php
+                        $statusConfig = [
+                            'open' => ['class' => 'bg-info', 'label' => 'Abierto'],
+                            'in_progress' => ['class' => 'bg-warning', 'label' => 'En Progreso'],
+                            'closed' => ['class' => 'bg-secondary', 'label' => 'Cerrado'],
+                        ];
+                        $config = $statusConfig[$supportTicket->status] ?? ['class' => 'bg-secondary', 'label' => 'Desconocido'];
+                    @endphp
+                    <span class="badge {{ $config['class'] }}">{{ $config['label'] }}</span>
                 </div>
             </div>
         </div>
-
-        <!-- Details -->
-        <div class="p-6">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                <div>
-                    <p class="text-sm text-gray-500">Estado</p>
-                    @php
-                        $statusColors = [
-                            'open' => 'bg-blue-100 text-blue-800',
-                            'in_progress' => 'bg-yellow-100 text-yellow-800',
-                            'closed' => 'bg-gray-100 text-gray-800'
-                        ];
-                        $statusLabels = ['open' => 'Abierto', 'in_progress' => 'En Progreso', 'closed' => 'Cerrado'];
-                    @endphp
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $statusColors[$supportTicket->status] }}">
-                        {{ $statusLabels[$supportTicket->status] }}
-                    </span>
+        <div class="card-body">
+            <!-- Info Row -->
+            <div class="row mb-4">
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="d-flex flex-column">
+                        <small class="text-gray-500 mb-1">Prioridad</small>
+                        @php
+                            $priorityConfig = [
+                                'low' => ['class' => 'bg-success', 'label' => 'Baja'],
+                                'medium' => ['class' => 'bg-warning', 'label' => 'Media'],
+                                'high' => ['class' => 'bg-danger', 'label' => 'Alta'],
+                            ];
+                            $pConfig = $priorityConfig[$supportTicket->priority] ?? ['class' => 'bg-secondary', 'label' => 'Desconocido'];
+                        @endphp
+                        <span class="badge {{ $pConfig['class'] }}">{{ $pConfig['label'] }}</span>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Prioridad</p>
-                    @php
-                        $priorityColors = ['low' => 'bg-green-100 text-green-800', 'medium' => 'bg-yellow-100 text-yellow-800', 'high' => 'bg-red-100 text-red-800'];
-                        $priorityLabels = ['low' => 'Baja', 'medium' => 'Media', 'high' => 'Alta'];
-                    @endphp
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full {{ $priorityColors[$supportTicket->priority] }}">
-                        {{ $priorityLabels[$supportTicket->priority] }}
-                    </span>
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="d-flex flex-column">
+                        <small class="text-gray-500 mb-1">Fecha de Creacion</small>
+                        <span class="fw-bold">{{ $supportTicket->created_at->format('d/m/Y') }}</span>
+                        <small class="text-muted">{{ $supportTicket->created_at->format('H:i') }}</small>
+                    </div>
                 </div>
-                <div>
-                    <p class="text-sm text-gray-500">Creado</p>
-                    <p class="text-sm font-medium text-gray-900">{{ $supportTicket->created_at->format('d/m/Y H:i') }}</p>
+                @if($supportTicket->responded_at)
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="d-flex flex-column">
+                        <small class="text-gray-500 mb-1">Respondido</small>
+                        <span class="fw-bold">{{ $supportTicket->responded_at->format('d/m/Y') }}</span>
+                        <small class="text-muted">{{ $supportTicket->responded_at->format('H:i') }}</small>
+                    </div>
                 </div>
-                @if($supportTicket->resolved_at)
-                <div>
-                    <p class="text-sm text-gray-500">Resuelto</p>
-                    <p class="text-sm font-medium text-gray-900">{{ $supportTicket->resolved_at->format('d/m/Y H:i') }}</p>
+                @endif
+                @if($supportTicket->closed_at)
+                <div class="col-md-3 mb-3 mb-md-0">
+                    <div class="d-flex flex-column">
+                        <small class="text-gray-500 mb-1">Cerrado</small>
+                        <span class="fw-bold">{{ $supportTicket->closed_at->format('d/m/Y') }}</span>
+                        <small class="text-muted">{{ $supportTicket->closed_at->format('H:i') }}</small>
+                    </div>
                 </div>
                 @endif
             </div>
 
             <!-- Description -->
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Descripción</h3>
-                <div class="bg-gray-50 rounded-lg p-4">
-                    <p class="text-gray-700 whitespace-pre-wrap">{{ $supportTicket->description }}</p>
+            <div class="mb-4">
+                <h6 class="fw-bold mb-3">Descripcion del Problema</h6>
+                <div class="bg-light rounded p-3">
+                    <p class="mb-0 text-gray-700" style="white-space: pre-wrap;">{{ $supportTicket->description }}</p>
                 </div>
             </div>
 
             <!-- Attachment -->
             @if($supportTicket->attachment_url)
-            <div class="mb-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Archivo Adjunto</h3>
-                <a href="{{ $supportTicket->attachment_url }}" target="_blank" class="inline-flex items-center text-institutional-blue hover:underline">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            <div class="mb-4">
+                <h6 class="fw-bold mb-3">Archivo Adjunto</h6>
+                <a href="{{ $supportTicket->attachment_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                    <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path>
                     </svg>
                     Ver archivo adjunto
                 </a>
@@ -109,14 +163,38 @@
             @endif
 
             <!-- Admin Response -->
-            @if($supportTicket->admin_response)
-            <div class="border-t pt-6">
-                <h3 class="text-lg font-semibold text-gray-900 mb-3">Respuesta del Administrador</h3>
-                <div class="bg-blue-50 rounded-lg p-4 border-l-4 border-institutional-blue">
-                    <p class="text-gray-700 whitespace-pre-wrap">{{ $supportTicket->admin_response }}</p>
-                    @if($supportTicket->responded_at)
-                    <p class="text-xs text-gray-500 mt-2">{{ $supportTicket->responded_at->format('d/m/Y H:i') }}</p>
-                    @endif
+            @if($supportTicket->response)
+            <div class="border-top pt-4">
+                <h6 class="fw-bold mb-3">Respuesta del Administrador</h6>
+                <div class="alert alert-success" role="alert">
+                    <div class="d-flex align-items-start">
+                        <svg class="icon icon-sm me-2 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <div class="flex-grow-1">
+                            <p class="mb-0" style="white-space: pre-wrap;">{{ $supportTicket->response }}</p>
+                            @if($supportTicket->responded_at)
+                            <small class="text-muted d-block mt-2">
+                                <svg class="icon icon-xxs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                </svg>
+                                Respondido el {{ $supportTicket->responded_at->format('d/m/Y H:i') }}
+                            </small>
+                            @endif
+
+                            <!-- Response Attachment -->
+                            @if($supportTicket->response_attachment_url)
+                            <div class="mt-3">
+                                <a href="{{ $supportTicket->response_attachment_url }}" target="_blank" class="btn btn-outline-success btn-sm">
+                                    <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Ver archivo adjunto de la respuesta
+                                </a>
+                            </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
             </div>
             @endif

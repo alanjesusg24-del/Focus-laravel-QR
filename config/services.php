@@ -46,4 +46,35 @@ return [
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET'),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Google Maps API
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for Google Maps integration
+    | Get your API key from: https://console.cloud.google.com/apis/credentials
+    |
+    */
+
+    'google_maps' => [
+        'api_key' => env('GOOGLE_MAPS_API_KEY'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | MercadoPago Payment Gateway
+    |--------------------------------------------------------------------------
+    |
+    | Configuration for MercadoPago payment processing
+    | Get your credentials from: https://www.mercadopago.com.mx/developers/panel
+    |
+    */
+
+    'mercadopago' => [
+        'public_key' => env('MERCADOPAGO_PUBLIC_KEY'),
+        'access_token' => env('MERCADOPAGO_ACCESS_TOKEN'),
+        'webhook_secret' => env('MERCADOPAGO_WEBHOOK_SECRET'),
+        'mode' => env('MERCADOPAGO_MODE', 'sandbox'), // 'sandbox' or 'production'
+    ],
+
 ];

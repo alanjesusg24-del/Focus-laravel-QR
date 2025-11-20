@@ -29,6 +29,15 @@ class AuthController extends Controller
 
         $remember = $request->filled('remember');
 
+        // First, try to authenticate as superadmin
+        if (Auth::guard('superadmin')->attempt($credentials, $remember)) {
+            $request->session()->regenerate();
+
+            return redirect()->intended(route('superadmin.dashboard'))
+                ->with('success', '¡Bienvenido de nuevo, ' . Auth::guard('superadmin')->user()->full_name . '!');
+        }
+
+        // If not superadmin, try to authenticate as business
         if (Auth::guard('business')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 

@@ -4,7 +4,7 @@
 
 @section('page')
 <div class="py-4">
-    <!-- Page Header -->
+    <!-- Encabezado de Página -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
@@ -34,21 +34,21 @@
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
     @endif
 
     @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
     @endif
 
     <div class="row">
-        <!-- Main Content -->
+        <!-- Contenido Principal -->
         <div class="col-12 col-xl-8 mb-4">
-            <!-- Order Header Card -->
+            <!-- Tarjeta de Encabezado de Orden -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-body">
                     <div class="row align-items-center">
@@ -80,7 +80,7 @@
                 </div>
             </div>
 
-            <!-- Description Card -->
+            <!-- Tarjeta de Descripción -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Descripción</h5>
@@ -90,14 +90,14 @@
                 </div>
             </div>
 
-            <!-- Status Timeline Card -->
+            <!-- Tarjeta de Línea de Tiempo de Estados -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Historial de Estados</h5>
                 </div>
                 <div class="card-body">
                     <div class="timeline timeline-one-side">
-                        <!-- Created -->
+                        <!-- Creada -->
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-success">
                                 <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -112,7 +112,7 @@
                             </div>
                         </div>
 
-                        <!-- Ready -->
+                        <!-- Lista -->
                         @if($order->ready_at)
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-success">
@@ -129,7 +129,7 @@
                         </div>
                         @endif
 
-                        <!-- Delivered -->
+                        <!-- Entregada -->
                         @if($order->delivered_at)
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-info">
@@ -147,7 +147,7 @@
                         </div>
                         @endif
 
-                        <!-- Cancelled -->
+                        <!-- Cancelada -->
                         @if($order->cancelled_at)
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-danger">
@@ -171,16 +171,16 @@
             </div>
         </div>
 
-        <!-- Sidebar -->
+        <!-- Barra Lateral -->
         <div class="col-12 col-xl-4">
-            <!-- QR Code Card -->
-            @if($order->qr_code_url)
+            <!-- Tarjeta de Código QR -->
+            @if($order->qr_code_url && !$order->mobile_user_id)
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Código QR</h5>
                 </div>
                 <div class="card-body text-center">
-                    <img src="{{ $order->qr_code_url }}" alt="QR Code" class="img-fluid rounded border mb-3" style="max-width: 250px;">
+                    <img src="{{ $order->qr_code_url }}" alt="Código QR" class="img-fluid rounded border mb-3" style="max-width: 250px;">
                     <a href="{{ route('business.orders.downloadQr', $order) }}" class="btn btn-outline-primary btn-sm w-100">
                         <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
@@ -189,9 +189,26 @@
                     </a>
                 </div>
             </div>
+            @elseif($order->mobile_user_id)
+            <div class="card border-0 shadow mb-4 border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">
+                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
+                        </svg>
+                        Orden Ligada
+                    </h5>
+                </div>
+                <div class="card-body text-center">
+                    <svg class="icon icon-xl text-success mb-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                    </svg>
+                    <p class="text-muted mb-0">Esta orden está ligada a la app móvil del cliente</p>
+                </div>
+            </div>
             @endif
 
-            <!-- Pickup Token Card -->
+            <!-- Tarjeta de Token de Recogida -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Token de Recogida</h5>
@@ -204,13 +221,14 @@
                 </div>
             </div>
 
-            <!-- Actions Card -->
+            <!-- Tarjeta de Acciones -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Acciones</h5>
                 </div>
                 <div class="card-body">
-                    @if($order->status === 'pending')
+                    @if($order->status === 'pending' && $order->mobile_user_id)
+                    {{-- Solo mostrar "Marcar como Listo" si está ligado a celular --}}
                     <form action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="mb-2">
                         @csrf
                         <button type="submit" class="btn btn-success w-100">
@@ -220,6 +238,14 @@
                             Marcar como Listo
                         </button>
                     </form>
+                    @elseif($order->status === 'pending' && !$order->mobile_user_id)
+                    {{-- Mostrar mensaje si no está ligado --}}
+                    <div class="alert alert-warning d-flex align-items-center mb-2">
+                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                        <small>El cliente debe escanear el QR primero</small>
+                    </div>
                     @endif
 
                     @if($order->status === 'ready')
@@ -259,13 +285,13 @@
     </div>
 </div>
 
-<!-- Modal: Mark as Delivered -->
+<!-- Modal: Marcar como Entregado -->
 <div class="modal fade" id="deliverModal" tabindex="-1" aria-labelledby="deliverModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="deliverModalLabel">Marcar como Entregado</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <form action="{{ route('business.orders.markAsDelivered', $order) }}" method="POST">
                 @csrf
@@ -285,13 +311,13 @@
     </div>
 </div>
 
-<!-- Modal: Cancel Order -->
+<!-- Modal: Cancelar Orden -->
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="cancelModalLabel">Cancelar Orden</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <form action="{{ route('business.orders.cancel', $order) }}" method="POST">
                 @csrf
@@ -311,7 +337,7 @@
     </div>
 </div>
 
-<!-- Modal: QR Scanner -->
+<!-- Modal: Escáner QR -->
 <div class="modal fade" id="qrScannerModal" tabindex="-1" aria-labelledby="qrScannerModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -323,7 +349,7 @@
                     </svg>
                     Escanear Código QR del Cliente
                 </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <div class="modal-body text-center py-5">
                 <div id="scanner-status" class="mb-4">
@@ -345,7 +371,7 @@
     </div>
 </div>
 
-<!-- Success Modal -->
+<!-- Modal de Éxito -->
 <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true" data-bs-backdrop="static" data-bs-keyboard="false">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
@@ -368,9 +394,6 @@ let scannedData = '';
 let isProcessing = false;
 const orderStatus = '{{ $order->status }}';
 const expectedToken = '{{ $order->pickup_token }}';
-
-// Audio de confirmación
-const successSound = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIGmi78Oijmw==');
 
 // Si la orden está lista, activar detección automática de escaneo
 @if($order->status === 'ready')
@@ -464,9 +487,6 @@ function processScannedToken(scannedValue) {
         // QR correcto - enviar formulario con el pickup_token
         document.getElementById('scanned-token').value = expectedToken;
 
-        // Reproducir sonido de éxito
-        successSound.play().catch(e => console.log('Audio no disponible'));
-
         // Mostrar modal de éxito
         showSuccessAnimation();
 
@@ -478,7 +498,6 @@ function processScannedToken(scannedValue) {
         // QR incorrecto - solo mostrar si se estaba usando el modal
         isProcessing = false;
         if (scannerModal) {
-            playErrorSound();
             showError('Código QR incorrecto. El QR no corresponde a esta orden.');
             setTimeout(() => {
                 startQRScanner();
@@ -498,14 +517,7 @@ function showError(message) {
     alert(message);
 }
 
-function playErrorSound() {
-    // Beep de error
-    const errorSound = new Audio('data:audio/wav;base64,UklGRl9vT19XQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YU' +
-        'vT19eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eX');
-    errorSound.play().catch(e => console.log('Audio no disponible'));
-}
-
-// Auto-submit del formulario manual de entrega con confirmación
+// Auto-envío del formulario manual de entrega con confirmación
 document.querySelector('#deliverModal form')?.addEventListener('submit', function(e) {
     e.preventDefault();
 
@@ -513,21 +525,14 @@ document.querySelector('#deliverModal form')?.addEventListener('submit', functio
     const expectedToken = '{{ $order->pickup_token }}';
 
     if (token === expectedToken) {
-        successSound.play().catch(e => console.log('Audio no disponible'));
         showSuccessAnimation();
         setTimeout(() => {
             this.submit();
         }, 1500);
     } else {
-        playErrorSound();
         alert('Token incorrecto. Por favor verifica el código.');
     }
 });
-
-// Reproducir sonido cuando se marca como listo
-@if(session('success') && str_contains(session('success'), 'lista'))
-successSound.play().catch(e => console.log('Audio no disponible'));
-@endif
 </script>
 
 <style>

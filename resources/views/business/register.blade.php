@@ -20,14 +20,21 @@
         background-color: #163a5f !important;
         border-color: #163a5f !important;
     }
-    .form-bg-image {
-        background: url('/assets/img/illustrations/signin.svg') no-repeat center right;
-        background-size: cover;
+    .plan-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid #dee2e6;
     }
-    @media (max-width: 992px) {
-        .form-bg-image {
-            background: none;
-        }
+    .plan-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
+    }
+    .plan-card.selected {
+        border: 2px solid var(--institutional-blue) !important;
+        background-color: #e3f2fd;
+    }
+    .plan-card input[type="radio"] {
+        display: none;
     }
 </style>
 
@@ -40,11 +47,11 @@
                         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M7.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
                         </svg>
-                        Volver al inicio de sesión
+                        Volver al inicio de sesion
                     </a>
                 </p>
-                <div class="row justify-content-center form-bg-image">
-                    <div class="col-12 col-lg-10 col-xl-8">
+                <div class="row justify-content-center">
+                    <div class="col-12 col-xl-10">
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 my-4">
                             <!-- Header -->
                             <div class="text-center text-md-center mb-4 mt-md-0">
@@ -56,7 +63,7 @@
                                     </div>
                                 </div>
                                 <h1 class="mb-0 h3 text-institutional-blue">Registrar Negocio</h1>
-                                <p class="text-gray">Únete al sistema Order QR</p>
+                                <p class="text-gray">Unete al sistema Order QR</p>
                             </div>
 
                             <!-- Error Messages -->
@@ -74,207 +81,144 @@
                             @endif
 
                             <!-- Registration Form -->
-                            <form method="POST" action="{{ route('business.register') }}" class="mt-4">
+                            <form method="POST" action="{{ route('business.register') }}" class="mt-4" id="registerForm">
                                 @csrf
 
-                                <div class="row">
-                                    <!-- Business Name -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <label for="business_name">Nombre del Negocio *</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </span>
-                                                <input type="text" class="form-control @error('business_name') is-invalid @enderror"
-                                                    id="business_name" name="business_name"
-                                                    value="{{ old('business_name') }}"
-                                                    placeholder="Mi Negocio SA" required autofocus>
-                                            </div>
-                                            @error('business_name')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
+                                <!-- Business Information -->
+                                <div class="mb-4">
+                                    <h5 class="text-institutional-blue mb-3">Informacion del Negocio</h5>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="business_name" class="form-label">Nombre del Negocio <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" id="business_name" name="business_name" value="{{ old('business_name') }}" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="email" class="form-label">Correo Electronico <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
                                         </div>
                                     </div>
 
-                                    <!-- RFC -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <label for="rfc">RFC *</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </span>
-                                                <input type="text" class="form-control @error('rfc') is-invalid @enderror"
-                                                    id="rfc" name="rfc"
-                                                    value="{{ old('rfc') }}"
-                                                    placeholder="ABC123456XYZ" maxlength="13" required>
-                                            </div>
-                                            @error('rfc')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="phone" class="form-label">Telefono <span class="text-danger">*</span></label>
+                                            <input type="tel" class="form-control" id="phone" name="phone" value="{{ old('phone') }}" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="rfc" class="form-label">RFC <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control text-uppercase" id="rfc" name="rfc" value="{{ old('rfc') }}" minlength="12" maxlength="13" required>
                                         </div>
                                     </div>
 
-                                    <!-- Email -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <label for="email">Email *</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
-                                                        <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
-                                                    </svg>
-                                                </span>
-                                                <input type="email" class="form-control @error('email') is-invalid @enderror"
-                                                    id="email" name="email"
-                                                    value="{{ old('email') }}"
-                                                    placeholder="contacto@minegocio.com" required>
-                                            </div>
-                                            @error('email')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label for="password" class="form-label">Contrasena <span class="text-danger">*</span></label>
+                                            <input type="password" class="form-control" id="password" name="password" minlength="8" required>
+                                            <small class="text-muted">Minimo 8 caracteres</small>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label for="password_confirmation" class="form-label">Confirmar Contrasena <span class="text-danger">*</span></label>
+                                            <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" minlength="8" required>
                                         </div>
                                     </div>
-
-                                    <!-- Phone -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <label for="phone">Teléfono *</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                                                    </svg>
-                                                </span>
-                                                <input type="tel" class="form-control @error('phone') is-invalid @enderror"
-                                                    id="phone" name="phone"
-                                                    value="{{ old('phone') }}"
-                                                    placeholder="5512345678" required>
-                                            </div>
-                                            @error('phone')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Password -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <label for="password">Contraseña *</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">
-                                                    <svg class="icon icon-xs text-gray-600" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                        <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                                                    </svg>
-                                                </span>
-                                                <input type="password" class="form-control @error('password') is-invalid @enderror"
-                                                    id="password" name="password"
-                                                    placeholder="Mínimo 8 caracteres" required>
-                                            </div>
-                                            @error('password')
-                                                <div class="invalid-feedback d-block">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <!-- Plan Selection (Hidden - Solo hay uno) -->
-                                    <input type="hidden" name="plan_id" value="1">
                                 </div>
 
-                                <!-- Módulos y Configuración de Precio -->
-                                <div class="row">
-                                    <div class="col-12 mb-3">
-                                        <h6 class="text-institutional-blue fw-bold">Configuración del Plan</h6>
-                                        <p class="text-sm text-gray-600 mb-0">Precio base: <span class="fw-bold">$299.00 MXN/mes</span></p>
-                                    </div>
+                                <!-- Plan Selection -->
+                                <div class="mb-4">
+                                    <h5 class="text-institutional-blue mb-3">Selecciona tu Plan</h5>
+                                    <p class="text-muted small mb-4">Elige el plan que mejor se adapte a las necesidades de tu negocio. Los planes son configurados por el administrador.</p>
 
-                                    <!-- Módulo de Chat -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <div class="card border">
+                                    @if($plans->count() > 0)
+                                    <div class="row">
+                                        @foreach($plans as $plan)
+                                        <div class="col-md-4 mb-3">
+                                            <label class="plan-card card h-100 mb-0" onclick="selectPlan({{ $plan->plan_id }})">
+                                                <input type="radio" name="plan_id" value="{{ $plan->plan_id }}" {{ old('plan_id') == $plan->plan_id ? 'checked' : '' }} required>
                                                 <div class="card-body">
-                                                    <div class="form-check">
-                                                        <input class="form-check-input" type="checkbox" value="1"
-                                                            id="has_chat_module" name="has_chat_module"
-                                                            {{ old('has_chat_module') ? 'checked' : '' }}
-                                                            onchange="updatePrice()">
-                                                        <label class="form-check-label fw-bold" for="has_chat_module">
-                                                            Módulo de Chat
-                                                        </label>
+                                                    <div class="text-center mb-3">
+                                                        <h5 class="text-institutional-blue mb-1">{{ $plan->name }}</h5>
+                                                        @if($plan->description)
+                                                        <small class="text-muted">{{ $plan->description }}</small>
+                                                        @endif
                                                     </div>
-                                                    <p class="text-sm text-gray-600 mb-0 mt-2">
-                                                        Incluye chat en tiempo real con clientes.
-                                                        <br><span class="text-institutional-orange fw-bold">+$150.00 MXN/mes</span>
-                                                    </p>
+
+                                                    <div class="text-center mb-3">
+                                                        <h3 class="text-institutional-blue mb-0">
+                                                            ${{ number_format($plan->price, 2) }}
+                                                        </h3>
+                                                        <small class="text-muted">por {{ $plan->duration_days }} dias</small>
+                                                    </div>
+
+                                                    <ul class="list-unstyled small">
+                                                        <li class="mb-2">
+                                                            <svg class="icon icon-xs {{ $plan->has_chat_module ? 'text-success' : 'text-muted' }} me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            Modulo de chat
+                                                            @if(!$plan->has_chat_module)
+                                                                <span class="badge bg-secondary ms-1">No incluido</span>
+                                                            @endif
+                                                        </li>
+                                                        <li class="mb-2">
+                                                            <svg class="icon icon-xs text-success me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            <strong>{{ $plan->retention_days }}</strong>
+                                                            {{ $plan->retention_days == 1 ? 'dia' : 'dias' }} de retencion
+                                                        </li>
+                                                        @if($plan->has_realerts)
+                                                        <li class="mb-2">
+                                                            <svg class="icon icon-xs text-success me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                            </svg>
+                                                            Sistema de re-alertas
+                                                        </li>
+                                                        @endif
+                                                    </ul>
                                                 </div>
-                                            </div>
+                                            </label>
                                         </div>
+                                        @endforeach
                                     </div>
-
-                                    <!-- Retención de Datos -->
-                                    <div class="col-md-6">
-                                        <div class="form-group mb-4">
-                                            <label for="data_retention_months" class="fw-bold">Retención de Datos</label>
-                                            <select class="form-select @error('data_retention_months') is-invalid @enderror"
-                                                id="data_retention_months" name="data_retention_months"
-                                                onchange="updatePrice()" required>
-                                                <option value="1" {{ old('data_retention_months', 1) == 1 ? 'selected' : '' }}>
-                                                    1 mes (incluido)
-                                                </option>
-                                                <option value="3" {{ old('data_retention_months') == 3 ? 'selected' : '' }}>
-                                                    3 meses (+$100.00 MXN)
-                                                </option>
-                                                <option value="6" {{ old('data_retention_months') == 6 ? 'selected' : '' }}>
-                                                    6 meses (+$250.00 MXN)
-                                                </option>
-                                                <option value="12" {{ old('data_retention_months') == 12 ? 'selected' : '' }}>
-                                                    12 meses (+$550.00 MXN)
-                                                </option>
-                                            </select>
-                                            <small class="text-muted">Tiempo que se guardarán tus órdenes y datos</small>
-                                        </div>
+                                    @else
+                                    <div class="alert alert-warning">
+                                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        No hay planes disponibles en este momento. Por favor contacta al administrador.
                                     </div>
-
-                                    <!-- Resumen de Precio -->
-                                    <div class="col-12">
-                                        <div class="alert alert-info">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="fw-bold">Precio Total Mensual:</span>
-                                                <span class="h5 mb-0 text-institutional-blue" id="total_price">$299.00 MXN</span>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    @endif
                                 </div>
 
-                                <!-- Terms -->
+                                <!-- Terms and Conditions -->
                                 <div class="mb-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="1" id="terms" name="terms" required>
-                                        <label class="form-check-label fw-normal mb-0" for="terms">
-                                            Acepto los <a href="#" class="fw-bold text-institutional-blue">términos y condiciones</a>
+                                        <input class="form-check-input" type="checkbox" id="terms" name="terms" required {{ old('terms') ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="terms">
+                                            Acepto los <a href="#" class="text-institutional-blue">terminos y condiciones</a> <span class="text-danger">*</span>
                                         </label>
                                     </div>
                                 </div>
 
                                 <!-- Submit Button -->
-                                <div class="d-grid mb-4">
-                                    <button type="submit" class="btn btn-institutional-blue btn-lg">Registrar Negocio</button>
+                                <div class="d-grid gap-2">
+                                    <button type="submit" class="btn btn-institutional-blue btn-lg">
+                                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                        Registrar Negocio
+                                    </button>
+                                </div>
+
+                                <div class="d-flex justify-content-center align-items-center mt-4">
+                                    <span class="fw-normal text-gray">
+                                        ¿Ya tienes cuenta?
+                                        <a href="{{ route('business.login') }}" class="fw-bold text-institutional-blue">
+                                            Inicia sesion aqui
+                                        </a>
+                                    </span>
                                 </div>
                             </form>
-
-                            <!-- Login Link -->
-                            <div class="d-flex justify-content-center align-items-center mt-3 mb-3">
-                                <span class="fw-normal">
-                                    ¿Ya tienes cuenta?
-                                    <a href="{{ route('business.login') }}" class="fw-bold text-institutional-blue">Inicia sesión aquí</a>
-                                </span>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -282,39 +226,48 @@
         </section>
     </main>
 
-    @include('layouts.footer2')
-@endsection
+    <script>
+        function selectPlan(planId) {
+            // Remove selected class from all cards
+            document.querySelectorAll('.plan-card').forEach(card => {
+                card.classList.remove('selected');
+            });
 
-@section('scripts')
-<script>
-    function updatePrice() {
-        const basePrice = 299.00;
-        const chatModulePrice = 150.00;
-        const retentionPrices = {
-            1: 0,
-            3: 100.00,
-            6: 250.00,
-            12: 550.00
-        };
+            // Add selected class to clicked card
+            event.currentTarget.classList.add('selected');
 
-        let total = basePrice;
-
-        // Add chat module if checked
-        if (document.getElementById('has_chat_module').checked) {
-            total += chatModulePrice;
+            // Check the radio button
+            const radio = event.currentTarget.querySelector('input[type="radio"]');
+            if (radio) {
+                radio.checked = true;
+            }
         }
 
-        // Add retention cost
-        const retention = parseInt(document.getElementById('data_retention_months').value);
-        total += retentionPrices[retention];
+        // On page load, select the checked plan if any
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkedRadio = document.querySelector('input[name="plan_id"]:checked');
+            if (checkedRadio) {
+                checkedRadio.closest('.plan-card').classList.add('selected');
+            }
 
-        // Update display
-        document.getElementById('total_price').textContent = '$' + total.toFixed(2) + ' MXN';
-    }
+            // Password confirmation validation
+            const password = document.getElementById('password');
+            const passwordConfirmation = document.getElementById('password_confirmation');
 
-    // Initialize price on page load
-    document.addEventListener('DOMContentLoaded', function() {
-        updatePrice();
-    });
-</script>
+            passwordConfirmation.addEventListener('input', function() {
+                if (password.value !== passwordConfirmation.value) {
+                    passwordConfirmation.setCustomValidity('Las contrasenas no coinciden');
+                } else {
+                    passwordConfirmation.setCustomValidity('');
+                }
+            });
+
+            // RFC to uppercase
+            const rfcInput = document.getElementById('rfc');
+            rfcInput.addEventListener('input', function() {
+                this.value = this.value.toUpperCase();
+            });
+        });
+    </script>
+</body>
 @endsection

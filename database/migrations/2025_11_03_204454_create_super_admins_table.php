@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('email', 255)->unique();
             $table->string('password_hash', 255);
             $table->string('full_name', 255)->nullable();
+            $table->rememberToken();
             $table->timestamps();
 
             // Indexes

@@ -35,27 +35,15 @@ class BusinessController extends Controller
             'phone' => 'required|string|max:15',
             'rfc' => 'required|string|min:12|max:13|unique:businesses,rfc',
             'plan_id' => 'required|exists:plans,plan_id',
-            'has_chat_module' => 'sometimes',
-            'data_retention_months' => 'required|integer|in:1,3,6,12',
             'terms' => 'required|accepted',
         ]);
 
         try {
-            // Calculate monthly price based on selections
+            // Get the selected plan - business will inherit all settings from the plan
             $plan = \App\Models\Plan::findOrFail($validated['plan_id']);
-            $monthlyPrice = $plan->base_price;
 
-            // Add chat module cost
-            if ($request->has('has_chat_module') && $request->has_chat_module) {
-                $monthlyPrice += $plan->chat_module_price;
-            }
-
-            // Add retention cost (additional months beyond the first)
-            $retentionMonths = $validated['data_retention_months'];
-            if ($retentionMonths > 1) {
-                $monthlyPrice += ($retentionMonths - 1) * $plan->retention_price_per_month;
-            }
-
+            // Create business with only the fields that exist in the table
+            // All plan features (chat, retention, etc) are inherited from the plan relationship
             $business = Business::create([
                 'business_name' => $validated['business_name'],
                 'email' => $validated['email'],
@@ -63,9 +51,6 @@ class BusinessController extends Controller
                 'phone' => $validated['phone'],
                 'rfc' => strtoupper($validated['rfc']),
                 'plan_id' => $validated['plan_id'],
-                'has_chat_module' => $request->has('has_chat_module') ? true : false,
-                'data_retention_months' => $validated['data_retention_months'],
-                'monthly_price' => $monthlyPrice,
                 'registration_date' => now(),
                 'theme' => 'professional',
                 'is_active' => true,
@@ -123,7 +108,9 @@ class BusinessController extends Controller
             'address' => 'nullable|string',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
+            'location_description' => 'nullable|string|max:500',
             'logo_url' => 'nullable|image|max:2048|mimes:jpg,jpeg,png',
+            'photo' => 'nullable|image|max:5120|mimes:jpg,jpeg,png',
         ]);
 
         // Handle logo upload
@@ -138,6 +125,20 @@ class BusinessController extends Controller
             $fileName = 'logo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('business_logos', $fileName, 'public');
             $validated['logo_url'] = Storage::url($path);
+        }
+
+        // Handle business photo upload
+        if ($request->hasFile('photo')) {
+            // Delete old photo
+            if ($business->photo) {
+                $oldPath = str_replace('/storage/', '', $business->photo);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            $file = $request->file('photo');
+            $fileName = 'business_photo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $path = $file->storeAs('business_photos', $fileName, 'public');
+            $validated['photo'] = Storage::url($path);
         }
 
         $business->update($validated);

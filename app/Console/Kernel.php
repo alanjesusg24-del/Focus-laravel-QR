@@ -72,6 +72,13 @@ class Kernel extends ConsoleKernel
             ->timezone('America/Mexico_City')
             ->appendOutputTo(storage_path('logs/scheduled-monthly-reports.log'));
 
+        // Send re-alerts for ready orders every 5 minutes
+        // Checks for ready orders and sends reminder notifications based on plan settings
+        $schedule->command('orders:send-realerts')
+            ->everyFiveMinutes()
+            ->timezone('America/Mexico_City')
+            ->appendOutputTo(storage_path('logs/scheduled-realerts.log'));
+
         // ============================================================
         // Optional: Laravel Framework Tasks
         // ============================================================

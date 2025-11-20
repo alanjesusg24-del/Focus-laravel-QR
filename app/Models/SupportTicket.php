@@ -23,6 +23,8 @@ class SupportTicket extends Model
         'responded_at',
         'closed_at',
         'response',
+        'attachment_url',
+        'response_attachment_url',
     ];
 
     protected $casts = [

@@ -63,6 +63,14 @@ class Order extends Model
     }
 
     /**
+     * Get all chat messages for this order
+     */
+    public function chatMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class, 'order_id', 'order_id');
+    }
+
+    /**
      * Scope to get active orders (pending or ready)
      */
     public function scopeActive($query)
@@ -132,6 +140,14 @@ class Order extends Model
     public function statusHistory(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class, 'order_id', 'order_id');
+    }
+
+    /**
+     * Get all re-alerts sent for this order
+     */
+    public function realerts(): HasMany
+    {
+        return $this->hasMany(OrderRealert::class, 'order_id', 'order_id');
     }
 
     /**

@@ -76,7 +76,7 @@
                     <div class="flex items-start justify-between mb-2">
                         <div class="flex items-center space-x-2">
                             <span class="font-bold text-gray-900">#ORD-002</span>
-                            <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Lista</span>
+                            <span class="px-2 py-0.5 bg-green-100 text-green-800 text-xs font-semibold rounded-full">Listo</span>
                         </div>
                         <span class="text-xs text-gray-500">11:15 AM</span>
                     </div>

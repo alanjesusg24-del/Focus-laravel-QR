@@ -1,46 +1,60 @@
-@extends('layouts.order-qr')
+@extends('layouts.business-app')
 
-@section('title', 'Payment Cancelled')
+@section('title', 'Pago Cancelado - Sistema de Órdenes QR')
 
-@section('content')
-<div class="max-w-2xl mx-auto space-y-6 text-center">
-    <div class="bg-white border-2 border-yellow-400 rounded-lg p-8">
-        <div class="mb-4">
-            <svg class="w-20 h-20 mx-auto text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-            </svg>
+@section('page')
+<div class="py-4">
+    <div class="row">
+        <div class="col-12 col-lg-8 mx-auto">
+            <div class="card border-0 shadow text-center">
+                <div class="card-body p-5">
+                    <div class="mb-4">
+                        <svg class="icon icon-xxl text-warning mx-auto" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                        </svg>
+                    </div>
+
+                    <h1 class="h2 fw-bold text-warning mb-3">Pago Cancelado</h1>
+
+                    <p class="text-gray-700 mb-4">
+                        Tu pago fue cancelado. No se ha realizado ningún cargo a tu cuenta.
+                    </p>
+
+                    <p class="text-gray-600 mb-4">
+                        Si experimentaste algún problema durante el proceso de pago, por favor contacta a nuestro equipo de soporte.
+                    </p>
+
+                    <div class="d-grid gap-3 mt-4">
+                        <a href="{{ route('business.payments.index') }}" class="btn btn-primary btn-lg">
+                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                            </svg>
+                            Intentar de Nuevo
+                        </a>
+
+                        <a href="{{ route('business.dashboard.index') }}" class="btn btn-outline-secondary btn-lg">
+                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                            </svg>
+                            Regresar al Dashboard
+                        </a>
+
+                        <a href="{{ route('business.support.index') }}" class="btn btn-link text-gray-600">
+                            Contactar Soporte
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow mt-4">
+                <div class="card-body">
+                    <h3 class="h5 fw-bold mb-3">¿Necesitas Ayuda?</h3>
+                    <p class="text-gray-600 mb-0">
+                        Nuestro equipo de soporte está disponible para ayudarte con cualquier problema o pregunta relacionada con pagos.
+                    </p>
+                </div>
+            </div>
         </div>
-
-        <h1 class="text-3xl font-bold text-yellow-600 mb-4">Payment Cancelled</h1>
-
-        <p class="text-gray-700 mb-6">
-            Your payment was cancelled. No charges have been made to your account.
-        </p>
-
-        <p class="text-gray-600 mb-6">
-            If you experienced any issues during the payment process, please contact our support team.
-        </p>
-
-        <div class="space-y-3">
-            <a href="{{ route('business.payments.index') }}" class="block px-6 py-3 text-base font-medium text-white bg-institutional-blue hover:bg-institutional-blue/80 rounded-full transition-transform duration-150 active:scale-95">
-                Try Again
-            </a>
-
-            <a href="{{ route('order-qr.dashboard') }}" class="block px-6 py-3 text-base font-medium text-institutional-gray bg-transparent border-2 border-institutional-gray hover:bg-institutional-gray/10 rounded-full transition-transform duration-150 active:scale-95">
-                Return to Dashboard
-            </a>
-
-            <a href="{{ route('order-qr.support.create') }}" class="block text-institutional-gray hover:underline">
-                Contact Support
-            </a>
-        </div>
-    </div>
-
-    <div class="bg-gray-50 border border-gray-200 p-4 rounded">
-        <h3 class="font-semibold text-gray-800 mb-2">Need Help?</h3>
-        <p class="text-sm text-gray-600">
-            Our support team is available to assist you with any payment issues or questions you may have.
-        </p>
     </div>
 </div>
 @endsection
