@@ -40,12 +40,12 @@
     <div class="row mb-5">
         @foreach($plans as $plan)
         <div class="col-12 col-md-6 mb-4">
-            <div class="card border-0 shadow {{ $business->plan_id === $plan->plan_id ? 'border-primary' : '' }}">
+            <div class="card border-0 shadow {{ $business->plan_id === $plan->plan_id ? 'card-cetam-secondary' : '' }}">
                 <div class="card-header bg-white border-bottom">
                     <div class="text-center">
                         <h3 class="h5 mb-2">{{ $plan->name }}</h3>
                         <div class="d-flex align-items-center justify-content-center">
-                            <span class="display-4 fw-bold text-primary">${{ number_format($plan->price, 2) }}</span>
+                            <span class="display-4 fw-bold text-cetam-secondary">${{ number_format($plan->price, 2) }}</span>
                             <span class="text-gray-600 ms-2">MXN</span>
                         </div>
                         <p class="text-muted small mt-1">{{ $plan->duration_days }} días de duración</p>
@@ -83,9 +83,9 @@
                 <div class="card-footer bg-white border-top">
                     <form action="{{ route('business.payments.checkout', $plan) }}" method="GET">
                         @if($business->plan_id === $plan->plan_id)
-                            <button type="submit" class="btn btn-secondary w-100">Renovar Plan</button>
+                            <button type="submit" class="btn btn-cetam-primary w-100">Renovar Plan</button>
                         @else
-                            <button type="submit" class="btn btn-primary w-100">Seleccionar Plan</button>
+                            <button type="submit" class="btn btn-cetam-secondary w-100">Seleccionar Plan</button>
                         @endif
                     </form>
                 </div>

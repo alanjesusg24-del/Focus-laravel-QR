@@ -3,7 +3,7 @@
     <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
       <div class="d-flex align-items-center">
         <div class="avatar-lg me-4">
-          <div class="avatar-lg bg-primary rounded-circle d-flex align-items-center justify-content-center text-white">
+          <div class="avatar-lg bg-cetam-secondary rounded-circle d-flex align-items-center justify-content-center text-white">
             <span class="h3 mb-0">{{ substr(auth()->guard('business')->user()->business_name ?? 'B', 0, 1) }}</span>
           </div>
         </div>

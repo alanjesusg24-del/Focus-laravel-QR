@@ -1,0 +1,238 @@
+/**
+ * ============================================
+ * CETAM - Institutional Colors
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        cetam-colors.css
+ * @description Colores institucionales CETAM estandarizados
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
+:root {
+    /* Colores Principales CETAM */
+    --cetam-primary: #1F2937;      /* Gris oscuro slate */
+    --cetam-secondary: #FB503B;    /* Naranja rojizo vibrante */
+    --cetam-tertiary: #31316A;     /* Azul índigo oscuro */
+
+    /* Colores Semánticos */
+    --cetam-success: #10B981;      /* Verde */
+    --cetam-danger: #E11D48;       /* Rojo */
+    --cetam-warning: #FBA918;      /* Ámbar */
+    --cetam-info: #1E90FF;         /* Azul claro */
+
+    /* Tonos de Gris */
+    --cetam-gray-50: #F9FAFB;
+    --cetam-gray-100: #F2F4F6;
+    --cetam-gray-200: #E5E7EB;
+    --cetam-gray-300: #D1D5DB;
+    --cetam-gray-400: #9CA3AF;
+    --cetam-gray-500: #6B7280;
+    --cetam-gray-600: #4B5563;
+    --cetam-gray-700: #374151;
+    --cetam-gray-800: #1F2937;
+    --cetam-gray-900: #111827;
+
+    /* Variantes Hover */
+    --cetam-primary-hover: #111827;
+    --cetam-secondary-hover: #e03d29;
+    --cetam-tertiary-hover: #252558;
+}
+
+/* ===== Background Colors ===== */
+.bg-cetam-primary {
+    background-color: var(--cetam-primary) !important;
+}
+
+.bg-cetam-secondary {
+    background-color: var(--cetam-secondary) !important;
+}
+
+.bg-cetam-tertiary {
+    background-color: var(--cetam-tertiary) !important;
+}
+
+.bg-cetam-success {
+    background-color: var(--cetam-success) !important;
+}
+
+.bg-cetam-danger {
+    background-color: var(--cetam-danger) !important;
+}
+
+.bg-cetam-warning {
+    background-color: var(--cetam-warning) !important;
+}
+
+.bg-cetam-info {
+    background-color: var(--cetam-info) !important;
+}
+
+/* ===== Text Colors ===== */
+.text-cetam-primary {
+    color: var(--cetam-primary) !important;
+}
+
+.text-cetam-secondary {
+    color: var(--cetam-secondary) !important;
+}
+
+.text-cetam-tertiary {
+    color: var(--cetam-tertiary) !important;
+}
+
+.text-cetam-success {
+    color: var(--cetam-success) !important;
+}
+
+.text-cetam-danger {
+    color: var(--cetam-danger) !important;
+}
+
+.text-cetam-warning {
+    color: var(--cetam-warning) !important;
+}
+
+.text-cetam-info {
+    color: var(--cetam-info) !important;
+}
+
+/* ===== Border Colors ===== */
+.border-cetam-primary {
+    border-color: var(--cetam-primary) !important;
+}
+
+.border-cetam-secondary {
+    border-color: var(--cetam-secondary) !important;
+}
+
+.border-cetam-tertiary {
+    border-color: var(--cetam-tertiary) !important;
+}
+
+/* ===== Button Styles ===== */
+.btn-cetam-primary {
+    background-color: var(--cetam-primary) !important;
+    border-color: var(--cetam-primary) !important;
+    color: white !important;
+}
+
+.btn-cetam-primary:hover,
+.btn-cetam-primary:focus,
+.btn-cetam-primary:active {
+    background-color: var(--cetam-primary-hover) !important;
+    border-color: var(--cetam-primary-hover) !important;
+    color: white !important;
+}
+
+.btn-cetam-secondary {
+    background-color: var(--cetam-secondary) !important;
+    border-color: var(--cetam-secondary) !important;
+    color: white !important;
+}
+
+.btn-cetam-secondary:hover,
+.btn-cetam-secondary:focus,
+.btn-cetam-secondary:active {
+    background-color: var(--cetam-secondary-hover) !important;
+    border-color: var(--cetam-secondary-hover) !important;
+    color: white !important;
+}
+
+.btn-cetam-tertiary {
+    background-color: var(--cetam-tertiary) !important;
+    border-color: var(--cetam-tertiary) !important;
+    color: white !important;
+}
+
+.btn-cetam-tertiary:hover,
+.btn-cetam-tertiary:focus,
+.btn-cetam-tertiary:active {
+    background-color: var(--cetam-tertiary-hover) !important;
+    border-color: var(--cetam-tertiary-hover) !important;
+    color: white !important;
+}
+
+/* ===== Button Outline Styles ===== */
+.btn-outline-cetam-primary {
+    color: var(--cetam-primary) !important;
+    border-color: var(--cetam-primary) !important;
+    background-color: transparent;
+}
+
+.btn-outline-cetam-primary:hover {
+    background-color: var(--cetam-primary) !important;
+    border-color: var(--cetam-primary) !important;
+    color: white !important;
+}
+
+.btn-outline-cetam-secondary {
+    color: var(--cetam-secondary) !important;
+    border-color: var(--cetam-secondary) !important;
+    background-color: transparent;
+}
+
+.btn-outline-cetam-secondary:hover {
+    background-color: var(--cetam-secondary) !important;
+    border-color: var(--cetam-secondary) !important;
+    color: white !important;
+}
+
+/* ===== Alert Styles ===== */
+.alert-cetam-primary {
+    background-color: rgba(31, 41, 55, 0.1);
+    border-color: var(--cetam-primary);
+    color: var(--cetam-primary);
+}
+
+.alert-cetam-secondary {
+    background-color: rgba(251, 80, 59, 0.1);
+    border-color: var(--cetam-secondary);
+    color: var(--cetam-secondary);
+}
+
+/* ===== Badge Styles ===== */
+.badge-cetam-primary {
+    background-color: var(--cetam-primary) !important;
+    color: white !important;
+}
+
+.badge-cetam-secondary {
+    background-color: var(--cetam-secondary) !important;
+    color: white !important;
+}
+
+/* ===== Link Colors ===== */
+a.link-cetam-primary {
+    color: var(--cetam-primary) !important;
+}
+
+a.link-cetam-primary:hover {
+    color: var(--cetam-primary-hover) !important;
+}
+
+a.link-cetam-secondary {
+    color: var(--cetam-secondary) !important;
+}
+
+a.link-cetam-secondary:hover {
+    color: var(--cetam-secondary-hover) !important;
+}
+
+/* ===== Card Accent Borders ===== */
+.card-cetam-primary {
+    border-top: 3px solid var(--cetam-primary);
+}
+
+.card-cetam-secondary {
+    border-top: 3px solid var(--cetam-secondary);
+}
+
+.card-cetam-tertiary {
+    border-top: 3px solid var(--cetam-tertiary);
+}

@@ -4,21 +4,36 @@
 
 @section('content')
 <style>
+    /* CETAM Institutional Colors */
     :root {
-        --institutional-blue: #1d4976;
-        --institutional-orange: #de5629;
-        --institutional-gray: #7b96ab;
+        --cetam-primary: #1F2937;      /* Gris oscuro slate */
+        --cetam-secondary: #FB503B;    /* Naranja rojizo vibrante */
+        --cetam-tertiary: #31316A;     /* Azul índigo oscuro */
+        --cetam-success: #10B981;      /* Verde */
+        --cetam-warning: #FBA918;      /* Ámbar */
+        --cetam-info: #1E90FF;         /* Azul claro */
     }
-    .bg-institutional-blue { background-color: var(--institutional-blue) !important; }
-    .text-institutional-blue { color: var(--institutional-blue) !important; }
-    .btn-institutional-blue {
-        background-color: var(--institutional-blue) !important;
-        border-color: var(--institutional-blue) !important;
+    .bg-cetam-primary { background-color: var(--cetam-primary) !important; }
+    .text-cetam-primary { color: var(--cetam-primary) !important; }
+    .bg-cetam-secondary { background-color: var(--cetam-secondary) !important; }
+    .text-cetam-secondary { color: var(--cetam-secondary) !important; }
+    .btn-cetam-primary {
+        background-color: var(--cetam-primary) !important;
+        border-color: var(--cetam-primary) !important;
         color: white !important;
     }
-    .btn-institutional-blue:hover {
-        background-color: #163a5f !important;
-        border-color: #163a5f !important;
+    .btn-cetam-primary:hover {
+        background-color: #111827 !important;
+        border-color: #111827 !important;
+    }
+    .btn-cetam-secondary {
+        background-color: var(--cetam-secondary) !important;
+        border-color: var(--cetam-secondary) !important;
+        color: white !important;
+    }
+    .btn-cetam-secondary:hover {
+        background-color: #e03d29 !important;
+        border-color: #e03d29 !important;
     }
     .plan-card {
         transition: all 0.3s ease;
@@ -30,8 +45,8 @@
         box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
     }
     .plan-card.selected {
-        border: 2px solid var(--institutional-blue) !important;
-        background-color: #e3f2fd;
+        border: 2px solid var(--cetam-secondary) !important;
+        background-color: #fff5f3;
     }
     .plan-card input[type="radio"] {
         display: none;
@@ -56,13 +71,13 @@
                             <!-- Header -->
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <div class="d-flex justify-content-center mb-3">
-                                    <div class="bg-institutional-blue rounded-circle d-flex align-items-center justify-center" style="width: 64px; height: 64px;">
+                                    <div class="bg-cetam-primary rounded-circle d-flex align-items-center justify-center" style="width: 64px; height: 64px;">
                                         <svg class="text-white" width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
                                         </svg>
                                     </div>
                                 </div>
-                                <h1 class="mb-0 h3 text-institutional-blue">Registrar Negocio</h1>
+                                <h1 class="mb-0 h3 text-cetam-primary">Registrar Negocio</h1>
                                 <p class="text-gray">Unete al sistema Order QR</p>
                             </div>
 
@@ -86,7 +101,7 @@
 
                                 <!-- Business Information -->
                                 <div class="mb-4">
-                                    <h5 class="text-institutional-blue mb-3">Informacion del Negocio</h5>
+                                    <h5 class="text-cetam-primary mb-3">Informacion del Negocio</h5>
 
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
@@ -125,7 +140,7 @@
 
                                 <!-- Plan Selection -->
                                 <div class="mb-4">
-                                    <h5 class="text-institutional-blue mb-3">Selecciona tu Plan</h5>
+                                    <h5 class="text-cetam-primary mb-3">Selecciona tu Plan</h5>
                                     <p class="text-muted small mb-4">Elige el plan que mejor se adapte a las necesidades de tu negocio. Los planes son configurados por el administrador.</p>
 
                                     @if($plans->count() > 0)
@@ -136,14 +151,14 @@
                                                 <input type="radio" name="plan_id" value="{{ $plan->plan_id }}" {{ old('plan_id') == $plan->plan_id ? 'checked' : '' }} required>
                                                 <div class="card-body">
                                                     <div class="text-center mb-3">
-                                                        <h5 class="text-institutional-blue mb-1">{{ $plan->name }}</h5>
+                                                        <h5 class="text-cetam-primary mb-1">{{ $plan->name }}</h5>
                                                         @if($plan->description)
                                                         <small class="text-muted">{{ $plan->description }}</small>
                                                         @endif
                                                     </div>
 
                                                     <div class="text-center mb-3">
-                                                        <h3 class="text-institutional-blue mb-0">
+                                                        <h3 class="text-cetam-primary mb-0">
                                                             ${{ number_format($plan->price, 2) }}
                                                         </h3>
                                                         <small class="text-muted">por {{ $plan->duration_days }} dias</small>
@@ -195,14 +210,14 @@
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="terms" name="terms" required {{ old('terms') ? 'checked' : '' }}>
                                         <label class="form-check-label" for="terms">
-                                            Acepto los <a href="#" class="text-institutional-blue">terminos y condiciones</a> <span class="text-danger">*</span>
+                                            Acepto los <a href="#" class="text-cetam-primary">terminos y condiciones</a> <span class="text-danger">*</span>
                                         </label>
                                     </div>
                                 </div>
 
                                 <!-- Submit Button -->
                                 <div class="d-grid gap-2">
-                                    <button type="submit" class="btn btn-institutional-blue btn-lg">
+                                    <button type="submit" class="btn btn-cetam-primary btn-lg">
                                         <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -213,7 +228,7 @@
                                 <div class="d-flex justify-content-center align-items-center mt-4">
                                     <span class="fw-normal text-gray">
                                         ¿Ya tienes cuenta?
-                                        <a href="{{ route('business.login') }}" class="fw-bold text-institutional-blue">
+                                        <a href="{{ route('business.login') }}" class="fw-bold text-cetam-primary">
                                             Inicia sesion aqui
                                         </a>
                                     </span>

@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Chat Controller
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        ChatController.php
+ * @description Controlador de mensajería y chat en tiempo real
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;

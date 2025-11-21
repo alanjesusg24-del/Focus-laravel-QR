@@ -56,6 +56,12 @@
     <!-- Volt CSS -->
     <link type="text/css" href="{{ asset('css/volt.css') }}" rel="stylesheet">
 
+    <!-- CETAM Institutional Colors -->
+    <link type="text/css" href="{{ asset('css/cetam-colors.css') }}" rel="stylesheet">
+
+    <!-- CETAM Sidebar Styles -->
+    <link type="text/css" href="{{ asset('css/cetam-sidebar.css') }}" rel="stylesheet">
+
     @livewireStyles
     @livewireScripts
 

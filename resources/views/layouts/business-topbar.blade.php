@@ -12,7 +12,7 @@
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0">
             <div class="list-group list-group-flush">
-              <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notificaciones</a>
+              <a href="#" class="text-center text-cetam-secondary fw-bold border-bottom border-light py-3">Notificaciones</a>
 
               <a href="#" class="list-group-item list-group-item-action border-bottom">
                 <div class="row align-items-center">
@@ -51,7 +51,7 @@
         <li class="nav-item dropdown ms-lg-3">
           <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <div class="media d-flex align-items-center">
-              <div class="avatar-sm bg-primary rounded-circle d-flex align-items-center justify-content-center text-white me-3">
+              <div class="avatar-sm bg-cetam-secondary rounded-circle d-flex align-items-center justify-content-center text-white me-3">
                 <span class="h6 mb-0">{{ substr(auth()->guard('business')->user()->business_name ?? 'B', 0, 1) }}</span>
               </div>
               <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">

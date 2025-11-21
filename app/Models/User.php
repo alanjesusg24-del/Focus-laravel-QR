@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - User Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        User.php
+ * @description Modelo de usuario del sistema
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;

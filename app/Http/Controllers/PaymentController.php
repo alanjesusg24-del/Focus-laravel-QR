@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Payment Controller
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        PaymentController.php
+ * @description Controlador de pagos y suscripciones (MercadoPago)
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Payment;
