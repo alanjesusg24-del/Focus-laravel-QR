@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Plan Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        Plan.php
+ * @description Modelo de planes de suscripción
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * @table       plans
+ * @primaryKey  plan_id
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

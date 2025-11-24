@@ -1,55 +1,87 @@
-# Order QR System - CETAM
+# CETAM - Centro de Servicios (CS)
 
-**Centro de Servicios (CS) - Sistema de Órdenes con QR**
-
-Sistema de gestión de órdenes con código QR para negocios, integrado con aplicación móvil, notificaciones push, chat en tiempo real y pagos con MercadoPago.
-
----
-
-## 🚀 Características
-
-- ✅ **Generación automática de códigos QR** para cada orden
-- ✅ **Aplicación móvil** (Flutter) para usuarios
-- ✅ **Notificaciones push** en tiempo real (Firebase)
-- ✅ **Chat integrado** entre negocio y cliente
-- ✅ **Sistema de pagos** con MercadoPago
-- ✅ **Dashboard con análisis** y reportes
-- ✅ **Múltiples planes** de suscripción
-- ✅ **Cumplimiento estándares CETAM** v3.0
+**Order QR System**
+**Versión: 1.0.0**
+**CETAM © 2025**
 
 ---
 
-## 📋 Requisitos
+## DESCRIPCIÓN DEL PROYECTO
 
-- **PHP:** 8.2.x o superior (actual: 8.3.26) ✓
-- **Composer:** 2.8.x o superior ✓
-- **Node.js:** 22.x (actual: 22.20.0) ✓
-- **MySQL:** 5.7+ o MariaDB 10.3+
-- **Laravel:** 12.x (actual: 12.36.1) ✓
+Sistema de gestión de órdenes con códigos QR desarrollado bajo los estándares institucionales CETAM. Permite a negocios crear, gestionar y rastrear órdenes mediante tecnología QR, con módulos de chat, pagos y reportes.
 
 ---
 
-## 🛠️ Instalación Rápida
+## STACK TECNOLÓGICO
 
-### 1. Clonar el Repositorio
+### Backend
+- **Framework:** Laravel 12.x
+- **PHP:** 8.2.x
+- **Base de Datos:** MySQL 8.0+
+- **Autenticación:** Laravel Guards (Multi-guard)
 
+### Frontend
+- **Template:** Volt Dashboard (Bootstrap 5.3.x)
+- **CSS Framework:** Bootstrap 5.3.x
+- **Preprocesador:** SCSS
+- **JavaScript:** Vanilla JS + Alpine.js
+- **Compilador:** Laravel Mix 6.x
+- **Node:** 22.x
+
+### Librerías Principales
+- **Iconos:** Font Awesome 5.11.2
+- **Notificaciones:** SweetAlert2, Notyf
+- **Charts:** ApexCharts, Chartist
+- **Componentes:** Simplebar, Vanillajs-datepicker
+- **Pagos:** Stripe, MercadoPago SDK v3.x
+- **Push Notifications:** Firebase Cloud Messaging (FCM API v1)
+
+---
+
+## REQUISITOS DEL SISTEMA
+
+### Software Obligatorio
 ```bash
-git clone <url-del-repositorio>
+PHP >= 8.2.x
+Composer >= 2.8.x
+Node.js = 22.x
+NPM >= 10.x
+MySQL >= 8.0
+```
+
+### Extensiones PHP Requeridas
+- BCMath
+- Ctype
+- cURL
+- DOM
+- Fileinfo
+- JSON
+- Mbstring
+- OpenSSL
+- PDO
+- Tokenizer
+- XML
+
+---
+
+## INSTALACIÓN
+
+### 1. Clonar Repositorio
+```bash
+git clone [URL_DEL_REPOSITORIO]
 cd volt-laravel-dashboard-1.0.1-main
 ```
 
 ### 2. Instalar Dependencias
-
 ```bash
-# Dependencias PHP
+# PHP
 composer install
 
-# Dependencias JavaScript
+# Node.js
 npm install
 ```
 
 ### 3. Configurar Entorno
-
 ```bash
 # Copiar archivo de entorno
 cp .env.example .env
@@ -59,317 +91,203 @@ php artisan key:generate
 ```
 
 ### 4. Configurar Base de Datos
-
-Editar `.env` con tus credenciales de base de datos:
-
+Editar `.env`:
 ```env
-DB_CONNECTION=mysql
-DB_HOST=127.0.0.1
-DB_PORT=3306
-DB_DATABASE=volt_dashboard
+DB_DATABASE=cetam_cs_orderqr
 DB_USERNAME=root
 DB_PASSWORD=
 ```
 
-### 5. Ejecutar Migraciones
-
+Ejecutar migraciones:
 ```bash
-# Crear tablas
-php artisan migrate
-
-# Cargar datos iniciales (opcional)
-php artisan db:seed
+php artisan migrate --seed
 ```
 
-### 6. Compilar Assets
-
+### 5. Compilar Assets
 ```bash
-# Desarrollo (con watch)
+# Desarrollo
 npm run dev
 
 # Producción
 npm run build
 ```
 
-### 7. Iniciar Servidor
-
+### 6. Iniciar Servidor
 ```bash
 php artisan serve
 ```
 
-Accede a: http://localhost:8000
+Acceder a: `http://localhost:8000`
 
 ---
 
-## 📚 Documentación
-
-### Documentación Principal
-
-- **[RESUMEN_IMPLEMENTACION_CETAM.md](RESUMEN_IMPLEMENTACION_CETAM.md)** - Resumen completo de la implementación
-- **[GUIA_ESTANDARES_CETAM.md](GUIA_ESTANDARES_CETAM.md)** - Guía de uso de estándares
-- **[CABECERAS_CETAM.md](CABECERAS_CETAM.md)** - Plantillas de cabeceras
-- **[INSTRUCCIONES_IMPLEMENTACION_LARAVEL_CETAM.md](INSTRUCCIONES_IMPLEMENTACION_LARAVEL_CETAM.md)** - Manual completo
-
-### Documentación Antigua
-
-Toda la documentación de versiones anteriores se encuentra en `_docs/old-documentation/`
-
----
-
-## 🎨 Componentes CETAM
-
-### Componente Icon
-
-Uso de iconos estandarizados con Font Awesome:
-
-```blade
-{{-- Básico --}}
-<x-icon name="user" />
-<x-icon name="qrcode" />
-<x-icon name="order" />
-
-{{-- En botones --}}
-<button class="btn btn-primary">
-    <x-icon name="save" /> Guardar
-</button>
-
-{{-- Con clases CSS --}}
-<x-icon name="success" class="text-success fs-4" />
-```
-
-**Iconos disponibles:** Ver `config/icons.php` (60+ iconos)
-
-### Componente Alert
-
-Sistema de alertas estandarizado:
-
-```blade
-{{-- Diferentes tipos --}}
-<x-cs-alert type="success" message="¡Operación exitosa!" />
-<x-cs-alert type="error" message="Error al procesar" />
-<x-cs-alert type="warning" message="Advertencia" />
-<x-cs-alert type="info" message="Información" />
-
-{{-- Con sesión flash --}}
-@if(session('success'))
-    <x-cs-alert type="success" :message="session('success')" />
-@endif
-```
-
-### Configuración CETAM
-
-Acceso a configuración institucional:
-
-```php
-// Paginación
-$perPage = config('cetam.cs.pagination.per_page'); // 15
-
-// Features
-$chatEnabled = config('cetam.cs.features.chat'); // true
-
-// Nombre del proyecto
-$projectName = config('cetam.cs.name');
-```
-
----
-
-## 🗂️ Estructura del Proyecto
+## ESTRUCTURA DEL PROYECTO
 
 ```
-volt-laravel-dashboard/
+proyecto/
 ├── app/
-│   ├── Http/Controllers/
-│   │   ├── CS/                    # Controladores CETAM
-│   │   │   ├── DashboardController.php
-│   │   │   └── OrderController.php
-│   │   ├── BusinessController.php
-│   │   ├── ChatController.php
-│   │   ├── OrderController.php
-│   │   └── PaymentController.php
-│   ├── Models/
-│   │   ├── Order.php             # Modelo de órdenes con QR
-│   │   ├── Business.php          # Modelo de negocios
-│   │   └── User.php
-│   ├── Services/
-│   │   ├── OrderService.php      # Lógica de negocios
-│   │   ├── PaymentService.php
-│   │   └── PushNotificationService.php
-│   └── View/Components/
-│       ├── Icon.php              # Componente de iconos
-│       └── CS/
-│           └── Alert.php         # Componente de alertas
+│   ├── Http/Controllers/          # Controladores
+│   ├── Models/                    # Modelos Eloquent
+│   ├── View/Components/           # Componentes Blade
+│   └── Services/                  # Servicios de negocio
 ├── config/
 │   ├── cetam.cs.php              # Configuración CETAM
 │   └── icons.php                 # Catálogo de iconos
+├── database/
+│   ├── migrations/               # Migraciones
+│   └── seeders/                  # Seeders
 ├── resources/
-│   ├── views/
-│   │   ├── components/           # Vistas de componentes
-│   │   ├── dashboard/
-│   │   ├── orders/
-│   │   └── business/
-│   ├── sass/
-│   └── js/
-└── routes/
-    ├── web.php
-    └── api.php
+│   ├── scss/                     # Estilos SCSS
+│   │   ├── custom/              # Estilos personalizados CETAM
+│   │   └── volt.scss            # Archivo principal
+│   ├── js/                      # JavaScript
+│   └── views/                   # Vistas Blade
+│       ├── layouts/            # Layouts base
+│       ├── components/         # Componentes
+│       ├── business/           # Vistas de negocios
+│       └── superadmin/         # Vistas de superadmin
+├── routes/
+│   ├── web.php                 # Rutas web
+│   └── api.php                 # Rutas API
+└── public/
+    ├── css/                    # CSS compilado
+    └── js/                     # JS compilado
 ```
 
 ---
 
-## 🔐 Credenciales de Prueba
+## PALETA DE COLORES INSTITUCIONAL
 
-### Usuario Business (Negocio)
+### Colores Principales
+- **Primary:** `#1F2937` (Gris oscuro slate)
+- **Secondary:** `#FB503B` (Naranja rojizo vibrante)
+- **Tertiary:** `#31316A` (Azul índigo oscuro)
 
+### Colores Semánticos
+- **Success:** `#10B981` (Verde)
+- **Danger:** `#E11D48` (Rojo)
+- **Warning:** `#FBA918` (Ámbar)
+- **Info:** `#1E90FF` (Azul claro)
+
+### Tipografía
+- **Font Family:** Nunito Sans
+- **Weights:** 300, 400, 600, 700, 800
+
+---
+
+## USUARIOS DE PRUEBA
+
+### Super Administrador
 ```
-Email: test@business.com
-Password: password
+Email: superadmin@cetam.mx
+Password: [Ver seeders]
 ```
 
-### Super Admin
-
+### Business (Negocio)
 ```
-Email: admin@cetam.mx
-Password: cetam2025
+Email: business@cetam.mx
+Password: [Ver seeders]
 ```
 
 ---
 
-## ⚙️ Configuraciones Importantes
+## MÓDULOS DEL SISTEMA
 
-### MercadoPago (Pagos)
+### 1. **Gestión de Negocios** (SuperAdmin)
+- CRUD de negocios
+- Asignación de planes
+- Monitoreo de actividad
+- Gestión de pagos y suscripciones
 
-En `.env`:
+### 2. **Gestión de Órdenes** (Business)
+- Crear órdenes con descripción
+- Generar códigos QR únicos
+- Vincular órdenes a dispositivos móviles
+- Estados: Pendiente, Listo, Entregado, Cancelado
+- Chat en tiempo real con clientes
 
-```env
-MERCADOPAGO_PUBLIC_KEY=tu_public_key
-MERCADOPAGO_ACCESS_TOKEN=tu_access_token
-MERCADOPAGO_MODE=sandbox
-```
+### 3. **Sistema de Pagos**
+- Integración con MercadoPago (Sandbox/Producción)
+- Integración con Stripe
+- Webhooks para confirmación de pagos
+- Historial de transacciones
 
-### Firebase (Notificaciones Push)
+### 4. **Reportes y Dashboard**
+- Estadísticas de órdenes
+- Gráficas de ingresos
+- Top negocios por revenue
+- Métricas en tiempo real
 
-1. Descargar credenciales JSON desde Firebase Console
-2. Guardar en `storage/firebase-credentials.json`
-3. Configurar en `.env`:
-
-```env
-FIREBASE_CREDENTIALS_PATH=storage/firebase-credentials.json
-```
-
-### Google Maps (Opcional)
-
-```env
-GOOGLE_MAPS_API_KEY=tu_api_key
-```
+### 5. **Notificaciones Push**
+- Firebase Cloud Messaging (FCM)
+- Notificaciones a dispositivos móviles
+- Estados de órdenes en tiempo real
 
 ---
 
-## 🧪 Testing
+## COMANDOS ÚTILES
 
+### Desarrollo
 ```bash
-# Ejecutar tests
-php artisan test
-
-# Con coverage
-php artisan test --coverage
+php artisan serve                    # Servidor local
+npm run dev                          # Watch assets
+php artisan migrate:fresh --seed     # Resetear BD
 ```
 
----
-
-## 📱 App Móvil
-
-La aplicación móvil Flutter se encuentra en un repositorio separado.
-
-**Características:**
-- Escaneo de códigos QR
-- Notificaciones push
-- Chat en tiempo real
-- Historial de órdenes
-- Diseño con Volt Dashboard
-
----
-
-## 🔄 Comandos Útiles
-
+### Caché
 ```bash
-# Limpiar cachés
-php artisan cache:clear
 php artisan config:clear
-php artisan view:clear
 php artisan route:clear
-
-# Regenerar autoload
-composer dump-autoload
-
-# Ver configuración
-php artisan tinker
->>> config('cetam.cs')
->>> config('icons.icons')
-
-# Compilar assets
-npm run dev      # Desarrollo con watch
-npm run build    # Producción
+php artisan view:clear
+php artisan cache:clear
 ```
 
----
-
-## 🐛 Resolución de Problemas
-
-### Error de permisos en storage
-
+### Producción
 ```bash
-chmod -R 775 storage bootstrap/cache
-```
-
-### Caché de configuración
-
-```bash
+composer install --no-dev --optimize-autoloader
+npm run build
 php artisan config:cache
 php artisan route:cache
-```
-
-### Regenerar assets
-
-```bash
-rm -rf node_modules public/build
-npm install
-npm run build
+php artisan view:cache
 ```
 
 ---
 
-## 📄 Licencia
+## ESTÁNDARES DE DESARROLLO
 
-Propietario - CETAM © 2025
+Este proyecto sigue los **Estándares CETAM v3.0** que incluyen:
 
----
-
-## 👥 Equipo
-
-**Desarrollado por:** CETAM Dev Team
-
-**Proyecto:** Centro de Servicios (CS)
-
-**Versión:** 1.0.0
+- ✅ PSR-12 para código PHP
+- ✅ Nomenclatura institucional para archivos
+- ✅ Cabeceras documentadas en todos los archivos
+- ✅ Paleta de colores institucional
+- ✅ Componente `<x-icon>` para iconos
+- ✅ Prefijos CETAM_CS_ en configuración
+- ✅ Máximo 120 caracteres por línea
 
 ---
 
-## 🔗 Enlaces Útiles
+## DOCUMENTACIÓN
 
-- [Manual de Estándares CETAM](INSTRUCCIONES_IMPLEMENTACION_LARAVEL_CETAM.md)
-- [Guía de Componentes](GUIA_ESTANDARES_CETAM.md)
-- [Resumen de Implementación](RESUMEN_IMPLEMENTACION_CETAM.md)
-- [Laravel Documentation](https://laravel.com/docs)
-- [Volt Dashboard](https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard)
+Para más detalles sobre implementación, consultar:
+- `INSTRUCCIONES_IMPLEMENTACION_LARAVEL_CETAM.md` - Manual completo CETAM
 
 ---
 
-## 📞 Soporte
+## SOPORTE Y CONTACTO
 
-Para soporte técnico o consultas:
-- Email: soporte@cetam.mx
-- Documentación: Ver archivos MD en el proyecto
+**CETAM - Centro de Desarrollo Tecnológico Aplicado de México**
+Proyecto: Centro de Servicios (CS)
 
 ---
 
-**¡Gracias por usar Order QR System!** 🎉
+## LICENCIA
+
+Propiedad de CETAM © 2025. Todos los derechos reservados.
+
+Este proyecto es de uso interno institucional y no debe ser distribuido sin autorización.
+
+---
+
+**Última actualización:** Noviembre 2025
+**Versión del Manual:** 3.0

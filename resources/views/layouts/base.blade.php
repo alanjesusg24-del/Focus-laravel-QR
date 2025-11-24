@@ -1,6 +1,21 @@
- 
+{{--
+============================================
+CETAM - Base Layout
+============================================
+
+@project     Centro de Servicios (CS)
+@file        base.blade.php
+@description Layout base con estructura HTML y assets
+@author      CETAM Dev Team
+@created     2025-11-21
+@version     1.0.0
+@copyright   CETAM © 2025
+
+============================================
+--}}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <title>@yield('title', config('app.name'))</title>
     @if(env('IS_DEMO')) 

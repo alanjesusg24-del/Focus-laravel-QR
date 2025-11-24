@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Dashboard Controller
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        DashboardController.php
+ * @description Controlador principal del dashboard de negocios
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Business;

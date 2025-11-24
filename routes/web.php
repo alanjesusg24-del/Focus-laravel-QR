@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Web Routes
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        web.php
+ * @description Rutas web del sistema Order QR
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 use App\Livewire\BootstrapTables;
 use App\Livewire\Components\Buttons;
 use App\Livewire\Components\Forms;
@@ -15,15 +31,9 @@ use App\Livewire\Lock;
 use App\Livewire\Auth\Login;
 use App\Livewire\Profile;
 use App\Livewire\Auth\Register;
-use App\Livewire\ForgotPasswordExample;
 use App\Livewire\Index;
-use App\Livewire\LoginExample;
-use App\Livewire\ProfileExample;
-use App\Livewire\RegisterExample;
 use App\Livewire\Transactions;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\ResetPasswordExample;
-use App\Livewire\UpgradeToPro;
 use App\Livewire\Users;
 
 /*
@@ -56,18 +66,12 @@ Route::prefix("p/{$slug}")
         // Errores y páginas informativas
         Route::get('/404', Err404::class)->name('errors.404');
         Route::get('/500', Err500::class)->name('errors.500');
-        Route::get('/upgrade-to-pro', UpgradeToPro::class)->name('marketing.upgrade-to-pro');
 
         // Privado
         Route::middleware('auth')->group(function () {
             Route::get('/dashboard', Dashboard::class)->name('dashboard.index');
             Route::get('/profile', Profile::class)->name('profile.index');
-            Route::get('/profile-example', ProfileExample::class)->name('profile.example');
             Route::get('/users', Users::class)->name('users.index');
-            Route::get('/login-example', LoginExample::class)->name('examples.login');
-            Route::get('/register-example', RegisterExample::class)->name('examples.register');
-            Route::get('/forgot-password-example', ForgotPasswordExample::class)->name('examples.forgot-password');
-            Route::get('/reset-password-example', ResetPasswordExample::class)->name('examples.reset-password');
             Route::get('/transactions', Transactions::class)->name('billing.transactions');
             Route::get('/bootstrap-tables', BootstrapTables::class)->name('ui.bootstrap-tables');
             Route::get('/lock', Lock::class)->name('auth.lock');

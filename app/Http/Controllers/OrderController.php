@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Order Controller
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        OrderController.php
+ * @description Controlador de gestión de órdenes/pedidos
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;
@@ -31,7 +47,7 @@ class OrderController extends Controller
             $query->where('status', $status);
         }
 
-        $orders = $query->paginate(20);
+        $orders = $query->paginate(config('cetam.cs.pagination.per_page', 15));
 
         return view('orders.index', compact('orders'));
     }

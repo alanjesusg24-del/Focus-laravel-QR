@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Chat Message Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        ChatMessage.php
+ * @description Modelo de mensajes de chat en tiempo real
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * @table       chat_messages
+ * @primaryKey  message_id
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

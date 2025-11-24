@@ -16,8 +16,8 @@ const mix = require('laravel-mix');
      //
  ]);
  
- // Compile Volt SCSS (enables overriding variables in resources/scss/custom/_variables.scss)
- mix.sass('resources/scss/volt.scss', 'public/css')
+ // Compile Volt SCSS (enables overriding variables in resources/sass/custom/_variables.scss)
+ mix.sass('resources/sass/volt.scss', 'public/css')
    .options({ processCssUrls: false });
 
 // Silence Sass deprecation warnings coming from node_modules (Bootstrap, etc.)

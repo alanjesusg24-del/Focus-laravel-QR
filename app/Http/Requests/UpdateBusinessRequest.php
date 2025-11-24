@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Update Business Request
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        UpdateBusinessRequest.php
+ * @description Validación para actualización de negocios
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ *
+ * ============================================
+ */
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;

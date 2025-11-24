@@ -23460,9 +23460,9 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/scss/volt.scss":
+/***/ "./resources/sass/volt.scss":
 /*!**********************************!*\
-  !*** ./resources/scss/volt.scss ***!
+  !*** ./resources/sass/volt.scss ***!
   \**********************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
@@ -23636,7 +23636,7 @@ __webpack_require__.r(__webpack_exports__);
 /******/ 	// Load entry module and return exports
 /******/ 	// This entry module depends on other loaded chunks and execution need to be delayed
 /******/ 	__webpack_require__.O(undefined, ["css/volt","css/app"], () => (__webpack_require__("./resources/js/app.js")))
-/******/ 	__webpack_require__.O(undefined, ["css/volt","css/app"], () => (__webpack_require__("./resources/scss/volt.scss")))
+/******/ 	__webpack_require__.O(undefined, ["css/volt","css/app"], () => (__webpack_require__("./resources/sass/volt.scss")))
 /******/ 	var __webpack_exports__ = __webpack_require__.O(undefined, ["css/volt","css/app"], () => (__webpack_require__("./resources/css/app.css")))
 /******/ 	__webpack_exports__ = __webpack_require__.O(__webpack_exports__);
 /******/ 	

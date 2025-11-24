@@ -1,3 +1,19 @@
+{{--
+============================================
+CETAM - SuperAdmin Application Layout
+============================================
+
+@project     Centro de Servicios (CS)
+@file        superadmin-app.blade.php
+@description Layout principal para panel de super administrador
+@author      CETAM Dev Team
+@created     2025-11-21
+@version     1.0.0
+@copyright   CETAM © 2025
+
+============================================
+--}}
+
 @extends('layouts.base')
 
 @section('content')

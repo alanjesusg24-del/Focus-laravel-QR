@@ -35,8 +35,8 @@
     </div>
 
     <ul class="nav flex-column pt-3 pt-md-0">
-      {{-- Dashboard --}}
-      <li class="nav-item {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
+      {{-- DESACTIVADO: Dashboard --}}
+      {{-- <li class="nav-item {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
         <a href="{{ route('superadmin.dashboard') }}" class="nav-link">
           <span class="sidebar-icon">
             <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -46,7 +46,7 @@
           </span>
           <span class="sidebar-text">Dashboard</span>
         </a>
-      </li>
+      </li> --}}
 
       {{-- Businesses --}}
       <li class="nav-item {{ request()->routeIs('superadmin.businesses.*') ? 'active' : '' }}">
@@ -85,8 +85,8 @@
         </a>
       </li>
 
-      {{-- Support Tickets --}}
-      <li class="nav-item {{ request()->routeIs('superadmin.tickets.*') ? 'active' : '' }}">
+      {{-- DESACTIVADO: Support Tickets --}}
+      {{-- <li class="nav-item {{ request()->routeIs('superadmin.tickets.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.tickets.index') }}" class="nav-link">
           <span class="sidebar-icon">
             <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -95,7 +95,7 @@
           </span>
           <span class="sidebar-text">Tickets de Soporte</span>
         </a>
-      </li>
+      </li> --}}
 
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
 

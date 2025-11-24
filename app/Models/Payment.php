@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Payment Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        Payment.php
+ * @description Modelo de pagos y suscripciones
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * @table       payments
+ * @primaryKey  payment_id
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Order Realert Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        OrderRealert.php
+ * @description Modelo de re-alertas de órdenes
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * @table       order_realerts
+ * @primaryKey  realert_id
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

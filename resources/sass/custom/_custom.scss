@@ -1,0 +1,41 @@
+// ============================================
+// CETAM - Estilos Personalizados
+// ============================================
+
+// Sidebar
+.sidebar {
+    background-color: $primary;
+    color: $white;
+
+    .sidebar-link {
+        color: $gray-400;
+
+        &:hover,
+        &.active {
+            color: $white;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+    }
+}
+
+// Cards
+.card {
+    border: none;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+
+// Tables
+.table {
+    thead {
+        background-color: $gray-50;
+    }
+}
+
+// Buttons
+.btn {
+    font-weight: 600;
+
+    i {
+        margin-right: 0.25rem;
+    }
+}

@@ -133,7 +133,8 @@
         </div>
     </div>
 
-    <div class="col-12 col-sm-6 col-xl-3 mb-4">
+    {{-- DESACTIVADO: Card de Tickets Abiertos --}}
+    {{-- <div class="col-12 col-sm-6 col-xl-3 mb-4">
         <div class="card border-0 shadow">
             <div class="card-body">
                 <div class="row d-block d-xl-flex align-items-center">
@@ -159,7 +160,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <!-- Charts Row -->
@@ -337,8 +338,8 @@
         </div>
     </div>
 
-    <!-- Support Tickets Stats -->
-    <div class="col-12 col-xl-6 mb-4">
+    {{-- DESACTIVADO: Support Tickets Stats --}}
+    {{-- <div class="col-12 col-xl-6 mb-4">
         <div class="card border-0 shadow">
             <div class="card-header">
                 <div class="row align-items-center">
@@ -389,7 +390,7 @@
                 @endif
             </div>
         </div>
-    </div>
+    </div> --}}
 </div>
 
 <!-- Recent Businesses -->
@@ -443,8 +444,8 @@
     </div>
 </div>
 
-<!-- Recent Support Tickets -->
-<div class="card border-0 shadow">
+{{-- DESACTIVADO: Recent Support Tickets --}}
+{{-- <div class="card border-0 shadow">
     <div class="card-header border-bottom d-flex align-items-center justify-content-between">
         <h2 class="fs-5 fw-bold mb-0">Tickets de Soporte Recientes</h2>
     </div>
@@ -484,7 +485,7 @@
             </tbody>
         </table>
     </div>
-</div>
+</div> --}}
 
 <!-- ApexCharts Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>

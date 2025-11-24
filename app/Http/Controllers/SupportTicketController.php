@@ -40,7 +40,7 @@ class SupportTicketController extends Controller
             $query->where('status', $status);
         }
 
-        $tickets = $query->paginate(15);
+        $tickets = $query->paginate(config('cetam.cs.pagination.per_page', 15));
 
         return view('support.index', compact('tickets'));
     }
