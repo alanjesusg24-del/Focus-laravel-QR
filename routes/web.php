@@ -47,41 +47,13 @@ use App\Livewire\Users;
 |
 */
 
-// Prefijo configurable del proyecto: /p/<slug>
-$slug = config('proj.slug');
-$namePrefix = config('proj.route_name_prefix', 'proj');
-
-// Redirección base a login dentro del prefijo
-Route::redirect('/', "/p/{$slug}/login");
-
-Route::prefix("p/{$slug}")
-    ->as($namePrefix . '.')
-    ->group(function () use ($namePrefix) {
-        // Público
-        Route::get('/register', Register::class)->name('auth.register');
-        Route::get('/login', Login::class)->name('auth.login');
-        Route::get('/forgot-password', ForgotPassword::class)->name('auth.forgot-password');
-        Route::get('/reset-password/{id}', ResetPassword::class)->name('auth.reset-password')->middleware('signed');
-
-        // Errores y páginas informativas
-        Route::get('/404', Err404::class)->name('errors.404');
-        Route::get('/500', Err500::class)->name('errors.500');
-
-        // Privado
-        Route::middleware('auth')->group(function () {
-            Route::get('/dashboard', Dashboard::class)->name('dashboard.index');
-            Route::get('/profile', Profile::class)->name('profile.index');
-            Route::get('/users', Users::class)->name('users.index');
-            Route::get('/transactions', Transactions::class)->name('billing.transactions');
-            Route::get('/bootstrap-tables', BootstrapTables::class)->name('ui.bootstrap-tables');
-            Route::get('/lock', Lock::class)->name('auth.lock');
-            Route::get('/buttons', Buttons::class)->name('ui.buttons');
-            Route::get('/notifications', Notifications::class)->name('ui.notifications');
-            Route::get('/forms', Forms::class)->name('ui.forms');
-            Route::get('/modals', Modals::class)->name('ui.modals');
-            Route::get('/typography', Typography::class)->name('ui.typography');
-        });
-    });
+/*
+|--------------------------------------------------------------------------
+| Rutas de Volt Dashboard - ELIMINADAS
+|--------------------------------------------------------------------------
+| Las rutas de demostración de Volt Dashboard han sido removidas.
+| El sistema usa exclusivamente las rutas de Business y SuperAdmin.
+*/
 
 /*
 |--------------------------------------------------------------------------
