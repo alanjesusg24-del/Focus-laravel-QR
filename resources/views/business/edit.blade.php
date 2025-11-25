@@ -11,7 +11,7 @@
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
                         <a href="{{ route('business.dashboard.index') }}">
-                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            <x-icon name="home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="{{ route('business.profile.index') }}">Mi Perfil</a></li>
@@ -23,9 +23,7 @@
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.profile.index') }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
-                <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
+                <x-icon name="arrowLeft" class="me-2" />
                 Volver al Perfil
             </a>
         </div>
@@ -115,15 +113,11 @@
                                         <label class="form-label mb-0">Ubicación del Negocio</label>
                                         <div class="btn-group btn-group-sm" role="group">
                                             <button type="button" id="searchBtn" class="btn btn-outline-primary">
-                                                <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"></path>
-                                                </svg>
+                                                <x-icon name="search" class="me-1" />
                                                 Buscar
                                             </button>
                                             <button type="button" id="getLocationBtn" class="btn btn-primary">
-                                                <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                                                </svg>
+                                                <x-icon name="mapPin" class="me-1" />
                                                 Mi Ubicación
                                             </button>
                                         </div>
@@ -137,9 +131,7 @@
                                                    class="form-control"
                                                    placeholder="Busca tu negocio (ej. Cafetería Central, Av. Juárez 123...)">
                                             <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('searchBox').style.display='none'">
-                                                <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                                                </svg>
+                                                <x-icon name="close" />
                                             </button>
                                         </div>
                                         <small class="text-muted">Escribe tu dirección o el nombre de tu negocio y selecciona de las sugerencias</small>
@@ -148,9 +140,7 @@
                                     <!-- Selected Address Display -->
                                     <div id="selectedAddress" class="alert alert-info d-none mb-2">
                                         <div class="d-flex align-items-start">
-                                            <svg class="icon icon-sm me-2 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                                            </svg>
+                                            <x-icon name="mapPin" class="me-2 mt-1" />
                                             <div class="flex-grow-1">
                                                 <strong>Ubicación seleccionada:</strong>
                                                 <div id="addressText" class="mt-1"></div>
@@ -191,9 +181,7 @@
                                 Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                                </svg>
+                                <x-icon name="save" class="me-2" />
                                 Guardar Cambios
                             </button>
                         </div>

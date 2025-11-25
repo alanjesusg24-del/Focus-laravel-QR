@@ -235,3 +235,4 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
         Route::put('/profile', [App\Http\Controllers\SuperAdmin\ProfileController::class, 'update'])->name('profile.update');
     });
 });
+Route::get('/test-icons', function() { return view('test-icons'); });

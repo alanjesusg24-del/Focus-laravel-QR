@@ -22,9 +22,9 @@
 
     /* Colores Semánticos */
     --cetam-success: #10B981;      /* Verde */
-    --cetam-danger: #E11D48;       /* Rojo */
+    --cetam-danger: #EF4444;       /* Rojo */
     --cetam-warning: #FBA918;      /* Ámbar */
-    --cetam-info: #1E90FF;         /* Azul claro */
+    --cetam-info: #3B82F6;         /* Azul */
 
     /* Tonos de Gris */
     --cetam-gray-50: #F9FAFB;

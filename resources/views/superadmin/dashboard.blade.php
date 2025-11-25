@@ -8,9 +8,7 @@
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
             <li class="breadcrumb-item">
                 <a href="#">
-                    <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                    </svg>
+                    <x-icon name="home" />
                 </a>
             </li>
             <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
@@ -27,9 +25,7 @@
 <!-- Flash Messages -->
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-        </svg>
+        <x-icon name="success" class="me-2" />
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -37,9 +33,7 @@
 
 @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-        </svg>
+        <x-icon name="error" class="me-2" />
         {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -53,9 +47,7 @@
                 <div class="row d-block d-xl-flex align-items-center">
                     <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                         <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
-                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="home" />
                         </div>
                     </div>
                     <div class="col-12 col-xl-7 px-xl-0">
@@ -64,9 +56,7 @@
                             <h3 class="fw-extrabold mb-2">{{ $stats['total_businesses'] }}</h3>
                         </div>
                         <small class="text-gray-500">
-                            <svg class="icon icon-xxs text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="checkCircle" class="text-success" />
                             {{ $stats['active_businesses'] }} Activos
                         </small>
                     </div>
@@ -81,10 +71,7 @@
                 <div class="row d-block d-xl-flex align-items-center">
                     <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                         <div class="icon-shape icon-shape-secondary rounded me-4 me-sm-0">
-                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="listCheck" />
                         </div>
                     </div>
                     <div class="col-12 col-xl-7 px-xl-0">
@@ -93,9 +80,7 @@
                             <h3 class="fw-extrabold mb-2">{{ number_format($stats['total_orders']) }}</h3>
                         </div>
                         <small class="text-gray-500">
-                            <svg class="icon icon-xxs text-warning" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="clock" class="text-warning" />
                             {{ $stats['pending_orders'] }} Pendientes
                         </small>
                     </div>
@@ -110,10 +95,7 @@
                 <div class="row d-block d-xl-flex align-items-center">
                     <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                         <div class="icon-shape icon-shape-tertiary rounded me-4 me-sm-0">
-                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
-                                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="creditCard" />
                         </div>
                     </div>
                     <div class="col-12 col-xl-7 px-xl-0">
@@ -122,9 +104,7 @@
                             <h3 class="fw-extrabold mb-2">${{ number_format($stats['total_payments'], 2) }}</h3>
                         </div>
                         <small class="text-success">
-                            <svg class="icon icon-xxs text-success" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M12 7a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0V8.414l-4.293 4.293a1 1 0 01-1.414 0L8 10.414l-4.293 4.293a1 1 0 01-1.414-1.414l5-5a1 1 0 011.414 0L11 10.586 14.586 7H12z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="chartLine" class="text-success" />
                             Desde el inicio
                         </small>
                     </div>
@@ -204,9 +184,7 @@
                         <div class="col">
                             <div class="d-flex align-items-center">
                                 <div class="icon-shape icon-sm icon-shape-primary rounded me-3">
-                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-2a1 1 0 00-1-1H9a1 1 0 00-1 1v2a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v2H7V5zm2 4H7v2h2V9zm2-4h2v2h-2V5zm2 4h-2v2h2V9z" clip-rule="evenodd"></path>
-                                    </svg>
+                                    <x-icon name="home" />
                                 </div>
                                 <div>
                                     <h6 class="mb-0">{{ $business->business_name }}</h6>
@@ -427,10 +405,7 @@
                         </td>
                         <td>
                             <a href="{{ route('superadmin.businesses.show', $business->business_id) }}" class="btn btn-sm btn-info">
-                                <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                                    <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                                </svg>
+                                <x-icon name="view" />
                             </a>
                         </td>
                     </tr>
@@ -512,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 toolbar: { show: false },
                 zoom: { enabled: false }
             },
-            colors: ['#262B40'],
+            colors: ['#1F2937'],
             dataLabels: { enabled: false },
             stroke: {
                 curve: 'smooth',
@@ -563,7 +538,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 height: 300
             },
             labels: ['Pendientes', 'Listas', 'Entregadas', 'Canceladas'],
-            colors: ['#ffc107', '#17a2b8', '#28a745', '#dc3545'],
+            colors: ['#FBA918', '#3B82F6', '#10B981', '#EF4444'],
             legend: {
                 position: 'bottom'
             },

@@ -6,21 +6,17 @@
         {{-- Notifications --}}
         <li class="nav-item dropdown">
           <a class="nav-link text-dark notification-bell unread dropdown-toggle" data-unread-notifications="true" href="#" role="button" data-bs-toggle="dropdown" data-bs-display="static" aria-expanded="false">
-            <svg class="icon icon-sm text-gray-900" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
-            </svg>
+            <x-icon name="bell" class="text-gray-900" />
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-center mt-2 py-0">
             <div class="list-group list-group-flush">
-              <a href="#" class="text-center text-cetam-secondary fw-bold border-bottom border-light py-3">Notificaciones</a>
+              <a href="#" class="text-center fw-bold border-bottom border-light py-3" style="color: #FB503B;">Notificaciones</a>
 
               <a href="#" class="list-group-item list-group-item-action border-bottom">
                 <div class="row align-items-center">
                   <div class="col-auto">
-                    <div class="icon-shape icon-sm icon-shape-success rounded me-3">
-                      <svg class="icon icon-xs text-white" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                      </svg>
+                    <div class="icon-shape icon-sm rounded me-3" style="background-color: #10B981;">
+                      <x-icon name="success" class="text-white" />
                     </div>
                   </div>
                   <div class="col ps-0 ms-2">
@@ -29,7 +25,7 @@
                         <h4 class="h6 mb-0 text-small">Nueva orden recibida</h4>
                       </div>
                       <div class="text-end">
-                        <small class="text-danger">Hace 2 min</small>
+                        <small style="color: #FB503B;">Hace 2 min</small>
                       </div>
                     </div>
                   </div>
@@ -37,10 +33,7 @@
               </a>
 
               <a href="#" class="dropdown-item text-center fw-bold rounded-bottom py-3">
-                <svg class="icon icon-xxs text-gray-400 me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
-                  <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
-                </svg>
+                <x-icon name="view" class="text-gray-400 me-1" />
                 Ver todas
               </a>
             </div>
@@ -51,7 +44,7 @@
         <li class="nav-item dropdown ms-lg-3">
           <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
             <div class="media d-flex align-items-center">
-              <div class="avatar-sm bg-cetam-secondary rounded-circle d-flex align-items-center justify-content-center text-white me-3">
+              <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="background-color: #FB503B;">
                 <span class="h6 mb-0">{{ substr(auth()->guard('business')->user()->business_name ?? 'B', 0, 1) }}</span>
               </div>
               <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
@@ -61,30 +54,22 @@
           </a>
           <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.profile.index') }}">
-              <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-              </svg>
+              <x-icon name="user" class="dropdown-icon text-gray-400 me-2" />
               Mi Perfil
             </a>
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.profile.change-password') }}">
-              <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-              </svg>
+              <x-icon name="lock" class="dropdown-icon text-gray-400 me-2" />
               Cambiar Contraseña
             </a>
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.support.index') }}">
-              <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-2 0c0 .993-.241 1.929-.668 2.754l-1.524-1.525a3.997 3.997 0 00.078-2.183l1.562-1.562C15.802 8.249 16 9.1 16 10zm-5.165 3.913l1.58 1.58A5.98 5.98 0 0110 16a5.976 5.976 0 01-2.516-.552l1.562-1.562a4.006 4.006 0 001.789.027zm-4.677-2.796a4.002 4.002 0 01-.041-2.08l-.08.08-1.53-1.533A5.98 5.98 0 004 10c0 .954.223 1.856.619 2.657l1.54-1.54zm1.088-6.45A5.974 5.974 0 0110 4c.954 0 1.856.223 2.657.619l-1.54 1.54a4.002 4.002 0 00-2.346.033L7.246 4.668zM12 10a2 2 0 11-4 0 2 2 0 014 0z" clip-rule="evenodd"></path>
-              </svg>
+              <x-icon name="info" class="dropdown-icon text-gray-400 me-2" />
               Soporte
             </a>
             <div role="separator" class="dropdown-divider my-1"></div>
             <form action="{{ route('business.logout') }}" method="POST">
               @csrf
               <button type="submit" class="dropdown-item d-flex align-items-center">
-                <svg class="dropdown-icon text-danger me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
-                </svg>
+                <x-icon name="arrowRight" class="dropdown-icon text-danger me-2" />
                 Cerrar Sesión
               </button>
             </form>

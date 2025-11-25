@@ -11,12 +11,12 @@ CETAM - Business Sidebar Navigation
 ============================================
 --}}
 
-<nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
+<nav id="sidebarMenu" class="sidebar d-lg-block text-white collapse" data-simplebar style="background-color: #1F2937;">
   <div class="sidebar-inner px-2 pt-3">
     <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
       <div class="d-flex align-items-center">
         <div class="avatar-lg me-4">
-          <div class="avatar-lg bg-cetam-secondary rounded-circle d-flex align-items-center justify-content-center text-white">
+          <div class="avatar-lg rounded-circle d-flex align-items-center justify-content-center text-white" style="background-color: #FB503B;">
             <span class="h3 mb-0">{{ substr(auth()->guard('business')->user()->business_name ?? 'B', 0, 1) }}</span>
           </div>
         </div>
@@ -25,7 +25,7 @@ CETAM - Business Sidebar Navigation
           <form action="{{ route('business.logout') }}" method="POST" class="d-inline">
             @csrf
             <button type="submit" class="btn btn-secondary btn-sm d-inline-flex align-items-center">
-              <x-icon name="logout" class="me-1" />
+              <x-icon name="arrowRight" class="me-1" />
               Cerrar Sesión
             </button>
           </form>
@@ -44,7 +44,7 @@ CETAM - Business Sidebar Navigation
       <li class="nav-item {{ request()->routeIs('business.orders.*') ? 'active' : '' }}">
         <a href="{{ route('business.orders.index') }}" class="nav-link">
           <span class="sidebar-icon">
-            <x-icon name="order" class="icon icon-xs me-2" />
+            <x-icon name="listCheck" class="me-2" />
           </span>
           <span class="sidebar-text">Órdenes</span>
         </a>
@@ -54,7 +54,7 @@ CETAM - Business Sidebar Navigation
       <li class="nav-item {{ request()->routeIs('business.dashboard.*') ? 'active' : '' }}">
         <a href="{{ route('business.dashboard.index') }}" class="nav-link">
           <span class="sidebar-icon">
-            <x-icon name="dashboard" class="icon icon-xs me-2" />
+            <x-icon name="dashboard" class="me-2" />
           </span>
           <span class="sidebar-text">Dashboard</span>
         </a>
@@ -64,7 +64,7 @@ CETAM - Business Sidebar Navigation
       <li class="nav-item {{ request()->routeIs('business.payments.*') ? 'active' : '' }}">
         <a href="{{ route('business.payments.index') }}" class="nav-link">
           <span class="sidebar-icon">
-            <x-icon name="card" class="icon icon-xs me-2" />
+            <x-icon name="creditCard" class="me-2" />
           </span>
           <span class="sidebar-text">Pagos</span>
         </a>
@@ -88,7 +88,7 @@ CETAM - Business Sidebar Navigation
       <li class="nav-item {{ request()->routeIs('business.profile.*') ? 'active' : '' }}">
         <a href="{{ route('business.profile.index') }}" class="nav-link">
           <span class="sidebar-icon">
-            <x-icon name="user" class="icon icon-xs me-2" />
+            <x-icon name="user" class="me-2" />
           </span>
           <span class="sidebar-text">Perfil</span>
         </a>
@@ -99,7 +99,7 @@ CETAM - Business Sidebar Navigation
       <li class="nav-item {{ request()->routeIs('business.chat.*') ? 'active' : '' }}">
         <a href="{{ route('business.chat.index') }}" class="nav-link">
           <span class="sidebar-icon">
-            <x-icon name="chat" class="icon icon-xs me-2" />
+            <x-icon name="comments" class="me-2" />
           </span>
           <span class="sidebar-text">Chat</span>
         </a>
