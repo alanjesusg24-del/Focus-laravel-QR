@@ -28,7 +28,7 @@
                         </div>
                     @endif
 
-                    {{-- PASO 1: Datos del Negocio --}}
+                    {{-- PASO 1: Datos del Negocio (SIN CAMBIOS) --}}
                     @if($currentStep === 1)
                         <h4 class="mb-4">Datos del Negocio</h4>
                         <div class="mb-3">
@@ -57,7 +57,7 @@
                         </div>
                     @endif
 
-                    {{-- PASO 2: Datos de Acceso --}}
+                    {{-- PASO 2: Datos de Acceso (SIN CAMBIOS) --}}
                     @if($currentStep === 2)
                         <h4 class="mb-4">Datos de Acceso</h4>
                         <div class="mb-3">
@@ -85,93 +85,69 @@
                         </div>
                     @endif
 
-                    {{-- PASO 3: Elige tu Plan --}}
+                    {{-- PASO 3: Elige tu Plan (Horizontal) --}}
                     @if($currentStep === 3)
                         <h4 class="mb-4 text-center">Elige tu Plan</h4>
-                        <div class="row g-3">
+                        <div class="d-flex flex-column gap-3">
                             @foreach($plans as $plan)
-                            <div class="col-12 col-md-4">
-                                <div class="card h-100 {{ $plan_id == $plan->plan_id ? 'border-primary shadow' : 'border-light' }}"
-                                     wire:click="selectPlan({{ $plan->plan_id }})"
-                                     style="cursor: pointer; transition: all 0.3s; border-width: 2px;"
-                                     onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 0.5rem 1rem rgba(0,0,0,0.15)'"
-                                     onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow=''">
-                                    <div class="card-body text-center p-4">
-                                        <h5 class="fw-bold mb-3" style="color: #262B40;">{{ $plan->name }}</h5>
-
-                                        <div class="my-4">
-                                            <h2 class="fw-bold mb-0" style="color: #262B40;">
-                                                ${{ number_format($plan->price, 0) }}
-                                            </h2>
-                                            <span class="small text-muted">MXN</span>
+                            <div class="card p-3 border rounded transition-all plan-card-hover {{ $plan_id == $plan->plan_id ? 'border-primary bg-primary-soft shadow-sm' : 'border-light bg-white' }}"
+                                 wire:click="selectPlan({{ $plan->plan_id }})"
+                                 style="cursor: pointer; position: relative;">
+                                <div class="d-flex align-items-center justify-content-between flex-wrap">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="radio" {{ $plan_id == $plan->plan_id ? 'checked' : '' }} style="pointer-events: none; transform: scale(1.1);">
                                         </div>
-
-                                        <p class="small text-muted mb-3" style="min-height: 40px;">{{ $plan->description }}</p>
-
-                                        <div class="border-top pt-3 mt-3">
-                                            <p class="small text-muted mb-2">
-                                                <x-icon name="check" class="text-success me-1"/>
-                                                <span class="fw-semibold">{{ $plan->duration_days }} días</span>
-                                            </p>
+                                        <div>
+                                            <h6 class="mb-1 fw-bold text-dark">{{ $plan->name }}</h6>
+                                            <p class="mb-0 small text-muted text-wrap lh-sm" style="max-width: 200px;">{{ $plan->description }}</p>
                                         </div>
-
-                                        @if($plan_id == $plan->plan_id)
-                                            <div class="mt-3">
-                                                <span class="badge bg-primary px-3 py-2">
-                                                    <x-icon name="check" class="me-1"/> Seleccionado
-                                                </span>
-                                            </div>
-                                        @else
-                                            <div class="mt-3">
-                                                <span class="badge bg-light text-dark px-3 py-2">
-                                                    Click para seleccionar
-                                                </span>
-                                            </div>
-                                        @endif
+                                    </div>
+                                    <div class="text-end ms-auto mt-2 mt-sm-0">
+                                        <h4 class="mb-0 fw-bolder text-dark" style="line-height: 1;">${{ number_format($plan->price, 0) }} <span class="fs-6 text-muted fw-normal">/MXN</span></h4>
+                                        <span class="badge bg-white text-dark border mt-1 shadow-sm">{{ $plan->duration_days }} días</span>
                                     </div>
                                 </div>
                             </div>
                             @endforeach
                         </div>
-
-                        <div class="form-check mt-4 p-3 bg-light rounded">
-                            <input class="form-check-input" type="checkbox" wire:model="terms" id="terms" style="margin-top: 0.35rem;">
-                            <label class="form-check-label ms-2" for="terms" style="cursor: pointer;">
-                                He leído y acepto los <a href="#" class="text-primary text-decoration-underline">términos y condiciones</a>
-                            </label>
+                        <div class="form-check mt-4 p-3 bg-light rounded border border-light">
+                            <input class="form-check-input" type="checkbox" wire:model="terms" id="terms" style="margin-top: 0.3rem;">
+                            <label class="form-check-label ms-2 small" for="terms" style="cursor: pointer;">He leído y acepto los <a href="#" class="text-primary text-decoration-underline">términos y condiciones</a></label>
                             @error('terms') <div class="text-danger small d-block mt-2">{{ $message }}</div> @enderror
                         </div>
                     @endif
 
-                    {{-- Botones de Navegación --}}
-                    <div class="mt-4">
-                        @if($currentStep < 3)
-                            <div class="d-grid">
-                                <button wire:click="nextStep" class="btn btn-gray-800">
-                                    Siguiente <x-icon name="forward" class="ms-2"/>
-                                </button>
-                            </div>
-                        @else
-                            <div class="d-grid">
-                                <button wire:click="submit" class="btn btn-gray-800" wire:loading.attr="disabled">
-                                    <span wire:loading.remove>Finalizar Registro</span>
-                                    <span wire:loading>Procesando...</span>
-                                </button>
-                            </div>
+                    {{-- ================================================================== --}}
+                    {{-- BOTONES DE NAVEGACIÓN (VERDE CORREGIDO) --}}
+                    {{-- ================================================================== --}}
+                    <div class="mt-5 d-flex align-items-center {{ $currentStep > 1 ? 'justify-content-between' : 'justify-content-end' }}">
+                        
+                        {{-- Botón Atrás (Rojo) --}}
+                        @if($currentStep > 1)
+                            <button wire:click="previousStep" class="btn btn-danger px-4">
+                                <x-icon name="back" class="me-2"/> Atrás
+                            </button>
                         @endif
 
-                        @if($currentStep > 1)
-                            <div class="d-grid mt-2">
-                                <button wire:click="previousStep" class="btn btn-link text-gray-600 text-decoration-none">
-                                    <x-icon name="back" class="me-2"/> Anterior
-                                </button>
-                            </div>
+                        {{-- Botón Siguiente (Gris) --}}
+                        @if($currentStep < 3)
+                            <button wire:click="nextStep" class="btn btn-gray-800 px-4">
+                                Siguiente <x-icon name="forward" class="ms-2"/>
+                            </button>
+                        @else
+                            {{-- Último paso: Botón Registrar (AHORA VERDE) --}}
+                            <button wire:click="submit" class="btn btn-success px-4" wire:loading.attr="disabled">
+                                <span wire:loading.remove>Registrar</span>
+                                <span wire:loading>Procesando...</span>
+                            </button>
                         @endif
                     </div>
+                    {{-- ================================================================== --}}
 
                     {{-- Link a Login --}}
                     <div class="d-flex justify-content-center align-items-center mt-4">
-                        <span class="fw-normal">
+                        <span class="fw-normal small">
                             ¿Ya tienes cuenta?
                             <a href="{{ route('business.login') }}" class="fw-bold text-dark ms-1">Inicia Sesión</a>
                         </span>
