@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Support Ticket Controller
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        SupportTicketController.php
+ * @description Controlador de tickets de soporte técnico
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\SupportTicket;
@@ -24,7 +40,7 @@ class SupportTicketController extends Controller
             $query->where('status', $status);
         }
 
-        $tickets = $query->paginate(15);
+        $tickets = $query->paginate(config('cetam.cs.pagination.per_page', 15));
 
         return view('support.index', compact('tickets'));
     }
@@ -45,8 +61,8 @@ class SupportTicketController extends Controller
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
             'description' => 'required|string|max:2000',
-            'priority' => 'required|in:low,medium,high',
-            'attachment' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf,doc,docx',
+            'priority' => 'nullable|in:low,medium,high',
+            'attachment' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf',
         ]);
 
         $businessId = Auth::id();
@@ -64,7 +80,7 @@ class SupportTicketController extends Controller
             'business_id' => $businessId,
             'subject' => $validated['subject'],
             'description' => $validated['description'],
-            'priority' => $validated['priority'],
+            'priority' => $validated['priority'] ?? 'medium', // Default to medium if not provided
             'status' => 'open',
             'attachment_url' => $attachmentUrl,
         ]);
@@ -115,7 +131,6 @@ class SupportTicketController extends Controller
 
         $validated = $request->validate([
             'description' => 'required|string|max:2000',
-            'priority' => 'required|in:low,medium,high',
         ]);
 
         $supportTicket->update($validated);

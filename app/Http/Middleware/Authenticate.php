@@ -15,6 +15,20 @@ class Authenticate extends Middleware
     protected function redirectTo($request)
     {
         if (! $request->expectsJson()) {
+            // Detectar el guard según la URL actual
+            $path = $request->path();
+
+            // Si la ruta comienza con 'superadmin', redirigir a login de superadmin
+            if (str_starts_with($path, 'superadmin')) {
+                return route('superadmin.login');
+            }
+
+            // Si la ruta comienza con 'business', redirigir a login de business
+            if (str_starts_with($path, 'business')) {
+                return route('business.login');
+            }
+
+            // Por defecto, redirigir al login del proyecto Volt
             return route(config('proj.route_name_prefix', 'proj') . '.auth.login');
         }
     }

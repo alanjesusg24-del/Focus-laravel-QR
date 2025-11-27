@@ -78,7 +78,7 @@
                         <svg class="icon icon-xs text-info mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
                         </svg>
-                        <small class="text-muted">Selecciona una orden para ver el chat. Solo órdenes activas de hoy.</small>
+                        <small class="text-muted">Selecciona una orden para ver el chat. Solo órdenes activas ligadas a dispositivos.</small>
                     </div>
                 </div>
             </div>
@@ -171,9 +171,16 @@
 
 <script>
     let currentOrderId = null;
+    let pollingInterval = null;
+    let lastMessageCount = 0;
 
     function selectOrder(orderId, folioNumber, status) {
         currentOrderId = orderId;
+
+        // Detener polling anterior si existe
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+        }
 
         // Update UI
         document.getElementById('empty-state').classList.add('d-none');
@@ -196,6 +203,11 @@
 
         // Load messages
         loadMessages(orderId);
+
+        // Iniciar polling cada 3 segundos para nuevos mensajes
+        pollingInterval = setInterval(() => {
+            loadMessages(orderId, true);
+        }, 3000);
     }
 
     function getStatusText(status) {
@@ -218,24 +230,47 @@
         return classMap[status] || 'bg-secondary';
     }
 
-    function loadMessages(orderId) {
+    function loadMessages(orderId, isPolling = false) {
         const messagesContainer = document.getElementById('chat-messages');
-        messagesContainer.innerHTML = '<div class="text-center text-muted py-5"><p>Cargando mensajes...</p></div>';
 
-        // Demo messages
-        setTimeout(() => {
-            messagesContainer.innerHTML = '';
+        if (!isPolling) {
+            messagesContainer.innerHTML = '<div class="text-center text-muted py-5"><p>Cargando mensajes...</p></div>';
+        }
 
-            const demoMessages = [
-                { sender: 'customer', message: '¿Cuánto tiempo falta para mi orden?', time: '10:35 AM' },
-                { sender: 'business', message: 'Tu orden estará lista en aproximadamente 10 minutos. Te avisaremos cuando esté lista.', time: '10:36 AM' },
-                { sender: 'customer', message: 'Perfecto, gracias!', time: '10:37 AM' }
-            ];
+        // Cargar mensajes reales desde la API
+        fetch(`/business/chat/messages/${orderId}`, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json',
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Solo actualizar si hay cambios en el número de mensajes
+                if (isPolling && data.messages.length === lastMessageCount) {
+                    return;
+                }
 
-            demoMessages.forEach(msg => {
-                addMessageToDOM(msg.message, msg.sender, msg.time);
-            });
-        }, 500);
+                lastMessageCount = data.messages.length;
+                messagesContainer.innerHTML = '';
+
+                if (data.messages.length > 0) {
+                    data.messages.forEach(msg => {
+                        addMessageToDOM(msg.message, msg.sender, msg.created_at, msg.attachment_url);
+                    });
+                } else {
+                    messagesContainer.innerHTML = '<div class="text-center text-muted py-5"><p>No hay mensajes aún</p></div>';
+                }
+            }
+        })
+        .catch(error => {
+            if (!isPolling) {
+                console.error('Error loading messages:', error);
+                messagesContainer.innerHTML = '<div class="text-center text-danger py-5"><p>Error al cargar mensajes</p></div>';
+            }
+        });
     }
 
     function sendMessage(event) {
@@ -248,13 +283,40 @@
 
         const time = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
 
-        // Add message to DOM
-        addMessageToDOM(message, 'business', time);
+        // Deshabilitar input mientras se envía
+        input.disabled = true;
 
-        // Clear input
-        input.value = '';
+        // Enviar mensaje a la API
+        fetch(`/business/chat/send/${currentOrderId}`, {
+            method: 'POST',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({ message: message })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Agregar mensaje al DOM
+                addMessageToDOM(data.message.message, 'business', data.message.created_at);
 
-        // TODO: Send to API
+                // Clear input
+                input.value = '';
+            } else {
+                alert('Error al enviar mensaje: ' + (data.message || 'Error desconocido'));
+            }
+        })
+        .catch(error => {
+            console.error('Error sending message:', error);
+            alert('Error al enviar mensaje');
+        })
+        .finally(() => {
+            input.disabled = false;
+            input.focus();
+        });
     }
 
     function addMessageToDOM(message, sender, time) {

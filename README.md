@@ -1,428 +1,776 @@
-# [Volt Dashboard Laravel](https://volt-laravel-admin-dashboard.updivision.com/dashboard) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social&logo=twitter)](https://twitter.com/intent/tweet?text=Check%20Volt%20Dashboard%20made%20by%20%40Themesberg%20and%20%40UPDIVISION%20%23webdesign%20%23dashboard%20%23laravel%20%23livewire%20%23bootstrap5&amp;url=https%3A%2F%2Fwww.themesberg.com%2Fproduct%2Flaravel%2Fvolt-pro-admin-dashboard-template)
-## Free Frontend Web App for Laravel with Livewire & Alpine.js
+# 📱 Order QR System
 
-> Project setup notes for this repository (fork/customized)
+> Sistema de gestión de órdenes con códigos QR - CETAM 2025
 
-This project has been updated for a modern local setup:
+Sistema completo de gestión de órdenes basado en códigos QR, desarrollado con Laravel 12 y Volt Dashboard, diseñado para negocios que necesitan gestionar órdenes de forma eficiente mediante escaneo de códigos QR.
 
-- PHP/Laravel: Laravel 12, PHP >= 8.2
-- Frontend toolchain: Laravel Mix 6 (Webpack 5) — no Vite
-- Node.js: 22.x, npm: 10.x
-- UI framework: Bootstrap 5.3.3 (bundle, via CDN in the base layout)
-- Livewire 3.x
+[![Laravel](https://img.shields.io/badge/Laravel-12.36-FF2D20?style=flat&logo=laravel)](https://laravel.com)
+[![PHP](https://img.shields.io/badge/PHP-8.2+-777BB4?style=flat&logo=php)](https://php.net)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE.md)
+[![CETAM](https://img.shields.io/badge/CETAM-2025-blue.svg)](https://cetam.mx)
 
-Quick start (Windows PowerShell):
+---
 
-```powershell
-# 1) Install PHP deps
-composer install
+## 📋 Tabla de Contenidos
 
-# 2) Install Node deps (Node 22, npm 10)
-npm install
+- [Características](#-características)
+- [Tecnologías](#-tecnologías)
+- [Requisitos del Sistema](#-requisitos-del-sistema)
+- [Instalación](#-instalación)
+- [Configuración](#-configuración)
+- [Base de Datos](#-base-de-datos)
+- [Usuarios de Prueba](#-usuarios-de-prueba)
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+- [Estándares CETAM](#-estándares-cetam)
+- [Comandos Útiles](#-comandos-útiles)
+- [Troubleshooting](#-troubleshooting)
+- [Contribuir](#-contribuir)
+- [Licencia](#-licencia)
 
-# 3) Environment & app key
-Copy-Item .env.example .env -Force
-php artisan key:generate
+---
 
-# 4) Database (uses SQLite by default if configured)
-php artisan migrate --seed
+## ✨ Características
 
-# 5) Build frontend assets (development)
-npm run development
+### 🏢 Panel de Negocios
+- ✅ Registro y autenticación de negocios
+- ✅ Gestión completa de órdenes con QR
+- ✅ Dashboard con estadísticas en tiempo real
+- ✅ Sistema de pagos con MercadoPago
+- ✅ Perfiles personalizables con ubicación en mapa
+- ✅ Chat en tiempo real (módulo opcional)
+- ✅ Sistema de re-alertas para órdenes
+- ✅ Gestión de tickets de soporte
 
-# 6) Run the tests (optional but recommended)
-php artisan test
+### 👨‍💼 Panel de SuperAdmin
+- ✅ Gestión de negocios registrados
+- ✅ Administración de planes y precios
+- ✅ Monitoreo de pagos y suscripciones
+- ✅ Dashboard con métricas globales
+- ✅ Gestión de tickets de soporte
 
-# 7) Serve the app
-php artisan serve
+### 🎨 Frontend Estandarizado
+- ✅ Plantilla Volt Dashboard Bootstrap 5
+- ✅ Sistema de iconos estandarizado (Font Awesome 6)
+- ✅ Paleta de colores CETAM institucional
+- ✅ Componente Blade `<x-icon>` centralizado
+- ✅ Diseño responsive y accesible
+- ✅ Notificaciones con SweetAlert2 y Notyf
+
+### 🔧 Funcionalidades Técnicas
+- ✅ Generación automática de códigos QR
+- ✅ Multi-autenticación (Business y SuperAdmin)
+- ✅ API REST para integración móvil
+- ✅ Firebase Cloud Messaging (notificaciones push)
+- ✅ Google Maps API (ubicación de negocios)
+- ✅ Sistema de subscripciones con planes personalizables
+- ✅ Retención de datos configurable por plan
+
+---
+
+## 🛠 Tecnologías
+
+### Backend
+- **Laravel 12.36** - Framework PHP
+- **PHP 8.2+** - Lenguaje de programación
+- **MySQL** - Base de datos relacional
+- **Livewire 3.5** - Componentes reactivos
+
+### Frontend
+- **Volt Dashboard** - Plantilla administrativa Bootstrap 5
+- **Bootstrap 5.3** - Framework CSS
+- **Font Awesome 6.4** - Iconos (Solid)
+- **SweetAlert2** - Modales de confirmación
+- **Notyf** - Notificaciones toast
+- **Chart.js** - Gráficos y estadísticas
+- **Google Maps API** - Mapas interactivos
+
+### Integraciones
+- **MercadoPago SDK** - Pagos online
+- **Firebase PHP SDK** - Notificaciones push
+- **SimpleSoftwareIO QR Code** - Generación de códigos QR
+- **Laravel Sanctum** - Autenticación API
+
+---
+
+## 💻 Requisitos del Sistema
+
+### Software Requerido
+
+| Software | Versión Mínima | Recomendada |
+|----------|----------------|-------------|
+| **PHP** | 8.2 | 8.3+ |
+| **Composer** | 2.0 | 2.7+ |
+| **Node.js** | 20.x | 22.x |
+| **npm** | 9.x | 10.x |
+| **MySQL** | 8.0 | 8.0+ |
+| **Git** | 2.0 | 2.44+ |
+
+### Extensiones PHP Requeridas
+```bash
+php -m | grep -E 'pdo|mysql|mbstring|xml|bcmath|json|openssl|tokenizer|fileinfo|gd'
 ```
 
-Production build:
+**Extensiones necesarias:**
+- PDO
+- pdo_mysql
+- mbstring
+- xml
+- bcmath
+- json
+- openssl
+- tokenizer
+- fileinfo
+- gd (para generación de QR)
 
-```powershell
+### Servicios Externos (Opcionales)
+- **Google Maps API** - Para ubicación de negocios
+- **MercadoPago** - Para procesamiento de pagos
+- **Firebase** - Para notificaciones push
+
+---
+
+## 🚀 Instalación
+
+### Paso 1: Clonar el Repositorio
+
+```bash
+# Clonar el proyecto
+git clone https://github.com/tu-usuario/order-qr-system.git
+cd order-qr-system
+```
+
+### Paso 2: Instalar Dependencias de PHP
+
+```bash
+# Instalar dependencias de Composer
+composer install
+```
+
+Si encuentras errores, prueba:
+```bash
+composer install --ignore-platform-reqs
+composer update
+```
+
+### Paso 3: Instalar Dependencias de Node.js
+
+```bash
+# Instalar dependencias de npm
+npm install
+
+# Si usas Node.js 22+
+npm install --legacy-peer-deps
+```
+
+### Paso 4: Configurar Variables de Entorno
+
+```bash
+# Copiar archivo de ejemplo
+cp .env.example .env
+
+# Generar clave de aplicación
+php artisan key:generate
+```
+
+### Paso 5: Configurar Base de Datos
+
+Edita el archivo `.env` con tus credenciales de MySQL:
+
+```env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=order_qr_system
+DB_USERNAME=root
+DB_PASSWORD=tu_contraseña
+```
+
+### Paso 6: Crear Base de Datos
+
+```bash
+# Opción 1: Desde MySQL CLI
+mysql -u root -p
+CREATE DATABASE order_qr_system CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+EXIT;
+
+# Opción 2: Desde artisan (si tienes permisos)
+php artisan db:create order_qr_system
+```
+
+### Paso 7: Ejecutar Migraciones y Seeders
+
+```bash
+# Ejecutar migraciones
+php artisan migrate
+
+# Ejecutar seeders (datos de prueba)
+php artisan db:seed
+```
+
+**⚠️ IMPORTANTE:** Los seeders crearán:
+- 2 SuperAdmins de prueba
+- 3 Planes de suscripción
+- 5 Negocios de prueba
+- 20+ Órdenes de ejemplo
+- Pagos y tickets de soporte
+
+### Paso 8: Crear Enlace Simbólico de Storage
+
+```bash
+php artisan storage:link
+```
+
+### Paso 9: Compilar Assets
+
+```bash
+# Desarrollo
+npm run dev
+
+# Producción
 npm run production
 ```
 
-Notes:
+### Paso 10: Iniciar Servidor
 
-- Bootstrap is loaded via the 5.3.3 bundle CDN in `resources/views/layouts/base.blade.php`.
-- Theme SCSS sources live in `resources/scss/`. If you want to brand colors, override variables in `resources/scss/custom/_variables.scss` and compile `resources/scss/volt.scss` via Mix (optional wiring).
-- Node 22 compatibility is ensured by pinning Webpack 5 / webpack-cli 4 and overriding a transitive dependency (rechoir) in `package.json`.
+```bash
+# Servidor de desarrollo Laravel
+php artisan serve
 
-[![version](https://img.shields.io/npm/v/@themesberg/volt-bootstrap-5-dashboard)](https://www.npmjs.com/package/@themesberg/volt-laravel-admin-dashboard)
-[![license](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
-[![GitHub issues open](https://img.shields.io/github/issues/themesberg/volt-laravel-admin-dashboard.svg)](https://github.com/themesberg/volt-laravel-admin-dashboard/issues?q=is%3Aopen+is%3Aissue)
-[![GitHub issues closed](https://img.shields.io/github/issues-closed-raw/themesberg/volt-laravel-admin-dashboard.svg)](https://github.com/themesberg/volt-laravel-admin-dashboard/issues?q=is%3Aissue+is%3Aclosed)
-
-[![Volt Laravel Dashboard Preview](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/volt-free-laravel-dashboard.jpg)](https://volt-laravel-admin-dashboard.updivision.com/dashboard)
-
-Never start a development project from scratch again. We've partnered with UPDIVISION to create the ultimate design & development toolbox, free for personal and commercial projects. 
-
-Volt Dashboard Laravel features dozens of handcrafted UI elements tailored for Bootstrap 5 and an out of the box Laravel backend. The Livewire integration allows you to build dynamic interfaces easier without leaving the comfort of your favourite framework. If you combine this even further with Alpine.js, you get the perfect combo for your next big project.    
-
-## Ok, I`m in. So, what am I getting?
-
-You're getting a lean, mean, app-building machine made of:  
-
-
-- 100+ handcrafted UI components tailored for Bootstrap 5 with Vanilla JS. This means buttons, alerts, modals, datepickers and everything in between
-- 11 example pages to get you started 
-- 3 lightweight plugins: datepicker, notification and charts library
-- Sass files & Gulp commands
-- fully-functional authentication system, register and user profile editing features built with Laravel
-- Livewire & Alpine.js integration
-
-
-## Free for personal and commercial projects
-
-Whether you're working on a side project or delivering to a client, with Volt Dashboard Laravel you can do both. Volt Dashboard Laravel is released under MIT license, so you can use it for personal and commercial projects for free. Just start coding.    
-
-
-## Detailed documentation & Gulp commands for an easy workflow
-
-
-We also included detailed documentation for every component and feature so it helps in your development workflow. Plus you will get an advanced development workflow package including Sass files. Note: this repository uses Laravel Mix (Webpack), not Gulp.
-
-
-## Table of Contents
-
-* [Versions](#versions)
-* [Demo](#demo)
-* [Installation](#installation)
-* [Documentation](#documentation)
-* [File Structure](#file-structure)
-* [Browser Support](#browser-support)
-* [Resources](#resources)
-* [Upgrade to PRO](#upgrade-to-pro)
-* [Reporting Issues](#reporting-issues)
-* [Technical Support or Questions](#technical-support-or-questions)
-* [Licensing](#licensing)
-* [Useful Links](#useful-links)
-
-## Versions
-
-[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/html-logo.jpg?raw=true" width="60" height="60" />](https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard)[<img src="https://github.com/creativetimofficial/public-assets/blob/master/logos/react-logo.jpg?raw=true" width="60" height="60" />](https://themesberg.com/product/dashboard/volt-react)[<img src="https://themesberg.s3.us-east-2.amazonaws.com/public/github/technology/laravel-logo.jpeg" width="60" height="60" />](https://themesberg.com/product/laravel/volt-admin-dashboard-template).
-
-| HTML | React  | Laravel  |
-| --- | ---  | --- |
-| [![Volt Bootstrap 5 Dashboard HTML](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-bootstrap-5-dashboard/volt-bootstrap-5-dashboard-preview.jpg)](https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard) | [![Volt React Dashboard](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-react-dashboard/thumbnail.png)](https://themesberg.com/product/dashboard/volt-react) | [![Volt Laravel Dashboard](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/volt-free-laravel-dashboard.jpg)](https://themesberg.com/product/laravel/volt-admin-dashboard-template)
-
-## Laravel
-
-| Sign in | Sign up | Profile | Reset password |
-| --- | --- | --- | --- |
-| [![Sign in](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/sign-in.png)](https://volt-laravel-admin-dashboard.updivision.com/login) | [![Sign up](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/sign-up.png)](https://volt-laravel-admin-dashboard.updivision.com/register) | [<img src = "https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/profile.png" width="87% height = 100%"> ](https://volt-laravel-admin-dashboard.updivision.com/profile) | [![Reset password](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/reset-password.png)](https://volt-laravel-admin-dashboard.updivision.com/forgot-password)
-
-## Demo
-
-| Dashboard | Transactions | Profile | Forms |
-| --- | --- | --- | --- |
-| [![Dashboard](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/dashboard.png)](https://volt-laravel-admin-dashboard.updivision.com/dashboard) | [![Transactions](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/transactions.png)](https://volt-laravel-admin-dashboard.updivision.com/transactions) | [![Profile](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/profile.png)](https://volt-laravel-admin-dashboard.updivision.com/profile) | [![Forms](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/forms.png)](https://volt-laravel-admin-dashboard.updivision.com/forms)
-
-| Sign in | Sign up | Forgot password | Reset password |
-| --- | --- | --- | --- |
-| [![Sign in](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/sign-in.png)](https://volt-laravel-admin-dashboard.updivision.com/login) | [![Sign up](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/sign-up.png)](https://volt-laravel-admin-dashboard.updivision.com/register) | [![Forgot Password](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/forgot-password.png)](https://volt-laravel-admin-dashboard.updivision.com/forgot-password) | [![Reset password](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/reset-password.png)](https://volt-laravel-admin-dashboard.updivision.com/forgot-password)
-
-| Lock Profile | 404 Not Found | 500 Server Error | Documentation |
-| --- | --- | --- | --- |
-| [![Lock Profile](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/lock.png)](https://volt-laravel-admin-dashboard.updivision.com/lock) | [![404 Not Found](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/400.png)](https://volt-laravel-admin-dashboard.updivision.com/404) | [![500 Server Error](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/500.png)](https://volt-laravel-admin-dashboard.updivision.com/500) | [<img src = "https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/github/documentation.png" width = "85%">](https://volt-laravel-admin-dashboard.updivision.com/documentation/getting-started/overview/index.html)
-
--   [Live Preview](https://volt-laravel-admin-dashboard.updivision.com/dashboard)
--   [Details](https://themesberg.com/product/laravel/volt-admin-dashboard-template)
-
-# Installation
-
-## Prerequisites
-
-If you don't already have an Apache local environment with PHP and MySQL, use one of the following links:
-
- - Windows: https://updivision.com/blog/post/beginner-s-guide-to-setting-up-your-local-development-environment-on-windows
- - Linux: https://howtoubuntu.org/how-to-install-lamp-on-ubuntu
- - Mac: https://wpshout.com/quick-guides/how-to-install-mamp-on-your-mac/
-
-Also, you will need to install Composer: https://getcomposer.org/doc/00-intro.md
-
-## Laravel
-1. Download the project’s zip then copy and paste volt-dashboard-master folder in your projects folder. Rename the folder to your project’s name
-2. Make sure you have Node and Composer locally installed.
-3.Run the following command in order to download all the project dependencies. `composer install`
-4. In your terminal run `npm install`
-5. Copy `.env.example` to `.env` and updated the configurations (mainly the database configuration)
-6. In your terminal run `php artisan key:generate`
-7. Run `php artisan migrate --seed` to create the database tables and seed the roles and users tables
-8. Run `php artisan storage:link` to create the storage symlink (if you are using **Vagrant** with **Homestead** for development, remember to ssh into your virtual machine and run the command from there).
-
-
-## Usage
-
-Register a user or login using admin@volt.com and secret and start testing the Laravel app (make sure to run the migrations and seeders for these credentials to be available).
-Make sure to run the migrations and seeders for the above credentials to be available.
-
-Make sure to run the migrations and seeders for the above credentials to be available.
-
-Besides the dashboard and the auth pages this application also has an edit profile page. All the necessary files (controllers, requests, views) are installed out of the box and all the needed routes are added to `routes/web.php`. Keep in mind that all of the features can be viewed once you login using the credentials provided above or by registering your own user.
-
-### Dashboard
-
-You can access the dashboard either by using the "**Dashboard**" link in the left sidebar or by adding **/dashboard** in the URL.
-
-
-### Sign in
-
-You have the option to log in using the email and password. To access this page, just click the "**Page examples/ Sign in**" link in the left sidebar or add **/login** in the URL.
-
-The `app/Livewire/Auth/Login.php` handles the log in process and validation.
-
-```
-   protected $rules = [
-        'email' => 'required|email',
-        'password' => 'required',
-    ];
-
-    public function login()
-    {
-        $credentials = $this->validate();
-        return auth()->attempt($credentials)
-                ? redirect()->intended('/profile')
-                : $this->addError('email', trans('auth.failed'));
-    }
+# La aplicación estará disponible en: http://127.0.0.1:8000
 ```
 
-### Sign up
+---
 
-You have the option to register an user using the email and password. To access this page, just click the "**Page examples/ Sign up**" link in the left sidebar or add **/register** in the URL.
+## ⚙️ Configuración
 
-The `app/Livewire/Auth/Register.php` handles the register process and validation.
+### Variables de Entorno Principales
 
-```
-    public function register()
-    {
-        $this->validate([
-            'email' => 'required',
-            'password' => 'required|same:passwordConfirmation|min:6',
-        ]);
-
-        $user = User::create([
-            'email' =>$this->email,
-            'password' => Hash::make($this->password),
-            'remember_token' => Str::random(10),
-        ]);
-
-        auth()->login($user);
-
-        return redirect('/profile');
-    }
-```
-### Forgot password
-
-You have the option to send an email containing the password reset link to an user. To access this page, just click the "**Page examples/ Forgot password**" link in the left sidebar or add **/forgot-password** in the URL.
-
-The `app/Livewire/ForgotPassword.php` handles the email submission process.
-
-```
-    public function recoverPassword() {
-        $this->validate();
-        $user=User::where('email', $this->email)->first();
-        $this->notify(new ResetPassword($user->id));
-        $this->mailSentAlert = true;
-        }
-    }
+#### Configuración Básica
+```env
+APP_NAME="Order QR System"
+APP_ENV=local
+APP_DEBUG=true
+APP_URL=http://localhost:8000
 ```
 
-The `app/Notifications/ResetPassword.php` handles the email submission itself. Here you can edit the overall layout of the email.
-```
-    public function toMail($notifiable)
-    {
-        $url = URL::signedRoute('reset-password', ['id' => $this->token]);
-        return (new MailMessage)
-                    ->subject('Reset your password')
-                    ->line('Hey, did you forget your password? Click the button to reset it.')
-                    ->action('Reset Password', $url)
-                    ->line('Thank you for using our application!');
-    }
-
+#### Google Maps API (Opcional)
+```env
+GOOGLE_MAPS_API_KEY=tu_api_key_aqui
 ```
 
-### Reset password
+**Obtener API Key:**
+1. Ve a [Google Cloud Console](https://console.cloud.google.com/)
+2. Crea un proyecto nuevo
+3. Habilita "Maps JavaScript API" y "Geocoding API"
+4. Crea credenciales (API Key)
+5. Copia la clave en `.env`
 
-The email sent through the forgot password process will send the user to an unique link containing the password reset form. To access an example of this page, just click the "**Page examples/ Reset password**" link in the left sidebar or add **/reset-password-example** in the URL.
-
-The `app/Livewire/ResetPassword.php` handles the password reset process and validation.
-
+#### MercadoPago (Opcional - para pagos)
+```env
+# Credenciales de prueba (sandbox)
+MERCADOPAGO_PUBLIC_KEY=TEST-xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx
+MERCADOPAGO_ACCESS_TOKEN=TEST-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxx-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx-xxxxxxxxx-xxxxxxxx
+MERCADOPAGO_MODE=sandbox
 ```
 
-    public function resetPassword() {
-        $this->validate();
-        $existingUser = User::where('email', $this->email)->first();
-        if($existingUser && $existingUser->id == $this->urlId) {
-            $existingUser->update([
-                'password' => Hash::make($this->password)
-            ]);
-            $this->isPasswordChanged = true;
-            $this->wrongEmail = false;
-        }
-        else {
-            $this->wrongEmail = true;
-        }
-    }
-    
+**Obtener credenciales:**
+1. Regístrate en [MercadoPago Developers](https://www.mercadopago.com.mx/developers/)
+2. Ve a "Credenciales" en tu cuenta
+3. Copia las credenciales de prueba (TEST)
+4. Para producción, usa las credenciales reales
+
+#### Firebase (Opcional - para notificaciones push)
+```env
+FIREBASE_CREDENTIALS=path/to/firebase-credentials.json
 ```
 
-### User Profile
+### Configuración de Email (Opcional)
 
-You have the option to edit the current logged in user's profile information (name, email, profile picture) and password. To access this page, just click the "**Profile**" link in the left sidebar or add **/profile** in the URL.
+Para notificaciones por email:
 
-The `app/Livewire/Profile.php` handles the update of the user information and password.
-
-```
-    public function mount() { $this->user = auth()->user(); }
-
-    public function save()
-    {
-        $this->validate();
-
-        $this->user->save();
-
-        $this->showSavedAlert = true;
-            
-        }
-    }
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=tu_username
+MAIL_PASSWORD=tu_password
+MAIL_ENCRYPTION=tls
+MAIL_FROM_ADDRESS="noreply@orderqr.com"
+MAIL_FROM_NAME="${APP_NAME}"
 ```
 
-If you input the wrong data when editing the profile, don't worry. Validation rules have been added to prevent this.
+**Servicios recomendados para pruebas:**
+- [Mailtrap](https://mailtrap.io/) - Email testing
+- [MailHog](https://github.com/mailhog/MailHog) - Local SMTP server
+
+---
+
+## 🗄️ Base de Datos
+
+### Estructura Principal
+
+#### Tablas Core
+- `businesses` - Negocios registrados
+- `orders` - Órdenes generadas
+- `plans` - Planes de suscripción
+- `payments` - Historial de pagos
+- `super_admins` - Administradores del sistema
+
+#### Tablas Adicionales
+- `users` - Usuarios móviles (clientes finales)
+- `mobile_devices` - Dispositivos registrados
+- `order_items` - Items de cada orden
+- `order_status_history` - Historial de estados
+- `order_realerts` - Re-alertas de órdenes
+- `chat_messages` - Mensajes de chat
+- `support_tickets` - Tickets de soporte
+- `notifications` - Notificaciones push
+
+### Diagrama de Relaciones
 
 ```
-    protected $rules = [
-        'user.first_name' => 'max:15',
-        'user.last_name' => 'max:20',
-        'user.birthday' => 'date_format:Y-m-d',
-        'user.email' => 'email',
-        'user.phone' => 'numeric',
-        'user.gender' => '',
-        'user.address' => 'max:20',
-        'user.number' => 'numeric',
-        'user.city' => 'max:20',
-        'user.zip' => 'numeric',
-    ];
-
+┌─────────────┐         ┌─────────────┐         ┌─────────────┐
+│   plans     │────────<│ businesses  │────────<│   orders    │
+└─────────────┘         └─────────────┘         └─────────────┘
+                              │                        │
+                              │                        │
+                              ▼                        ▼
+                        ┌─────────────┐         ┌─────────────┐
+                        │  payments   │         │    users    │
+                        └─────────────┘         └─────────────┘
 ```
 
+### Comandos de Base de Datos
 
-## Documentation
-The documentation for Volt is hosted on our [website](https://volt-laravel-admin-dashboard.updivision.com/documentation/getting-started/overview/index.html).
+```bash
+# Resetear base de datos completamente
+php artisan migrate:fresh --seed
 
-## File Structure
-Within the download you'll find the following directories and files:
+# Solo migraciones (sin datos)
+php artisan migrate:fresh
 
+# Revertir última migración
+php artisan migrate:rollback
+
+# Ver estado de migraciones
+php artisan migrate:status
+
+# Ejecutar solo un seeder específico
+php artisan db:seed --class=SuperAdminSeeder
 ```
 
-├── components
-│   ├── buttons.blade.php                       # Buttons page
-│   ├── forms.blade.php                         # Forms page
-│   ├── modals.blade.php                        # Modals page
-│   ├── notifications.blade.php                 # Notifications page
-│   └── typography.blade.php                    # Typography page
-├── dashboard.blade.php                         # Dashboard
-├── layouts
-│   ├── app.blade.php                           # Including layouts based on routes
-│   ├── base.blade.php                          # All the styles and scripts included
-│   ├── footer2.blade.php                       # Footer for pages without sidenav
-│   ├── footer.blade.php                        # Footer for pages with sidenav
-│   ├── nav.blade.php                           # Nav for mobile view 
-│   ├── sidenav.blade.php                       # The sidebar menu
-│   └── topbar.blade.php                        # Search bar, notifications and user area
-├── livewire                                    # All the pages that are using livewire functionality
-│   ├── auth                                    # Handles auth routes (login and register)
-│   │   ├── login.blade.php                     
-│   │   └── register.blade.php
-│   ├── forgot-password.blade.php               # Handles the forgot-password form
-│   ├── logout.blade.php                        # Logout functionality
-│   ├── profile.blade.php                       # Profile page
-│   ├── reset-password.blade.php                # Handles the reset password form
-│   └── users.blade.php                         # Users table
-├── upgrade-to-pro.blade.php                    # Upgrade to pro page
-├── lock.blade.php                              # Lock page
-└── transactions.blade.php                      # Transactions page
-├── 404.blade.php                               # Error 404 page
-├── 500.blade.php                               # Error 500 page
-├── bootstrap-tables.blade.php                  # Bootstrap tables page                
+---
+
+## 👥 Usuarios de Prueba
+
+Después de ejecutar `php artisan db:seed`, tendrás acceso a estas cuentas:
+
+### 🔑 SuperAdmin
+
+| Email | Contraseña | Nombre |
+|-------|-----------|---------|
+| `admin@example.com` | `password` | Super Administrador |
+| `superadmin@cetam.mx` | `password123` | CETAM Administrator |
+
+**Acceso:** `http://127.0.0.1:8000/superadmin/login`
+
+### 🏢 Negocios de Prueba
+
+Los seeders crean 5 negocios de ejemplo. Ejemplo:
+
+| Email | Contraseña | Negocio |
+|-------|-----------|---------|
+| `business1@example.com` | `password` | Cafetería Central |
+| `business2@example.com` | `password` | Restaurante El Buen Sabor |
+
+**Acceso:** `http://127.0.0.1:8000/business/login`
+
+### 📋 Planes Disponibles
+
+| Plan | Precio | Chat | Retención | Re-alertas |
+|------|--------|------|-----------|------------|
+| Básico | $99/mes | ❌ | 30 días | ❌ |
+| Profesional | $199/mes | ✅ | 90 días | ✅ |
+| Empresarial | $299/mes | ✅ | 365 días | ✅ |
+
+---
+
+## 📁 Estructura del Proyecto
+
+```
+order-qr-system/
+├── app/
+│   ├── Http/
+│   │   ├── Controllers/
+│   │   │   ├── Auth/              # Autenticación
+│   │   │   ├── Api/               # API REST
+│   │   │   ├── SuperAdmin/        # Controladores SuperAdmin
+│   │   │   ├── BusinessController.php
+│   │   │   ├── OrderController.php
+│   │   │   ├── PaymentController.php
+│   │   │   └── ...
+│   │   └── Middleware/            # Middlewares personalizados
+│   ├── Models/                    # Modelos Eloquent
+│   ├── View/
+│   │   └── Components/            # Componentes Blade
+│   │       └── Icon.php           # Componente <x-icon>
+│   └── ...
+├── config/
+│   └── icons.php                  # Catálogo de iconos CETAM
+├── database/
+│   ├── migrations/                # Migraciones de BD
+│   └── seeders/                   # Seeders de datos
+├── public/
+│   ├── assets/                    # Assets de Volt Dashboard
+│   ├── css/                       # CSS compilado
+│   │   ├── app.css
+│   │   ├── volt.css
+│   │   └── cetam-colors.css      # Colores CETAM
+│   └── js/                        # JavaScript compilado
+├── resources/
+│   ├── js/
+│   │   └── app.js                # JavaScript principal
+│   ├── sass/
+│   │   ├── custom/
+│   │   │   ├── _variables.scss   # Variables CETAM
+│   │   │   └── _custom.scss
+│   │   └── app.scss
+│   └── views/
+│       ├── auth/                 # Vistas de login
+│       ├── business/             # Vistas de negocios
+│       ├── superadmin/           # Vistas de superadmin
+│       ├── layouts/              # Layouts base
+│       └── components/           # Componentes Blade
+│           └── icon.blade.php    # Vista del componente icon
+├── routes/
+│   ├── web.php                   # Rutas web
+│   └── api.php                   # Rutas API
+├── .env.example                  # Plantilla de variables
+├── composer.json                 # Dependencias PHP
+├── package.json                  # Dependencias Node
+├── webpack.mix.js                # Configuración Laravel Mix
+├── estandares-frontend-laravel.md # Estándares CETAM
+└── README.md                     # Este archivo
 ```
 
-## Browser Support
+---
 
-At present, we officially aim to support the last two versions of the following browsers:
+## 🎨 Estándares CETAM
 
-<img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/chrome.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/firefox.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/edge.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/safari.png" width="64" height="64"> <img src="https://s3.amazonaws.com/creativetim_bucket/github/browser/opera.png" width="64" height="64">
+Este proyecto sigue los **Estándares de Frontend CETAM 2025**, documentados en:
 
-## Resources
-- Demo: <https://volt-laravel-admin-dashboard.updivision.com/dashboard>
-- Download Page: <https://themesberg.com/product/laravel/volt-admin-dashboard-template>
-- Documentation: <https://volt-laravel-admin-dashboard.updivision.com/documentation/getting-started/overview/index.html>
-- License Agreement: <https://themesberg.com/licensing>
-- Support: <https://themesberg.com/contact>
-- Issues: [Github Issues Page](https://github.com/themesberg/volt-laravel-admin-dashboard/issues)
-- **Dashboards:**
+📄 [`estandares-frontend-laravel.md`](estandares-frontend-laravel.md)
 
-| HTML | React  | Laravel  |
-| --- | ---  | --- |
-| [![Volt Bootstrap 5 Dashboard HTML](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-bootstrap-5-dashboard/volt-bootstrap-5-dashboard-preview.jpg)](https://volt-laravel-admin-dashboard.updivision.com/dashboard) | [![Volt React Dashboard](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-react-dashboard/thumbnail.png)](https://github.com/themesberg/volt-react-dashboard) | [![Volt React Dashboard](https://themesberg.s3.us-east-2.amazonaws.com/public/products/volt-laravel-dashboard/volt-free-laravel-dashboard.jpg)](https://github.com/themesberg/volt-laravel-admin-dashboard)
+### Puntos Clave
 
-## Change log
+#### 🎨 Paleta de Colores Institucional
+```scss
+$primary: #1F2937;      // Gris oscuro slate
+$secondary: #FB503B;    // Naranja rojizo vibrante
+$tertiary: #31316A;     // Azul índigo oscuro
+$success: #10B981;      // Verde
+$danger: #EF4444;       // Rojo
+$warning: #FBA918;      // Ámbar
+$info: #3B82F6;         // Azul
+```
 
-Please see the [changelog](CHANGELOG.md) for more information on what has changed recently.
+#### 🔠 Tipografía
+- **Fuente:** Nunito Sans (Google Fonts)
+- **Uso:** Obligatorio en toda la aplicación
 
+#### ✨ Sistema de Iconos
 
-## Upgrade to Pro
+**OBLIGATORIO:** Usar solo el componente `<x-icon>` con Font Awesome Solid 6.4
 
-Take front-end development to the next level by upgrading to the PRO version of Volt Laravel Admin Dashboard featuring over 3 times more components, plugin and pages and 5 times more Laravel features. You also get 6 months of premium support and free updates. Check out [Volt Pro Premium Laravel Admin Dashboard](https://themesberg.com/product/laravel/volt-pro-admin-dashboard-template).
+```blade
+<!-- ✅ CORRECTO -->
+<x-icon name="user" />
+<x-icon name="save" class="me-2" />
 
-## Reporting Issues
+<!-- ❌ INCORRECTO -->
+<i class="fa-solid fa-user"></i>
+<svg>...</svg>
+```
 
-We use GitHub Issues as the official bug tracker for Volt Laravel Admin Dashboard. Here are some advices for our users that want to report an issue:
+**Catálogo completo:** [`config/icons.php`](config/icons.php)
 
-1. Make sure that you are using the latest version of Volt Laravel Admin Dashboard. Check the CHANGELOG from your dashboard on our [website](https://themesberg.com/docs/volt-laravel-admin-dashboard/getting-started/changelog/).
-2. Providing us reproducible steps for the issue will shorten the time it takes for it to be fixed.
-3. Some issues may be browser specific, so specifying in what browser you encountered the issue might help.
+#### 🎯 Notificaciones
 
-## Technical Support or Questions
+**SweetAlert2** - Para confirmaciones críticas:
+```javascript
+Swal.fire({
+    title: '¿Eliminar usuario?',
+    text: 'Esta acción no se puede deshacer',
+    icon: 'warning',
+    iconColor: '#FBA918',
+    showCancelButton: true,
+    confirmButtonColor: '#EF4444',
+    cancelButtonColor: '#6B7280',
+    confirmButtonText: 'Sí, eliminar',
+    cancelButtonText: 'Cancelar'
+});
+```
 
-If you have questions or need help integrating the product please [contact us](https://themesberg.com/contact) instead of opening an issue.
+**Notyf** - Para notificaciones rápidas:
+```javascript
+notyf.success('Datos guardados correctamente');
+notyf.error('Error al procesar la solicitud');
+```
 
-## Licensing
+---
 
-- Copyright 2021 Themesberg (Crafty Dwarf LLC) (https://themesberg.com)
-- Themesberg [license](https://themesberg.com/licensing#mit) (MIT License)
+## 🔧 Comandos Útiles
 
-## Useful Links
+### Laravel Artisan
 
-- [More themes](https://themesberg.com/themes) from Themesberg
-- [Free themes](https://themesberg.com/templates/free) from Themesberg
-- [Bootstrap Themes, Templates & UI Kits](https://themesberg.com/templates/laravel/) from Themesberg
-- [Affiliate Program](https://themesberg.com/affiliate)
+```bash
+# Limpiar cachés
+php artisan cache:clear
+php artisan config:clear
+php artisan route:clear
+php artisan view:clear
 
-## Social Media
+# Listar rutas
+php artisan route:list
 
-### Themesberg
+# Crear nuevo controlador
+php artisan make:controller NombreController
 
-Twitter: <https://twitter.com/themesberg>
+# Crear nuevo modelo con migración
+php artisan make:model NombreModelo -m
 
-Facebook: <https://www.facebook.com/themesberg/>
+# Crear seeder
+php artisan make:seeder NombreSeeder
 
-Dribbble: <https://dribbble.com/themesberg>
+# Optimizar aplicación (producción)
+php artisan optimize
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
 
-Instagram: <https://www.instagram.com/themesberg/>
+### NPM Scripts
 
-### Updivision:
+```bash
+# Desarrollo con watch
+npm run watch
 
-Twitter: <https://twitter.com/updivision?ref=pdl-readme>
+# Desarrollo con hot reload
+npm run hot
 
-Facebook: <https://www.facebook.com/updivision?ref=pdl-readme>
+# Producción (minificado)
+npm run production
 
-Linkedin: <https://www.linkedin.com/company/updivision?ref=pdl-readme>
+# Ver versión de dependencias
+npm list --depth=0
+```
 
-Updivision Blog: <https://updivision.com/blog/?ref=pdl-readme>
+### Git Workflow
 
-## Credits
+```bash
+# Clonar con submódulos
+git clone --recursive https://github.com/tu-usuario/order-qr-system.git
 
-- [Themesberg](https://themesberg.com/)
-- [UPDIVISION](https://updivision.com)
+# Crear nueva rama
+git checkout -b feature/nueva-funcionalidad
+
+# Commit con estándares
+git add .
+git commit -m "feat: Descripción del cambio"
+
+# Push a GitHub
+git push origin feature/nueva-funcionalidad
+```
+
+---
+
+## 🐛 Troubleshooting
+
+### Error: "Class 'App\View\Components\Icon' not found"
+
+**Solución:**
+```bash
+composer dump-autoload
+php artisan config:clear
+php artisan cache:clear
+```
+
+### Error: "SQLSTATE[HY000] [1045] Access denied"
+
+**Solución:**
+1. Verifica credenciales en `.env`
+2. Confirma que MySQL está corriendo
+3. Prueba conexión: `mysql -u root -p`
+
+### Error: "npm ERR! peer dependencies"
+
+**Solución:**
+```bash
+npm install --legacy-peer-deps
+```
+
+### Error: "File storage/logs/laravel.log not writable"
+
+**Solución (Windows):**
+```bash
+# Dar permisos completos a carpetas
+icacls storage /grant Everyone:F /T
+icacls bootstrap\cache /grant Everyone:F /T
+```
+
+**Solución (Linux/Mac):**
+```bash
+chmod -R 775 storage bootstrap/cache
+chown -R www-data:www-data storage bootstrap/cache
+```
+
+### Error: "The stream or file could not be opened"
+
+**Solución:**
+```bash
+php artisan cache:clear
+chmod -R 775 storage
+```
+
+### Assets no se cargan (404)
+
+**Solución:**
+```bash
+npm run dev
+php artisan storage:link
+```
+
+### Google Maps no funciona
+
+**Solución:**
+1. Verifica que `GOOGLE_MAPS_API_KEY` esté en `.env`
+2. Habilita APIs necesarias en Google Cloud Console:
+   - Maps JavaScript API
+   - Geocoding API
+   - Places API
+
+### MercadoPago no procesa pagos
+
+**Solución:**
+1. Verifica credenciales en `.env`
+2. Confirma que estás usando credenciales TEST (sandbox)
+3. Revisa logs: `storage/logs/laravel.log`
+
+---
+
+## 🤝 Contribuir
+
+### Proceso de Contribución
+
+1. **Fork** el repositorio
+2. **Crea** una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** tus cambios (`git commit -m 'feat: Add some AmazingFeature'`)
+4. **Push** a la rama (`git push origin feature/AmazingFeature`)
+5. **Abre** un Pull Request
+
+### Estándares de Commits
+
+Seguimos [Conventional Commits](https://www.conventionalcommits.org/):
+
+```
+feat: Nueva funcionalidad
+fix: Corrección de bug
+docs: Cambios en documentación
+style: Cambios de formato (no afectan código)
+refactor: Refactorización de código
+test: Agregar o corregir tests
+chore: Cambios en build o dependencias
+```
+
+### Código de Conducta
+
+- Respetar los estándares CETAM
+- Usar componente `<x-icon>` para todos los iconos
+- Seguir paleta de colores institucional
+- Documentar cambios significativos
+- Escribir código limpio y legible
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia MIT. Ver archivo [`LICENSE.md`](LICENSE.md) para más detalles.
+
+---
+
+## 📞 Soporte
+
+### Documentación
+
+- **Estándares Frontend:** [`estandares-frontend-laravel.md`](estandares-frontend-laravel.md)
+- **Implementación:** [`IMPLEMENTACION-ESTANDARES-CETAM.md`](IMPLEMENTACION-ESTANDARES-CETAM.md)
+- **Limpieza de Archivos:** [`REPORTE_LIMPIEZA_ARCHIVOS.md`](REPORTE_LIMPIEZA_ARCHIVOS.md)
+
+### Recursos Externos
+
+- [Laravel 12 Docs](https://laravel.com/docs/12.x)
+- [Volt Dashboard](https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard)
+- [Bootstrap 5 Docs](https://getbootstrap.com/docs/5.3/)
+- [Font Awesome Icons](https://fontawesome.com/icons)
+- [MercadoPago Docs](https://www.mercadopago.com.mx/developers/)
+
+### Reportar Problemas
+
+Si encuentras bugs o tienes sugerencias:
+
+1. Revisa issues existentes en GitHub
+2. Crea un nuevo issue con:
+   - Descripción del problema
+   - Pasos para reproducir
+   - Screenshots (si aplica)
+   - Logs de error
+
+---
+
+## 🏆 Créditos
+
+### Desarrollo
+
+- **CETAM** - Centro de Desarrollo Tecnológico Aplicado de México
+- **Plantilla Base:** [Volt Laravel Dashboard](https://github.com/themesberg/volt-laravel-dashboard) by Themesberg
+
+### Tecnologías
+
+- **Laravel** - The PHP Framework For Web Artisans
+- **Bootstrap** - The most popular HTML, CSS, and JS library
+- **Font Awesome** - The internet's icon library and toolkit
+- **MercadoPago** - Plataforma de pagos online
+
+---
+
+## 🎯 Roadmap
+
+### Version 1.1 (Próximamente)
+- [ ] Panel de Analytics avanzado
+- [ ] Exportación de reportes PDF/Excel
+- [ ] Sistema de roles y permisos granular
+- [ ] App móvil nativa (Flutter)
+- [ ] Integración con WhatsApp Business API
+
+### Version 2.0 (Futuro)
+- [ ] Multi-tenancy completo
+- [ ] Sistema de inventario
+- [ ] Programa de lealtad para clientes
+- [ ] Integración con ERPs
+- [ ] Machine Learning para predicciones
+
+---
+
+<div align="center">
+
+### 🚀 ¡Listo para usar Order QR System!
+
+**Desarrollado con ❤️ por CETAM**
+
+[Reportar Bug](https://github.com/tu-usuario/order-qr-system/issues) · [Solicitar Feature](https://github.com/tu-usuario/order-qr-system/issues) · [Documentación](https://github.com/tu-usuario/order-qr-system/wiki)
+
+---
+
+**© 2025 CETAM - Centro de Desarrollo Tecnológico Aplicado de México**
+
+</div>

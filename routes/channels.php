@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Broadcast Channels
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        channels.php
+ * @description Canales de broadcasting en tiempo real
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 use Illuminate\Support\Facades\Broadcast;
 
 /*

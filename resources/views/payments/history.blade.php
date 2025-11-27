@@ -1,118 +1,191 @@
-@extends('layouts.order-qr')
+@extends('layouts.business-app')
 
-@section('title', 'Payment History')
+@section('title', 'Historial de Pagos - Sistema de Órdenes QR')
 
-@section('content')
-<div class="space-y-6">
-    <div class="flex justify-between items-center">
-        <h1 class="text-2xl font-bold text-institutional-blue">Payment History</h1>
-        <a href="{{ route('business.payments.index') }}" class="text-institutional-blue hover:underline">
-            ← Back to plans
-        </a>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <div class="bg-white border-2 border-institutional-blue rounded-lg p-4">
-            <p class="text-sm text-gray-600">Total Payments</p>
-            <p class="text-2xl font-bold text-institutional-blue">{{ $statistics['total_payments'] }}</p>
+@section('page')
+<div class="py-4">
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
+        <div class="d-block mb-4 mb-md-0">
+            <h2 class="h4">Historial de Pagos</h2>
+            <p class="mb-0">Revisa todos tus pagos y transacciones</p>
         </div>
-        <div class="bg-white border-2 border-green-400 rounded-lg p-4">
-            <p class="text-sm text-gray-600">Completed</p>
-            <p class="text-2xl font-bold text-green-600">{{ $statistics['completed'] }}</p>
-        </div>
-        <div class="bg-white border-2 border-yellow-400 rounded-lg p-4">
-            <p class="text-sm text-gray-600">Pending</p>
-            <p class="text-2xl font-bold text-yellow-600">{{ $statistics['pending'] }}</p>
-        </div>
-        <div class="bg-white border-2 border-institutional-orange rounded-lg p-4">
-            <p class="text-sm text-gray-600">Total Revenue</p>
-            <p class="text-2xl font-bold text-institutional-orange">${{ number_format($statistics['total_revenue'], 2) }}</p>
-        </div>
-    </div>
-
-    <div class="bg-white border-2 border-institutional-blue rounded-lg p-6">
-        <h2 class="text-xl font-bold text-institutional-blue mb-4">All Payments</h2>
-
-        @if($payments->count() > 0)
-            <div class="overflow-x-auto">
-                <table class="w-full table-auto">
-                    <thead>
-                        <tr class="bg-institutional-gray/20">
-                            <th class="p-3 text-left">Payment ID</th>
-                            <th class="p-3 text-left">Plan</th>
-                            <th class="p-3 text-left">Amount</th>
-                            <th class="p-3 text-left">Status</th>
-                            <th class="p-3 text-left">Payment Date</th>
-                            <th class="p-3 text-left">Next Payment</th>
-                            <th class="p-3 text-left">Stripe ID</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($payments as $payment)
-                            <tr class="border-b hover:bg-gray-50">
-                                <td class="p-3 font-mono text-sm">#{{ $payment->payment_id }}</td>
-                                <td class="p-3">{{ $payment->plan->name }}</td>
-                                <td class="p-3 font-semibold">${{ number_format($payment->amount, 2) }} MXN</td>
-                                <td class="p-3">
-                                    <span class="px-3 py-1 rounded-full text-sm
-                                        @if($payment->status === 'completed') bg-green-100 text-green-800
-                                        @elseif($payment->status === 'pending') bg-yellow-100 text-yellow-800
-                                        @elseif($payment->status === 'failed') bg-red-100 text-red-800
-                                        @elseif($payment->status === 'refunded') bg-gray-100 text-gray-800
-                                        @endif">
-                                        {{ ucfirst($payment->status) }}
-                                    </span>
-                                </td>
-                                <td class="p-3">{{ $payment->payment_date->format('M d, Y H:i') }}</td>
-                                <td class="p-3">
-                                    @if($payment->next_payment_date)
-                                        {{ $payment->next_payment_date->format('M d, Y') }}
-                                    @else
-                                        <span class="text-gray-400">N/A</span>
-                                    @endif
-                                </td>
-                                <td class="p-3 font-mono text-xs text-gray-600">
-                                    @if($payment->stripe_payment_id)
-                                        {{ Str::limit($payment->stripe_payment_id, 15) }}
-                                    @elseif($payment->stripe_subscription_id)
-                                        {{ Str::limit($payment->stripe_subscription_id, 15) }}
-                                    @else
-                                        <span class="text-gray-400">-</span>
-                                    @endif
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-        @else
-            <div class="text-center py-8 text-gray-500">
-                <svg class="w-16 h-16 mx-auto mb-4 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ route('business.payments.index') }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
+                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
                 </svg>
-                <p class="text-lg font-semibold mb-2">No payment history found</p>
-                <p class="mb-4">You haven't made any payments yet</p>
-                <a href="{{ route('business.payments.index') }}" class="text-institutional-blue hover:underline">
-                    View available plans →
-                </a>
+                Volver a Planes
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-12 col-sm-6 col-xl-3 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <div class="row d-block d-xl-flex align-items-center">
+                        <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                            <div class="icon-shape icon-shape-primary rounded me-4 me-sm-0">
+                                <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                                    <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-7 px-xl-0">
+                            <div class="d-none d-sm-block">
+                                <h2 class="h6 text-gray-400 mb-0">Total Pagos</h2>
+                                <h3 class="fw-extrabold mb-2">{{ $statistics['total_payments'] }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <div class="row d-block d-xl-flex align-items-center">
+                        <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                            <div class="icon-shape icon-shape-success rounded me-4 me-sm-0">
+                                <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-7 px-xl-0">
+                            <div class="d-none d-sm-block">
+                                <h2 class="h6 text-gray-400 mb-0">Completados</h2>
+                                <h3 class="fw-extrabold mb-2">{{ $statistics['completed'] }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <div class="row d-block d-xl-flex align-items-center">
+                        <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                            <div class="icon-shape icon-shape-warning rounded me-4 me-sm-0">
+                                <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-7 px-xl-0">
+                            <div class="d-none d-sm-block">
+                                <h2 class="h6 text-gray-400 mb-0">Pendientes</h2>
+                                <h3 class="fw-extrabold mb-2">{{ $statistics['pending'] }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-3 mb-4">
+            <div class="card border-0 shadow">
+                <div class="card-body">
+                    <div class="row d-block d-xl-flex align-items-center">
+                        <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                            <div class="icon-shape icon-shape-tertiary rounded me-4 me-sm-0">
+                                <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-7 px-xl-0">
+                            <div class="d-none d-sm-block">
+                                <h2 class="h6 text-gray-400 mb-0">Ingresos Totales</h2>
+                                <h3 class="fw-extrabold mb-2">${{ number_format($statistics['total_revenue'], 2) }}</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payments Table -->
+    <div class="card border-0 shadow">
+        <div class="card-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h2 class="fs-5 fw-bold mb-0">Todos los Pagos</h2>
+                </div>
+            </div>
+        </div>
+        @if($payments->count() > 0)
+        <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="border-bottom" scope="col">ID</th>
+                        <th class="border-bottom" scope="col">Plan</th>
+                        <th class="border-bottom" scope="col">Monto</th>
+                        <th class="border-bottom" scope="col">Estado</th>
+                        <th class="border-bottom" scope="col">Fecha</th>
+                        <th class="border-bottom" scope="col">Próximo Pago</th>
+                        <th class="border-bottom" scope="col">Proveedor</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($payments as $payment)
+                    <tr>
+                        <td class="text-gray-900">#{{ $payment->payment_id }}</td>
+                        <td class="fw-bold">{{ $payment->plan->name }}</td>
+                        <td class="fw-bold">${{ number_format($payment->amount, 2) }} MXN</td>
+                        <td>
+                            @php
+                                $statusConfig = [
+                                    'completed' => ['class' => 'bg-success', 'label' => 'Completado'],
+                                    'pending' => ['class' => 'bg-warning', 'label' => 'Pendiente'],
+                                    'failed' => ['class' => 'bg-danger', 'label' => 'Fallido'],
+                                    'refunded' => ['class' => 'bg-secondary', 'label' => 'Reembolsado'],
+                                ];
+                                $config = $statusConfig[$payment->status] ?? ['class' => 'bg-secondary', 'label' => 'Desconocido'];
+                            @endphp
+                            <span class="badge {{ $config['class'] }}">{{ $config['label'] }}</span>
+                        </td>
+                        <td class="text-gray-500">{{ $payment->payment_date->format('M d, Y H:i') }}</td>
+                        <td class="text-gray-500">
+                            @if($payment->next_payment_date)
+                                {{ $payment->next_payment_date->format('M d, Y') }}
+                            @else
+                                <span class="text-muted">N/A</span>
+                            @endif
+                        </td>
+                        <td>
+                            @if($payment->payment_provider === 'mercadopago')
+                                <span class="badge bg-info">MercadoPago</span>
+                            @elseif($payment->payment_provider === 'stripe')
+                                <span class="badge bg-primary">Stripe</span>
+                            @else
+                                <span class="badge bg-secondary">{{ $payment->payment_provider }}</span>
+                            @endif
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+        @else
+        <div class="card-body text-center py-5">
+            <svg class="icon icon-xxl text-gray-400 mb-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+            </svg>
+            <h5 class="text-gray-600 mb-2">No se encontró historial de pagos</h5>
+            <p class="text-gray-500 mb-3">Aún no has realizado ningún pago</p>
+            <a href="{{ route('business.payments.index') }}" class="btn btn-primary">
+                Ver Planes Disponibles
+            </a>
+        </div>
         @endif
     </div>
-
-    @if($payments->count() > 0 && $payments->first()->stripe_subscription_id)
-        <div class="bg-white border-2 border-red-400 rounded-lg p-6">
-            <h3 class="text-lg font-bold text-red-600 mb-2">Cancel Subscription</h3>
-            <p class="text-gray-700 mb-4">
-                If you wish to cancel your recurring subscription, you can do so here. Your access will remain active until the end of the current billing period.
-            </p>
-            <form action="{{ route('order-qr.payment.cancel-subscription') }}" method="POST" onsubmit="return confirm('Are you sure you want to cancel your subscription?');">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="px-6 py-2 text-base font-medium text-white bg-red-600 hover:bg-red-700 rounded-full transition-transform duration-150 active:scale-95">
-                    Cancel Subscription
-                </button>
-            </form>
-        </div>
-    @endif
 </div>
 @endsection

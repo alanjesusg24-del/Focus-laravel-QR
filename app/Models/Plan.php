@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Plan Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        Plan.php
+ * @description Modelo de planes de suscripción
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * @table       plans
+ * @primaryKey  plan_id
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -17,6 +36,13 @@ class Plan extends Model
         'retention_days',
         'description',
         'is_active',
+        'has_chat_module',
+        'has_realerts',
+        'realert_interval_minutes',
+        'realert_max_count',
+        'realert_days',
+        'realert_hours',
+        'realert_minutes',
     ];
 
     protected $casts = [
@@ -24,6 +50,13 @@ class Plan extends Model
         'duration_days' => 'integer',
         'retention_days' => 'integer',
         'is_active' => 'boolean',
+        'has_chat_module' => 'boolean',
+        'has_realerts' => 'boolean',
+        'realert_interval_minutes' => 'integer',
+        'realert_max_count' => 'integer',
+        'realert_days' => 'integer',
+        'realert_hours' => 'integer',
+        'realert_minutes' => 'integer',
     ];
 
     /**

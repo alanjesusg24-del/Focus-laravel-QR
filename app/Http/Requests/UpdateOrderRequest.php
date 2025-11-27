@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Update Order Request
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        UpdateOrderRequest.php
+ * @description Validación para actualización de órdenes
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ *
+ * ============================================
+ */
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;

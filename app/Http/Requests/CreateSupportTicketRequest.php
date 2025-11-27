@@ -1,5 +1,20 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Create Support Ticket Request
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        CreateSupportTicketRequest.php
+ * @description Validación para creación de tickets de soporte
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ *
+ * ============================================
+ */
+
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;

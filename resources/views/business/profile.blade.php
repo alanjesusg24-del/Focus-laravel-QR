@@ -11,7 +11,7 @@
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
                         <a href="{{ route('business.dashboard.index') }}">
-                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                            <x-icon name="home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
@@ -22,9 +22,7 @@
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.profile.edit') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                </svg>
+                <x-icon name="edit" class="me-2" />
                 Editar Perfil
             </a>
         </div>
@@ -32,6 +30,7 @@
 
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <x-icon name="success" class="me-2" />
         {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
@@ -86,7 +85,7 @@
             </div>
 
             <!-- Plan Information -->
-            <div class="card border-0 shadow">
+            <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom">
                     <h5 class="mb-0">Información del Plan</h5>
                 </div>
@@ -94,10 +93,8 @@
                     <div class="row g-4">
                         <div class="col-md-6">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="icon icon-shape icon-sm bg-primary text-white rounded me-3">
-                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <div class="icon icon-shape icon-sm text-white rounded me-3" style="background-color: #1F2937;">
+                                    <x-icon name="list" />
                                 </div>
                                 <div>
                                     <label class="text-gray-600 small mb-0 d-block">Plan Actual</label>
@@ -107,11 +104,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="icon icon-shape icon-sm bg-success text-white rounded me-3">
-                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M8.433 7.418c.155-.103.346-.196.567-.267v1.698a2.305 2.305 0 01-.567-.267C8.07 8.34 8 8.114 8 8c0-.114.07-.34.433-.582zM11 12.849v-1.698c.22.071.412.164.567.267.364.243.433.468.433.582 0 .114-.07.34-.433.582a2.305 2.305 0 01-.567.267z"></path>
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <div class="icon icon-shape icon-sm text-white rounded me-3" style="background-color: #10B981;">
+                                    <x-icon name="dollar" />
                                 </div>
                                 <div>
                                     <label class="text-gray-600 small mb-0 d-block">Precio Mensual</label>
@@ -121,16 +115,14 @@
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="icon icon-shape icon-sm {{ $business->has_chat_module ? 'bg-info' : 'bg-secondary' }} text-white rounded me-3">
-                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <div class="icon icon-shape icon-sm text-white rounded me-3" style="background-color: {{ $business->has_chat_module ? '#3B82F6' : '#6B7280' }};">
+                                    <x-icon name="comments" />
                                 </div>
                                 <div>
                                     <label class="text-gray-600 small mb-0 d-block">Módulo de Chat</label>
                                     <p class="mb-0">
                                         @if($business->has_chat_module)
-                                            <span class="badge bg-success">Activado</span>
+                                            <span class="badge" style="background-color: #10B981;">Activado</span>
                                         @else
                                             <span class="badge bg-secondary">No activado</span>
                                         @endif
@@ -140,10 +132,8 @@
                         </div>
                         <div class="col-md-6">
                             <div class="d-flex align-items-center mb-3">
-                                <div class="icon icon-shape icon-sm bg-warning text-white rounded me-3">
-                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <div class="icon icon-shape icon-sm text-white rounded me-3" style="background-color: #FBA918;">
+                                    <x-icon name="clock" />
                                 </div>
                                 <div>
                                     <label class="text-gray-600 small mb-0 d-block">Retención de Datos</label>
@@ -152,6 +142,35 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+
+            <!-- Business Location Map -->
+            <div class="card border-0 shadow">
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0">Ubicación del Negocio</h5>
+                </div>
+                <div class="card-body">
+                    @if($business->latitude && $business->longitude)
+                        <div id="map" style="height: 350px; width: 100%; border-radius: 0.5rem;" class="mb-3"></div>
+                        @if($business->location_description)
+                        <div class="d-flex align-items-start">
+                            <x-icon name="mapPin" class="text-gray-600 me-2 mt-1" />
+                            <p class="text-gray-700 mb-0">{{ $business->location_description }}</p>
+                        </div>
+                        @endif
+                    @else
+                        <div class="text-center py-5">
+                            <div class="icon icon-shape icon-lg bg-gray-200 text-gray-600 rounded-circle mb-3 mx-auto">
+                                <x-icon name="mapPin" />
+                            </div>
+                            <p class="text-gray-600 mb-3">No has configurado tu ubicación aún</p>
+                            <a href="{{ route('business.profile.edit') }}" class="btn btn-sm btn-primary">
+                                <x-icon name="mapPin" class="me-1" />
+                                Configurar Ubicación
+                            </a>
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -166,25 +185,44 @@
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         <a href="{{ route('business.profile.edit') }}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                            </svg>
+                            <x-icon name="edit" class="me-2" />
                             Editar Perfil
                         </a>
                         <a href="{{ route('business.profile.change-password') }}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="lock" class="me-2" />
                             Cambiar Contraseña
                         </a>
                         <a href="{{ route('business.payments.index') }}" class="list-group-item list-group-item-action d-flex align-items-center">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
-                                <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                            </svg>
+                            <x-icon name="creditCard" class="me-2" />
                             Gestionar Plan
                         </a>
                     </div>
+                </div>
+            </div>
+
+            <!-- Business Photo -->
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header border-bottom">
+                    <h5 class="mb-0">Foto del Negocio</h5>
+                </div>
+                <div class="card-body text-center">
+                    @if($business->photo)
+                        <img src="{{ asset('storage/' . $business->photo) }}"
+                             alt="{{ $business->business_name }}"
+                             class="img-fluid rounded shadow mb-3"
+                             style="max-height: 250px; width: 100%; object-fit: cover;">
+                    @else
+                        <div class="py-5">
+                            <div class="icon icon-shape icon-xl bg-gray-200 text-gray-600 rounded-circle mb-3 mx-auto">
+                                <x-icon name="image" />
+                            </div>
+                            <p class="text-gray-600 mb-0">Sin foto</p>
+                        </div>
+                    @endif
+                    <a href="{{ route('business.profile.edit') }}" class="btn btn-sm btn-outline-primary">
+                        <x-icon name="edit" class="me-1" />
+                        Cambiar Foto
+                    </a>
                 </div>
             </div>
 
@@ -198,25 +236,19 @@
                         <div>
                             <p class="text-gray-600 small mb-1">Estado Actual</p>
                             @if($business->is_active)
-                                <h5 class="text-success mb-0">
-                                    <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <h5 class="mb-0" style="color: #10B981;">
+                                    <x-icon name="checkCircle" class="me-1" />
                                     Activa
                                 </h5>
                             @else
-                                <h5 class="text-danger mb-0">
-                                    <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                                    </svg>
+                                <h5 class="mb-0" style="color: #EF4444;">
+                                    <x-icon name="error" class="me-1" />
                                     Inactiva
                                 </h5>
                             @endif
                         </div>
-                        <div class="icon icon-shape icon-lg {{ $business->is_active ? 'bg-success' : 'bg-danger' }} text-white rounded">
-                            <svg class="icon" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                            </svg>
+                        <div class="icon icon-shape icon-lg text-white rounded" style="background-color: {{ $business->is_active ? '#10B981' : '#EF4444' }};">
+                            <x-icon name="user" />
                         </div>
                     </div>
                     @if(!$business->is_active)
@@ -230,3 +262,59 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+@if($business->latitude && $business->longitude)
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}"></script>
+<script>
+    function initMap() {
+        const businessLocation = {
+            lat: {{ $business->latitude }},
+            lng: {{ $business->longitude }}
+        };
+
+        const map = new google.maps.Map(document.getElementById('map'), {
+            center: businessLocation,
+            zoom: 15,
+            disableDefaultUI: false,
+            zoomControl: true,
+            mapTypeControl: false,
+            scaleControl: false,
+            streetViewControl: false,
+            rotateControl: false,
+            fullscreenControl: false,
+            gestureHandling: 'cooperative',
+            styles: [
+                {
+                    featureType: 'poi',
+                    elementType: 'labels',
+                    stylers: [{ visibility: 'on' }]
+                }
+            ]
+        });
+
+        const marker = new google.maps.Marker({
+            position: businessLocation,
+            map: map,
+            title: '{{ $business->business_name }}',
+            draggable: false,
+            animation: google.maps.Animation.DROP
+        });
+
+        const infoWindow = new google.maps.InfoWindow({
+            content: '<div style="padding: 10px;"><strong>{{ $business->business_name }}</strong><br>{{ $business->address ?? "Mi negocio" }}</div>'
+        });
+
+        marker.addListener('click', function() {
+            infoWindow.open(map, marker);
+        });
+    }
+
+    if (typeof google !== 'undefined') {
+        initMap();
+    } else {
+        window.addEventListener('load', initMap);
+    }
+</script>
+@endif
+@endpush

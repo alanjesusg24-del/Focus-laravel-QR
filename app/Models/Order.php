@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Order Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        Order.php
+ * @description Modelo de órdenes con sistema QR y notificaciones
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -60,6 +76,14 @@ class Order extends Model
     public function notifications(): HasMany
     {
         return $this->hasMany(Notification::class, 'order_id', 'order_id');
+    }
+
+    /**
+     * Get all chat messages for this order
+     */
+    public function chatMessages(): HasMany
+    {
+        return $this->hasMany(ChatMessage::class, 'order_id', 'order_id');
     }
 
     /**
@@ -132,6 +156,14 @@ class Order extends Model
     public function statusHistory(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class, 'order_id', 'order_id');
+    }
+
+    /**
+     * Get all re-alerts sent for this order
+     */
+    public function realerts(): HasMany
+    {
+        return $this->hasMany(OrderRealert::class, 'order_id', 'order_id');
     }
 
     /**

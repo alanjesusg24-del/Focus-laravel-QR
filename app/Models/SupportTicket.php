@@ -1,5 +1,24 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Support Ticket Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        SupportTicket.php
+ * @description Modelo de tickets de soporte técnico
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * @table       support_tickets
+ * @primaryKey  support_ticket_id
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,6 +42,8 @@ class SupportTicket extends Model
         'responded_at',
         'closed_at',
         'response',
+        'attachment_url',
+        'response_attachment_url',
     ];
 
     protected $casts = [

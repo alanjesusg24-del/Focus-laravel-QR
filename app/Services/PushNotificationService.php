@@ -156,6 +156,164 @@ class PushNotificationService
     }
 
     /**
+     * Enviar notificación de nuevo mensaje de chat desde el negocio
+     *
+     * @param string $fcmToken Token FCM del dispositivo móvil
+     * @param object $order Objeto de la orden
+     * @param string $messageText Texto del mensaje
+     * @return array
+     */
+    public static function sendChatMessage($fcmToken, $order, $messageText)
+    {
+        try {
+            $messaging = self::getMessaging();
+
+            Log::info('📤 Enviando notificación de mensaje de chat', [
+                'token' => substr($fcmToken, 0, 20) . '...',
+                'order_number' => $order->order_number,
+            ]);
+
+            $businessName = $order->business->business_name ?? 'Negocio';
+            $title = "💬 Mensaje de {$businessName}";
+            $body = substr($messageText, 0, 100);
+
+            // Construir el mensaje usando la nueva API
+            $notification = Notification::create($title, $body);
+
+            $message = CloudMessage::withTarget('token', $fcmToken)
+                ->withNotification($notification)
+                ->withData([
+                    'type' => 'new_chat_message',
+                    'order_id' => (string) $order->order_id,
+                    'order_number' => $order->order_number,
+                    'folio_number' => $order->folio_number,
+                    'business_id' => (string) $order->business_id,
+                    'business_name' => $businessName,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                ]);
+
+            // Enviar el mensaje
+            $result = $messaging->send($message);
+
+            Log::info('✅ Notificación de chat enviada exitosamente', [
+                'result' => $result,
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Chat notification sent successfully',
+                'result' => $result,
+            ];
+
+        } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
+            Log::error('❌ Token FCM no válido para notificación de chat', [
+                'message' => $e->getMessage(),
+                'order_number' => $order->order_number,
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Invalid FCM token or device not found',
+                'error' => $e->getMessage(),
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error al enviar notificación de chat', [
+                'message' => $e->getMessage(),
+                'order_number' => $order->order_number,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Failed to send chat notification',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
+     * Enviar recordatorio de orden lista (re-alerta)
+     *
+     * @param string $fcmToken Token FCM del dispositivo móvil
+     * @param object $order Objeto de la orden
+     * @param int $alertNumber Número de re-alerta (1, 2, 3, etc.)
+     * @return array
+     */
+    public static function sendReadyReminder($fcmToken, $order, $alertNumber = 1)
+    {
+        try {
+            $messaging = self::getMessaging();
+
+            Log::info('📤 Enviando re-alerta de orden lista', [
+                'token' => substr($fcmToken, 0, 20) . '...',
+                'order_number' => $order->order_number,
+                'alert_number' => $alertNumber,
+            ]);
+
+            // Personalizar el mensaje según el número de alerta
+            $title = $alertNumber === 1
+                ? '⏰ Recordatorio: Tu orden está lista'
+                : "⏰ Recordatorio #{$alertNumber}: Tu orden sigue esperando";
+
+            $body = "La orden {$order->order_number} está lista para recoger. ¡No olvides pasar por ella!";
+
+            // Construir el mensaje usando la nueva API
+            $notification = Notification::create($title, $body);
+
+            $message = CloudMessage::withTarget('token', $fcmToken)
+                ->withNotification($notification)
+                ->withData([
+                    'type' => 'order_ready_reminder',
+                    'order_id' => (string) $order->order_id,
+                    'order_number' => $order->order_number,
+                    'folio_number' => $order->folio_number,
+                    'alert_number' => (string) $alertNumber,
+                    'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
+                ]);
+
+            // Enviar el mensaje
+            $result = $messaging->send($message);
+
+            Log::info('✅ Re-alerta enviada exitosamente', [
+                'result' => $result,
+                'alert_number' => $alertNumber,
+            ]);
+
+            return [
+                'success' => true,
+                'message' => 'Re-alert sent successfully',
+                'result' => $result,
+            ];
+
+        } catch (\Kreait\Firebase\Exception\Messaging\NotFound $e) {
+            Log::error('❌ Token FCM no válido para re-alerta', [
+                'message' => $e->getMessage(),
+                'order_number' => $order->order_number,
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Invalid FCM token or device not found',
+                'error' => $e->getMessage(),
+            ];
+
+        } catch (\Exception $e) {
+            Log::error('❌ Error al enviar re-alerta', [
+                'message' => $e->getMessage(),
+                'order_number' => $order->order_number,
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return [
+                'success' => false,
+                'message' => 'Failed to send re-alert',
+                'error' => $e->getMessage(),
+            ];
+        }
+    }
+
+    /**
      * Obtener el contenido de la notificación según el cambio de estado
      */
     private static function getNotificationContent($order, $oldStatus, $newStatus)

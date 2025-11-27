@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Business Model
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        Business.php
+ * @description Modelo de negocio con autenticación y suscripciones
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -18,8 +34,10 @@ class Business extends Authenticatable
         'password',
         'phone',
         'address',
+        'photo',
         'latitude',
         'longitude',
+        'location_description',
         'plan_id',
         'registration_date',
         'last_payment_date',

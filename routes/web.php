@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Web Routes
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        web.php
+ * @description Rutas web del sistema Order QR
+ * @author      CETAM Dev Team
+ * @created     2025-11-24
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 use App\Livewire\BootstrapTables;
 use App\Livewire\Components\Buttons;
 use App\Livewire\Components\Forms;
@@ -15,16 +31,11 @@ use App\Livewire\Lock;
 use App\Livewire\Auth\Login;
 use App\Livewire\Profile;
 use App\Livewire\Auth\Register;
-use App\Livewire\ForgotPasswordExample;
 use App\Livewire\Index;
-use App\Livewire\LoginExample;
-use App\Livewire\ProfileExample;
-use App\Livewire\RegisterExample;
 use App\Livewire\Transactions;
 use Illuminate\Support\Facades\Route;
-use App\Livewire\ResetPasswordExample;
-use App\Livewire\UpgradeToPro;
 use App\Livewire\Users;
+use App\Livewire\Auth\RegisterWizard;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,47 +48,13 @@ use App\Livewire\Users;
 |
 */
 
-// Prefijo configurable del proyecto: /p/<slug>
-$slug = config('proj.slug');
-$namePrefix = config('proj.route_name_prefix', 'proj');
-
-// Redirección base a login dentro del prefijo
-Route::redirect('/', "/p/{$slug}/login");
-
-Route::prefix("p/{$slug}")
-    ->as($namePrefix . '.')
-    ->group(function () use ($namePrefix) {
-        // Público
-        Route::get('/register', Register::class)->name('auth.register');
-        Route::get('/login', Login::class)->name('auth.login');
-        Route::get('/forgot-password', ForgotPassword::class)->name('auth.forgot-password');
-        Route::get('/reset-password/{id}', ResetPassword::class)->name('auth.reset-password')->middleware('signed');
-
-        // Errores y páginas informativas
-        Route::get('/404', Err404::class)->name('errors.404');
-        Route::get('/500', Err500::class)->name('errors.500');
-        Route::get('/upgrade-to-pro', UpgradeToPro::class)->name('marketing.upgrade-to-pro');
-
-        // Privado
-        Route::middleware('auth')->group(function () {
-            Route::get('/dashboard', Dashboard::class)->name('dashboard.index');
-            Route::get('/profile', Profile::class)->name('profile.index');
-            Route::get('/profile-example', ProfileExample::class)->name('profile.example');
-            Route::get('/users', Users::class)->name('users.index');
-            Route::get('/login-example', LoginExample::class)->name('examples.login');
-            Route::get('/register-example', RegisterExample::class)->name('examples.register');
-            Route::get('/forgot-password-example', ForgotPasswordExample::class)->name('examples.forgot-password');
-            Route::get('/reset-password-example', ResetPasswordExample::class)->name('examples.reset-password');
-            Route::get('/transactions', Transactions::class)->name('billing.transactions');
-            Route::get('/bootstrap-tables', BootstrapTables::class)->name('ui.bootstrap-tables');
-            Route::get('/lock', Lock::class)->name('auth.lock');
-            Route::get('/buttons', Buttons::class)->name('ui.buttons');
-            Route::get('/notifications', Notifications::class)->name('ui.notifications');
-            Route::get('/forms', Forms::class)->name('ui.forms');
-            Route::get('/modals', Modals::class)->name('ui.modals');
-            Route::get('/typography', Typography::class)->name('ui.typography');
-        });
-    });
+/*
+|--------------------------------------------------------------------------
+| Rutas de Volt Dashboard - ELIMINADAS
+|--------------------------------------------------------------------------
+| Las rutas de demostración de Volt Dashboard han sido removidas.
+| El sistema usa exclusivamente las rutas de Business y SuperAdmin.
+*/
 
 /*
 |--------------------------------------------------------------------------
@@ -101,11 +78,25 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
     Route::get('/login', [App\Http\Controllers\Auth\AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [App\Http\Controllers\Auth\AuthController::class, 'login']);
     Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])->name('logout');
-    Route::get('/register', [App\Http\Controllers\BusinessController::class, 'register'])->name('register');
+    Route::get('/register', RegisterWizard::class)->name('register');
     Route::post('/register', [App\Http\Controllers\BusinessController::class, 'store']);
 
-    // Authenticated routes
-    Route::middleware(['auth'])->group(function () {
+    // Payments Management (NO requiere subscription activa para renovar)
+    Route::middleware(['auth:business'])->group(function () {
+        Route::prefix('payments')->as('payments.')->group(function () {
+            Route::get('/', [App\Http\Controllers\PaymentController::class, 'index'])->name('index');
+            Route::get('/plans/{plan}/checkout', [App\Http\Controllers\PaymentController::class, 'create'])->name('checkout');
+            Route::post('/plans/{plan}/checkout-session', [App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])->name('create-checkout-session');
+            Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('success');
+            Route::get('/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('cancel');
+            Route::get('/history', [App\Http\Controllers\PaymentController::class, 'history'])->name('history');
+            Route::delete('/subscription/cancel', [App\Http\Controllers\PaymentController::class, 'cancelSubscription'])->name('cancel-subscription');
+            Route::get('/statistics', [App\Http\Controllers\PaymentController::class, 'statistics'])->name('statistics');
+        });
+    });
+
+    // Authenticated routes (using business guard) with subscription check
+    Route::middleware(['auth:business', 'subscription.active'])->group(function () {
         // Dashboard
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
         Route::get('/analytics', [App\Http\Controllers\DashboardController::class, 'analytics'])->name('dashboard.analytics');
@@ -128,20 +119,9 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
             Route::put('/{order}/mark-delivered', [App\Http\Controllers\OrderController::class, 'markAsDelivered'])->name('markAsDelivered');
             Route::put('/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('cancel');
             Route::get('/{order}/download-qr', [App\Http\Controllers\OrderController::class, 'downloadQr'])->name('downloadQr');
+            Route::get('/{order}/check-linked', [App\Http\Controllers\OrderController::class, 'checkLinked'])->name('checkLinked');
         });
         Route::get('/orders-statistics', [App\Http\Controllers\OrderController::class, 'statistics'])->name('orders.statistics');
-
-        // Payments Management
-        Route::prefix('payments')->as('payments.')->group(function () {
-            Route::get('/', [App\Http\Controllers\PaymentController::class, 'index'])->name('index');
-            Route::get('/plans/{plan}/checkout', [App\Http\Controllers\PaymentController::class, 'create'])->name('checkout');
-            Route::post('/plans/{plan}/checkout-session', [App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])->name('create-checkout-session');
-            Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('success');
-            Route::get('/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('cancel');
-            Route::get('/history', [App\Http\Controllers\PaymentController::class, 'history'])->name('history');
-            Route::delete('/subscription/cancel', [App\Http\Controllers\PaymentController::class, 'cancelSubscription'])->name('cancel-subscription');
-            Route::get('/statistics', [App\Http\Controllers\PaymentController::class, 'statistics'])->name('statistics');
-        });
 
         // Support Tickets
         Route::prefix('support')->as('support.')->group(function () {
@@ -166,10 +146,94 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
     });
 });
 
-// Public webhook endpoint (no auth required)
+// Public webhook endpoints (no auth required)
 Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'webhook'])->name('webhook.stripe');
+Route::post('/webhook/mercadopago', [App\Http\Controllers\MercadoPagoWebhookController::class, 'handleWebhook'])->name('webhook.mercadopago');
 
 // Test QR Scanner
 Route::get('/test-scanner', function() {
     return view('test-scanner');
 })->name('test.scanner');
+
+// Mobile App Configuration QR
+Route::get('/mobile-config', function() {
+    $apiUrl = config('app.url') . '/api';
+    $isNgrok = str_contains(config('app.url'), 'ngrok');
+    $serverType = $isNgrok ? 'ngrok' : 'local';
+
+    return view('mobile-config', compact('apiUrl', 'isNgrok', 'serverType'));
+})->name('mobile.config');
+
+// API endpoint to get current server URL (for mobile app auto-discovery)
+Route::get('/api/server-info', function() {
+    return response()->json([
+        'api_url' => config('app.url') . '/api',
+        'app_url' => config('app.url'),
+        'server_type' => str_contains(config('app.url'), 'ngrok') ? 'ngrok' : 'local',
+        'timestamp' => now()->toIso8601String(),
+    ]);
+})->name('api.server-info');
+
+/*
+|--------------------------------------------------------------------------
+| Super Admin Routes
+|--------------------------------------------------------------------------
+|
+| Rutas para el panel de superadministrador
+|
+*/
+
+Route::prefix('superadmin')->as('superadmin.')->group(function () {
+    // Public routes
+    Route::get('/login', [App\Http\Controllers\SuperAdmin\AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [App\Http\Controllers\SuperAdmin\AuthController::class, 'login']);
+
+    // Protected routes
+    Route::middleware(['auth:superadmin'])->group(function () {
+        Route::post('/logout', [App\Http\Controllers\SuperAdmin\AuthController::class, 'logout'])->name('logout');
+        Route::get('/dashboard', [App\Http\Controllers\SuperAdmin\DashboardController::class, 'index'])->name('dashboard');
+
+        // Businesses Management
+        Route::prefix('businesses')->as('businesses.')->group(function () {
+            Route::get('/', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'index'])->name('index');
+            Route::get('/{id}', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'update'])->name('update');
+            Route::post('/{id}/toggle', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'toggleStatus'])->name('toggle');
+            Route::delete('/{id}', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'destroy'])->name('destroy');
+        });
+
+        // Plans Management
+        Route::prefix('plans')->as('plans.')->group(function () {
+            Route::get('/', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'store'])->name('store');
+            Route::get('/{id}', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'show'])->name('show');
+            Route::get('/{id}/edit', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'edit'])->name('edit');
+            Route::put('/{id}', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'update'])->name('update');
+            Route::delete('/{id}', [App\Http\Controllers\SuperAdmin\PlanManagementController::class, 'destroy'])->name('destroy');
+        });
+
+        // Global Orders (not needed - each business manages their own orders)
+        // Route::get('/orders', [App\Http\Controllers\SuperAdmin\GlobalOrderController::class, 'index'])->name('orders.index');
+
+        // Payments Management
+        Route::get('/payments', [App\Http\Controllers\SuperAdmin\PaymentManagementController::class, 'index'])->name('payments.index');
+
+        // Support Tickets
+        Route::get('/tickets', [App\Http\Controllers\SuperAdmin\TicketManagementController::class, 'index'])->name('tickets.index');
+        Route::get('/tickets/{ticket}', [App\Http\Controllers\SuperAdmin\TicketManagementController::class, 'show'])->name('tickets.show');
+        Route::get('/tickets/{ticket}/respond', [App\Http\Controllers\SuperAdmin\TicketManagementController::class, 'respond'])->name('tickets.respond');
+        Route::post('/tickets/{ticket}/respond', [App\Http\Controllers\SuperAdmin\TicketManagementController::class, 'storeResponse'])->name('tickets.storeResponse');
+        Route::patch('/tickets/{ticket}/status', [App\Http\Controllers\SuperAdmin\TicketManagementController::class, 'updateStatus'])->name('tickets.updateStatus');
+
+        // Reports (integrated into Dashboard)
+        // Route::get('/reports', [App\Http\Controllers\SuperAdmin\ReportController::class, 'index'])->name('reports.index');
+
+        // Profile Management
+        Route::get('/profile', [App\Http\Controllers\SuperAdmin\ProfileController::class, 'index'])->name('profile.index');
+        Route::get('/profile/edit', [App\Http\Controllers\SuperAdmin\ProfileController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [App\Http\Controllers\SuperAdmin\ProfileController::class, 'update'])->name('profile.update');
+    });
+});
+Route::get('/test-icons', function() { return view('test-icons'); });

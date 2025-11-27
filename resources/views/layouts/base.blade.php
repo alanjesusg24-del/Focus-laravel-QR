@@ -1,6 +1,21 @@
- 
+{{--
+============================================
+CETAM - Base Layout
+============================================
+
+@project     Centro de Servicios (CS)
+@file        base.blade.php
+@description Layout base con estructura HTML y assets
+@author      CETAM Dev Team
+@created     2025-11-21
+@version     1.0.0
+@copyright   CETAM © 2025
+
+============================================
+--}}
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <title>@yield('title', config('app.name'))</title>
     @if(env('IS_DEMO')) 
@@ -35,7 +50,8 @@
     <meta name="msapplication-config" content="{{ asset('assets/img/favicons/browserconfig.xml') }}">
     <meta name="theme-color" content="#563d7c">
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <!-- Apex Charts -->
     <link type="text/css" href="{{ asset('vendor/apexcharts/apexcharts.css') }}" rel="stylesheet">
 
@@ -54,6 +70,12 @@
 
     <!-- Volt CSS -->
     <link type="text/css" href="{{ asset('css/volt.css') }}" rel="stylesheet">
+
+    <!-- CETAM Institutional Colors -->
+    <link type="text/css" href="{{ asset('css/cetam-colors.css') }}" rel="stylesheet">
+
+    <!-- CETAM Sidebar Styles -->
+    <link type="text/css" href="{{ asset('css/cetam-sidebar.css') }}" rel="stylesheet">
 
     @livewireStyles
     @livewireScripts
@@ -141,6 +163,7 @@
     @endif
 
     @yield('scripts')
+    @stack('scripts')
 
     <!-- QR Scanner Global Listener -->
     <script>

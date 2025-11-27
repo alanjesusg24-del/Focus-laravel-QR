@@ -1,5 +1,21 @@
 <?php
 
+/**
+ * ============================================
+ * CETAM - Order Controller
+ * ============================================
+ *
+ * @project     Centro de Servicios (CS)
+ * @file        OrderController.php
+ * @description Controlador de gestión de órdenes/pedidos
+ * @author      CETAM Dev Team
+ * @created     2025-11-20
+ * @version     1.0.0
+ * @copyright   CETAM © 2025
+ *
+ * ============================================
+ */
+
 namespace App\Http\Controllers;
 
 use App\Models\Order;
@@ -31,7 +47,7 @@ class OrderController extends Controller
             $query->where('status', $status);
         }
 
-        $orders = $query->paginate(20);
+        $orders = $query->paginate(config('cetam.cs.pagination.per_page', 15));
 
         return view('orders.index', compact('orders'));
     }
@@ -59,7 +75,7 @@ class OrderController extends Controller
             $order = $this->orderService->createOrder($businessId, $validated);
 
             return redirect()
-                ->route('business.orders.show', $order->order_id)
+                ->route('business.orders.index')
                 ->with('success', 'Orden creada exitosamente con código QR');
         } catch (\Exception $e) {
             return back()
@@ -193,5 +209,19 @@ class OrderController extends Controller
         $stats = $this->orderService->getOrderStatistics($businessId, $days);
 
         return response()->json($stats);
+    }
+
+    /**
+     * Check if order is linked to mobile user
+     */
+    public function checkLinked(Order $order)
+    {
+        $this->authorize('view', $order);
+
+        return response()->json([
+            'is_linked' => !is_null($order->mobile_user_id),
+            'mobile_user_id' => $order->mobile_user_id,
+            'associated_at' => $order->associated_at?->toIso8601String(),
+        ]);
     }
 }

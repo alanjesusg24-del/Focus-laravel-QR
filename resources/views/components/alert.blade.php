@@ -1,4 +1,4 @@
-@props(['type' => 'info', 'message'])
+@props(['type' => 'info', 'message' => ''])
 
 @php
     $classes = [
