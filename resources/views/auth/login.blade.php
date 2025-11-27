@@ -1,136 +1,110 @@
+{{--
+    Company: CETAM
+    Project: FQR
+    File: auth/login.blade.php
+    Description: Login page matching user's original design (Clean & Centered).
+    Standard: Section 7.1 & 8.2
+--}}
 @extends('layouts.base')
 
-@section('title', 'Login - Order QR System')
+@section('title', 'Inicio de Sesión')
 
 @section('content')
-<style>
-    /* CETAM Institutional Colors ya definidos globalmente en cetam-colors.css */
-    .form-bg-image {
-        background: url('/assets/img/illustrations/signin.svg') no-repeat center right;
-        background-size: contain;
-    }
-    @media (max-width: 992px) {
-        .form-bg-image {
-            background: none;
-        }
-    }
-</style>
-
-<body>
     <main>
-        <section class="vh-lg-100 mt-4 mt-lg-0 bg-soft d-flex align-items-center">
+        {{-- Fondo gris claro --}}
+        <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
-                <div class="row justify-content-center form-bg-image">
-                    <div class="col-12 d-flex align-items-center justify-content-center">
-                        <div class="signin-inner my-3 my-lg-0 bg-white shadow-soft border rounded border-gray-300 p-4 p-lg-5 w-100 fmxw-500">
-                            <!-- Logo y Header -->
+                <div class="row justify-content-center">
+                    <div class="col-12 d-flex align-items-center justify-content-center flex-column">
+                        
+                        {{-- TARJETA BLANCA --}}
+                        <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500 mb-4">
+                            
+                            <!-- Título -->
                             <div class="text-center text-md-center mb-4 mt-md-0">
-                                <div class="d-flex justify-content-center mb-3">
-                                    <div class="bg-cetam-primary rounded-circle d-flex align-items-center justify-center" style="width: 64px; height: 64px;">
-                                        <svg class="text-white" width="40" height="40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
-                                        </svg>
-                                    </div>
-                                </div>
-                                <h1 class="mb-0 h3 text-cetam-primary">Order QR System</h1>
-                                <p class="text-gray">Ingresa a tu cuenta</p>
+                                <h1 class="mb-0 h3">Inicio de Sesión</h1>
                             </div>
 
-                            <!-- Success Message -->
+                            <!-- Alertas -->
                             @if(session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <x-icon name="success" class="me-2" />
+                                    <x-icon name="check" class="me-2" />
                                     <strong>¡Éxito!</strong> {{ session('success') }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             @endif
 
-                            <!-- Error Messages -->
                             @if($errors->any())
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                                    <x-icon name="warning" class="me-2" />
-                                    <strong>Error:</strong> {{ $errors->first() }}
+                                    <x-icon name="error" class="me-2" />
+                                    <strong>Error:</strong> Credenciales incorrectas.
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                             @endif
 
-                            <!-- Login Form -->
+                            <!-- Formulario (Ruta corregida: business.login) -->
                             <form method="POST" action="{{ route('business.login') }}" class="mt-4">
                                 @csrf
 
                                 <!-- Email -->
-                                <div class="mb-4">
-                                    <label for="email" class="form-label">Correo Electrónico</label>
+                                <div class="form-group mb-4">
+                                    <label for="email">Correo electrónico</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
-                                            <x-icon name="envelope" class="text-gray-600" />
+                                            <x-icon name="email" class="text-gray-600" />
                                         </span>
-                                        <input
-                                            type="email"
-                                            class="form-control @error('email') is-invalid @enderror"
-                                            id="email"
-                                            name="email"
-                                            value="{{ old('email') }}"
-                                            placeholder="tu-negocio@ejemplo.com"
-                                            required
-                                            autofocus
-                                        >
+                                        <input type="email" class="form-control" placeholder="ejemplo@institucion.com" id="email" name="email" required autofocus>
                                     </div>
                                 </div>
 
-                                <!-- Password -->
-                                <div class="mb-4">
-                                    <label for="password" class="form-label">Contraseña</label>
+                                <!-- Contraseña -->
+                                <div class="form-group mb-4">
+                                    <label for="password">Contraseña</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon2">
                                             <x-icon name="lock" class="text-gray-600" />
                                         </span>
-                                        <input
-                                            type="password"
-                                            class="form-control @error('password') is-invalid @enderror"
-                                            id="password"
-                                            name="password"
-                                            placeholder="••••••••"
-                                            required
-                                        >
+                                        <input type="password" placeholder="••••••••" class="form-control" id="password" name="password" required>
                                     </div>
                                 </div>
 
-                                <!-- Remember Me & Forgot Password -->
+                                <!-- Opciones -->
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="remember" id="remember">
-                                        <label class="form-check-label" for="remember">
-                                            Recordarme
+                                        <input class="form-check-input" type="checkbox" value="" id="remember" name="remember">
+                                        <label class="form-check-label mb-0" for="remember">
+                                            Recuerdame
                                         </label>
                                     </div>
-                                    <div>
-                                        <a href="#" class="small text-cetam-primary">¿Olvidaste tu contraseña?</a>
-                                    </div>
+                                    {{-- Enlace desactivado temporalmente --}}
+                                    <a href="#" onclick="alert('Función no disponible por el momento')" class="small text-right text-gray-600">
+                                        ¿Olvidaste tu contraseña?
+                                    </a>
                                 </div>
 
-                                <!-- Submit Button -->
+                                <!-- Botón -->
                                 <div class="d-grid">
-                                    <button type="submit" class="btn btn-cetam-primary">Iniciar Sesión</button>
+                                    <button type="submit" class="btn btn-gray-800">Iniciar Sesión</button>
                                 </div>
                             </form>
-
-                            <!-- Register Link -->
+                            
+                            <!-- Link Registro -->
                             <div class="d-flex justify-content-center align-items-center mt-4">
-                                <span class="fw-normal text-gray">
-                                    ¿No tienes cuenta?
-                                    <a href="{{ route('business.register') }}" class="fw-bold text-cetam-primary">
-                                        Registra tu negocio
-                                    </a>
+                                <span class="fw-normal">
+                                    ¿No estás registrado?
+                                    {{-- Ruta corregida: business.register --}}
+                                    <a href="{{ route('business.register') }}" class="fw-bold text-dark ms-1">Crear Cuenta</a>
                                 </span>
                             </div>
 
-                        </div>
+                        </div> {{-- Fin de Tarjeta --}}
+
+                        {{-- FOOTER --}}
+                        @include('partials.footer')
+
                     </div>
                 </div>
             </div>
         </section>
     </main>
-
-    @include('layouts.footer2')
 @endsection

@@ -71,10 +71,8 @@ return [
     */
 
     'mercadopago' => [
-        'public_key' => env('MERCADOPAGO_PUBLIC_KEY'),
-        'access_token' => env('MERCADOPAGO_ACCESS_TOKEN'),
-        'webhook_secret' => env('MERCADOPAGO_WEBHOOK_SECRET'),
-        'mode' => env('MERCADOPAGO_MODE', 'sandbox'), // 'sandbox' or 'production'
+        'public_key'   => env('CETAM_FQR_MP_PUBLIC_KEY'),
+        'access_token' => env('CETAM_FQR_MP_ACCESS_TOKEN'),
     ],
 
 ];

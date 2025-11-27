@@ -35,6 +35,7 @@ use App\Livewire\Index;
 use App\Livewire\Transactions;
 use Illuminate\Support\Facades\Route;
 use App\Livewire\Users;
+use App\Livewire\Auth\RegisterWizard;
 
 /*
 |--------------------------------------------------------------------------
@@ -77,7 +78,7 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
     Route::get('/login', [App\Http\Controllers\Auth\AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [App\Http\Controllers\Auth\AuthController::class, 'login']);
     Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])->name('logout');
-    Route::get('/register', [App\Http\Controllers\BusinessController::class, 'register'])->name('register');
+    Route::get('/register', RegisterWizard::class)->name('register');
     Route::post('/register', [App\Http\Controllers\BusinessController::class, 'store']);
 
     // Payments Management (NO requiere subscription activa para renovar)
