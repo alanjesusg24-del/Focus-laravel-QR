@@ -10,6 +10,14 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
     @endif
+    <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                    <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                        <li class="breadcrumb-item">
+                            <a href="#"><x-icon name="home" /></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Órdenes</li>
+                    </ol>
+                </nav>
 
     @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">

@@ -41,6 +41,7 @@ class OrderController extends Controller
 
         $status = $request->get('status');
         $query = Order::where('business_id', $businessId)
+            ->withTrashed() // Mostrar también órdenes eliminadas (soft deleted)
             ->orderBy('created_at', 'desc');
 
         if ($status) {

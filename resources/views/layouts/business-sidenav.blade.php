@@ -1,19 +1,10 @@
 {{--
-============================================
-CETAM - Business Sidebar Navigation
-============================================
-
-@project     Centro de Servicios (CS)
-@file        business-sidenav.blade.php
-@description Barra lateral de navegación para panel de negocios
-@created     2025-11-22
-
-============================================
---}}
-{{--
-============================================
-CETAM - Business Sidebar Navigation
-============================================
+ * Company: CETAM
+ * Project: Focus QR System
+ * File: business-sidenav.blade.php
+ * Created on: 05/11/2025
+ * Created by: Dafne Vanessa Castillo Moreno
+ * Approved by: Alan Jesus 
 --}}
 
 <nav id="sidebarMenu" class="sidebar d-lg-block text-white collapse" data-simplebar style="background-color: #1F2937;">

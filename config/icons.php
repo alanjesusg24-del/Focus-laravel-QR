@@ -187,6 +187,8 @@ return [
     // === ALIASES CORTOS (para compatibilidad) ===
     'error' => 'fas fa-times-circle',
     'check' => 'fas fa-check-circle',
+    'checkCircle' => 'fas fa-check-circle',
+    'warning' => 'fas fa-exclamation-triangle',
     'store' => 'fas fa-store',
     'idCard' => 'fas fa-id-card',
     'phone' => 'fas fa-phone',

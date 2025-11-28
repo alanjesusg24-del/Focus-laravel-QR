@@ -25,8 +25,8 @@
 }
 
 .sidebar .nav-link:hover {
-    color: #ffffff;
-    background-color: rgba(251, 80, 59, 0.15); /* cetam-secondary con opacidad */
+    color: #ffffff !important;
+    background-color: rgba(55, 65, 81, 0.6) !important; /* gris opaco */
 }
 
 /* Active State - Estilo Volt (sutil) */
@@ -91,12 +91,12 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-    background: rgba(251, 80, 59, 0.5); /* cetam-secondary con opacidad */
+    background: rgba(156, 163, 175, 0.5); /* gris opaco */
     border-radius: 3px;
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background: var(--cetam-secondary);
+    background: rgba(156, 163, 175, 0.8); /* gris opaco más intenso */
 }
 
 /* Responsive - Sidebar en mobile */

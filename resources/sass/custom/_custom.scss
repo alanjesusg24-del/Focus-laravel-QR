@@ -30,13 +30,13 @@
 
         &:hover {
             color: $white;
-            background-color: rgba($secondary, 0.15);
+            background-color: rgba(55, 65, 81, 0.6);
         }
 
         &.active {
-            color: $white;
-            background-color: $secondary;
-            box-shadow: 0 2px 8px rgba($secondary, 0.3);
+            color: #F2F4F6;
+            background-color: #374151;
+            box-shadow: none;
         }
 
         i, .fa-solid {
