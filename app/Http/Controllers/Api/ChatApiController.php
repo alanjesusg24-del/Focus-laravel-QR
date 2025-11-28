@@ -19,34 +19,29 @@ class ChatApiController extends Controller
     public function getMessages(Request $request, $orderId)
     {
         try {
-            $deviceId = $request->header('X-Device-ID');
+            // Obtener usuario autenticado desde el token Bearer
+            $user = $request->user('sanctum');
+            $mobileUser = $request->mobile_user ?? null;
 
-            if (!$deviceId) {
+            // Determinar el mobile_user_id (prioridad: usuario autenticado > dispositivo)
+            $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
+
+            if (!$mobileUserId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Device ID es requerido en el header X-Device-ID',
-                ], 400);
+                    'message' => 'Se requiere autenticación o device_id',
+                ], 401);
             }
 
-            // Verificar que el dispositivo existe
-            $mobileUser = MobileUser::where('device_id', $deviceId)->first();
-
-            if (!$mobileUser) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Dispositivo no encontrado',
-                ], 404);
-            }
-
-            // Verificar que la orden existe y está ligada a este dispositivo
+            // Verificar que la orden existe y pertenece al usuario autenticado
             $order = Order::where('order_id', $orderId)
-                ->where('mobile_user_id', $mobileUser->id)
+                ->where('mobile_user_id', $mobileUserId)
                 ->first();
 
             if (!$order) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Orden no encontrada o no pertenece a este dispositivo',
+                    'message' => 'Orden no encontrada o no tienes acceso a ella',
                 ], 404);
             }
 
@@ -99,41 +94,36 @@ class ChatApiController extends Controller
     public function sendMessage(Request $request, $orderId)
     {
         try {
-            $deviceId = $request->header('X-Device-ID');
-
-            if (!$deviceId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Device ID es requerido en el header X-Device-ID',
-                ], 400);
-            }
-
             // Validar datos
             $validated = $request->validate([
                 'message' => 'required|string|max:1000',
                 'attachment' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf',
             ]);
 
-            // Verificar que el dispositivo existe
-            $mobileUser = MobileUser::where('device_id', $deviceId)->first();
+            // Obtener usuario autenticado desde el token Bearer
+            $user = $request->user('sanctum');
+            $mobileUser = $request->mobile_user ?? null;
 
-            if (!$mobileUser) {
+            // Determinar el mobile_user_id (prioridad: usuario autenticado > dispositivo)
+            $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
+
+            if (!$mobileUserId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Dispositivo no encontrado',
-                ], 404);
+                    'message' => 'Se requiere autenticación o device_id',
+                ], 401);
             }
 
-            // Verificar que la orden existe y está ligada a este dispositivo
+            // Verificar que la orden existe y pertenece al usuario autenticado
             $order = Order::where('order_id', $orderId)
-                ->where('mobile_user_id', $mobileUser->id)
+                ->where('mobile_user_id', $mobileUserId)
                 ->with('business')
                 ->first();
 
             if (!$order) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Orden no encontrada o no pertenece a este dispositivo',
+                    'message' => 'Orden no encontrada o no tienes acceso a ella',
                 ], 404);
             }
 
@@ -141,7 +131,7 @@ class ChatApiController extends Controller
             $attachmentUrl = null;
             if ($request->hasFile('attachment')) {
                 $file = $request->file('attachment');
-                $fileName = time() . '_' . $mobileUser->id . '_' . $file->getClientOriginalName();
+                $fileName = time() . '_' . $mobileUserId . '_' . $file->getClientOriginalName();
                 $path = $file->storeAs('chat_attachments', $fileName, 'public');
                 $attachmentUrl = Storage::url($path);
             }
@@ -150,7 +140,7 @@ class ChatApiController extends Controller
             $message = ChatMessage::create([
                 'order_id' => $orderId,
                 'sender_type' => 'customer',
-                'sender_id' => $mobileUser->id,
+                'sender_id' => $mobileUserId,
                 'message' => $validated['message'],
                 'attachment_url' => $attachmentUrl,
                 'is_read' => false,
@@ -191,34 +181,29 @@ class ChatApiController extends Controller
     public function markAsRead(Request $request, $orderId)
     {
         try {
-            $deviceId = $request->header('X-Device-ID');
+            // Obtener usuario autenticado desde el token Bearer
+            $user = $request->user('sanctum');
+            $mobileUser = $request->mobile_user ?? null;
 
-            if (!$deviceId) {
+            // Determinar el mobile_user_id (prioridad: usuario autenticado > dispositivo)
+            $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
+
+            if (!$mobileUserId) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Device ID es requerido en el header X-Device-ID',
-                ], 400);
+                    'message' => 'Se requiere autenticación o device_id',
+                ], 401);
             }
 
-            // Verificar que el dispositivo existe
-            $mobileUser = MobileUser::where('device_id', $deviceId)->first();
-
-            if (!$mobileUser) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Dispositivo no encontrado',
-                ], 404);
-            }
-
-            // Verificar que la orden existe y está ligada a este dispositivo
+            // Verificar que la orden existe y pertenece al usuario autenticado
             $order = Order::where('order_id', $orderId)
-                ->where('mobile_user_id', $mobileUser->id)
+                ->where('mobile_user_id', $mobileUserId)
                 ->first();
 
             if (!$order) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Orden no encontrada o no pertenece a este dispositivo',
+                    'message' => 'Orden no encontrada o no tienes acceso a ella',
                 ], 404);
             }
 
