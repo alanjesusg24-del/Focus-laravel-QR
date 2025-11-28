@@ -92,13 +92,12 @@ class RegisterWizard extends Component
         DB::beginTransaction();
 
         try {
-            // Crear negocio directamente en la tabla businesses
-            // IMPORTANTE: La contraseña DEBE encriptarse con Hash::make para que el login funcione
+            
             Business::create([
                 'business_name' => $this->business_name,
                 'rfc' => $this->rfc,
                 'email' => $this->email,
-                'password' => Hash::make($this->password), // <--- CRÍTICO: Hash la contraseña
+                'password' => Hash::make($this->password), 
                 'phone' => $this->phone,
                 'plan_id' => $this->plan_id,
                 'is_active' => true,
@@ -109,7 +108,6 @@ class RegisterWizard extends Component
 
             DB::commit();
 
-            // ÉXITO: Redirigir al login con mensaje
             session()->flash('success', '¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.');
 
             return redirect()->route('business.login');
@@ -117,7 +115,6 @@ class RegisterWizard extends Component
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
 
-            // Detectar errores de duplicados
             if ($e->getCode() == 23000) {
                 if (str_contains($e->getMessage(), 'rfc')) {
                     session()->flash('error', 'El RFC ingresado ya está registrado en el sistema.');

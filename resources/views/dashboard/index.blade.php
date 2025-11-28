@@ -1,3 +1,9 @@
+
+
+
+
+
+
 @extends('layouts.business-app')
 
 @section('title', 'Reportes - Sistema de Órdenes QR')

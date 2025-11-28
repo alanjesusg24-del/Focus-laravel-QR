@@ -4,7 +4,6 @@
 
 @section('page')
 <div class="py-4">
-    <!-- Mensajes de éxito y error -->
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         {{ session('success') }}
@@ -19,7 +18,6 @@
     </div>
     @endif
 
-    <!-- Encabezado de Página -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <h2 class="h4">Gestión de Órdenes</h2>
@@ -43,7 +41,6 @@
         </div>
     </div>
 
-    <!-- Tabla de Órdenes -->
     <div class="card border-0 shadow mb-4">
         <div class="card-header">
             <div class="row align-items-center">
@@ -69,7 +66,7 @@
                         @if(auth()->guard('business')->user()->plan && auth()->guard('business')->user()->plan->has_chat_module)
                         <th class="border-bottom" scope="col">Chat</th>
                         @endif
-                        <th class="border-bottom text-center" scope="col">Acciones</th>
+                        <th class="border-bottom text-end" scope="col" style="padding-right: 1.5rem;">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -77,38 +74,35 @@
                     <tr>
                         <td class="fw-bolder text-gray-500">{{ $order->folio_number }}</td>
                         <td class="text-gray-900">{{ Str::limit($order->description ?? 'Sin descripción', 50) }}</td>
+                        
                         <td>
                             @php
                                 $statusConfig = [
-                                    'pending' => ['class' => 'bg-warning', 'label' => 'Pendiente'],
-                                    'ready' => ['class' => 'bg-success', 'label' => 'Listo'],
-                                    'delivered' => ['class' => 'bg-info', 'label' => 'Entregado'],
-                                    'cancelled' => ['class' => 'bg-danger', 'label' => 'Cancelado'],
+                                    'pending'   => ['class' => 'text-warning', 'label' => 'Pendiente'],
+                                    'ready'     => ['class' => 'text-info',    'label' => 'Listo'],
+                                    'delivered' => ['class' => 'text-success', 'label' => 'Entregado'],
+                                    'cancelled' => ['class' => 'text-danger',  'label' => 'Cancelado'],
                                 ];
-                                $config = $statusConfig[$order->status] ?? ['class' => 'bg-secondary', 'label' => 'Desconocido'];
+                                $config = $statusConfig[$order->status] ?? ['class' => 'text-muted', 'label' => 'Desconocido'];
                             @endphp
-                            <span class="badge {{ $config['class'] }}">{{ $config['label'] }}</span>
+                            <span class="fw-bold {{ $config['class'] }}">{{ $config['label'] }}</span>
                         </td>
+
                         <td class="text-gray-500">{{ $order->created_at->format('d/m/Y H:i') }}</td>
                         <td>
                             @if($order->qr_code_url)
                                 @if(!$order->mobile_user_id)
-                                    {{-- Mostrar QR solo si no está ligado a celular --}}
-                                    <button type="button" class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#qrModal{{ $order->order_id }}" title="Ver QR">
-                                        QR
+                                    <button type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#qrModal{{ $order->order_id }}" title="Ver QR">
+                                        <x-icon name="order.qr" class="text-dark" style="font-size: 1rem;" />
                                     </button>
                                 @else
-                                    {{-- Mostrar indicador de que está ligado --}}
-                                    <span class="badge bg-success" title="Ligado a celular">
-                                        Ligado
-                                    </span>
+                                    <span class="badge bg-success" title="Ligado a celular">Ligado</span>
                                 @endif
                             @endif
                         </td>
                         @if(auth()->guard('business')->user()->plan && auth()->guard('business')->user()->plan->has_chat_module)
                         <td>
                             @if($order->mobile_user_id)
-                                {{-- Solo mostrar botón de chat si el dispositivo está ligado --}}
                                 <a href="{{ route('business.chat.index', ['order_id' => $order->order_id]) }}" class="btn btn-sm btn-info" title="Chat con Cliente">
                                     Chat
                                 </a>
@@ -117,41 +111,58 @@
                             @endif
                         </td>
                         @endif
-                        <td class="text-center">
-                            <div class="btn-group" role="group">
-                                <a href="{{ route('business.orders.show', $order) }}" class="btn btn-sm btn-primary">Ver</a>
+                        
+                        <td class="text-end" style="padding-right: 1.5rem;">
+                            <div class="dropdown">
+                                <button class="btn btn-link text-dark dropdown-toggle m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
+                                    </svg>
+                                </button>
+                                <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
+                                    
+                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
+                                        <svg class="dropdown-icon text-gray-400 me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"></path>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Ver detalles
+                                    </a>
 
-                                @if($order->status === 'pending' && $order->mobile_user_id)
-                                    {{-- Solo mostrar "Marcar Listo" si está ligado a celular --}}
-                                    <button type="button" class="btn btn-sm btn-success" onclick="event.preventDefault(); this.closest('td').querySelector('#mark-ready-form-{{ $order->order_id }}').submit();">
-                                        Marcar Listo
-                                    </button>
-                                    <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
-                                        @csrf
-                                        @method('PUT')
-                                    </form>
-                                @endif
+                                    @if($order->status === 'pending' && $order->mobile_user_id)
+                                        <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
+                                            <svg class="dropdown-icon text-success me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Marcar Listo
+                                        </a>
+                                        <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
+                                            @csrf
+                                            @method('PUT')
+                                        </form>
+                                    @endif
 
-                                @if(in_array($order->status, ['pending', 'ready']))
-                                    <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
-                                        Cancelar
-                                    </button>
-                                @endif
+                                    @if(in_array($order->status, ['pending', 'ready']))
+                                        <div role="separator" class="dropdown-divider my-1"></div>
+                                        <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
+                                            <svg class="dropdown-icon text-danger me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Cancelar Orden
+                                        </a>
+                                    @endif
+                                </div>
                             </div>
                         </td>
+
                     </tr>
 
-                    <!-- Modal de Código QR -->
                     @if($order->qr_code_url && !$order->mobile_user_id)
                     <div class="modal fade" id="qrModal{{ $order->order_id }}" tabindex="-1" aria-labelledby="qrModalLabel{{ $order->order_id }}" aria-hidden="true" data-order-id="{{ $order->order_id }}">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
                                 <div class="modal-header border-0">
                                     <h5 class="modal-title" id="qrModalLabel{{ $order->order_id }}">
-                                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
-                                            <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
-                                        </svg>
                                         Código QR - {{ $order->folio_number }}
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
@@ -167,7 +178,6 @@
                     </div>
                     @endif
 
-                    <!-- Modal de Cancelación -->
                     <div class="modal fade" id="cancelModal{{ $order->order_id }}" tabindex="-1" aria-labelledby="cancelModalLabel{{ $order->order_id }}" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -180,16 +190,9 @@
                                     @method('PUT')
                                     <div class="modal-body">
                                         <p class="text-gray-600">¿Estás seguro de cancelar la orden <strong>{{ $order->folio_number }}</strong>?</p>
-
                                         <div class="mb-3">
                                             <label for="cancellation_reason{{ $order->order_id }}" class="form-label">Motivo de cancelación</label>
-                                            <textarea
-                                                name="cancellation_reason"
-                                                id="cancellation_reason{{ $order->order_id }}"
-                                                rows="3"
-                                                required
-                                                class="form-control"
-                                                placeholder="Explica el motivo de la cancelación..."></textarea>
+                                            <textarea name="cancellation_reason" id="cancellation_reason{{ $order->order_id }}" rows="3" required class="form-control" placeholder="Explica el motivo..."></textarea>
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -202,10 +205,7 @@
                     </div>
                     @empty
                     <tr>
-                        <td colspan="{{ (auth()->guard('business')->user()->plan && auth()->guard('business')->user()->plan->has_chat_module) ? '7' : '6' }}" class="text-center py-5">
-                            <svg class="icon icon-xxl text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
-                            </svg>
+                        <td colspan="7" class="text-center py-5">
                             <p class="text-gray-600 mb-3">No hay órdenes disponibles</p>
                             <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createOrderModal">Crear Primera Orden</button>
                         </td>
@@ -214,8 +214,6 @@
                 </tbody>
             </table>
         </div>
-
-        <!-- Paginación -->
         @if($orders->hasPages())
         <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
             {{ $orders->links('vendor.pagination.volt-custom') }}
@@ -224,49 +222,27 @@
     </div>
 </div>
 
-<!-- Modal: Crear Nueva Orden -->
 <div class="modal fade" id="createOrderModal" tabindex="-1" aria-labelledby="createOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createOrderModalLabel">
-                    <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Crear Nueva Orden
-                </h5>
+                <h5 class="modal-title" id="createOrderModalLabel">Crear Nueva Orden</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
             <form action="{{ route('business.orders.store') }}" method="POST">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="description" class="form-label">
-                            Descripción de la Orden <span class="text-danger">*</span>
-                        </label>
-                        <textarea
-                            name="description"
-                            id="description"
-                            rows="4"
-                            required
-                            class="form-control @error('description') is-invalid @enderror"
-                            placeholder="Ej: 2 cafés americanos, 1 latte grande, 1 bagel...">{{ old('description') }}</textarea>
-
+                        <label for="description" class="form-label">Descripción de la Orden <span class="text-danger">*</span></label>
+                        <textarea name="description" id="description" rows="4" required class="form-control @error('description') is-invalid @enderror" placeholder="Ej: 2 cafés americanos...">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
-
-                        <small class="form-text text-muted">Máximo 500 caracteres</small>
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">
-                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                        </svg>
-                        Crear Orden
-                    </button>
+                    <button type="submit" class="btn btn-primary">Crear Orden</button>
                 </div>
             </form>
         </div>
@@ -274,60 +250,41 @@
 </div>
 
 <script>
-    // Funcionalidad de búsqueda
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-orders');
         if (searchInput) {
             searchInput.addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
                 const rows = document.querySelectorAll('tbody tr:not(:last-child)');
-
                 rows.forEach(row => {
-                    // Omitir si es la fila de estado vacío
-                    if (row.querySelector('td[colspan]')) {
-                        return;
-                    }
-
+                    if (row.querySelector('td[colspan]')) return;
                     const text = row.textContent.toLowerCase();
                     row.style.display = text.includes(searchTerm) ? '' : 'none';
                 });
             });
         }
-
-        // Si hay errores de validación, abrir el modal de crear orden
         @if($errors->any())
         const createOrderModal = new bootstrap.Modal(document.getElementById('createOrderModal'));
         createOrderModal.show();
         @endif
-
-        // Verificar cada 3 segundos si hay modales de QR abiertos y si la orden fue ligada
         setInterval(checkQRModalsForLinkedOrders, 3000);
     });
 
     function checkQRModalsForLinkedOrders() {
-        // Buscar modales de QR que estén abiertos
         const openModals = document.querySelectorAll('.modal.show[id^="qrModal"]');
-
         openModals.forEach(modal => {
             const orderId = modal.getAttribute('data-order-id');
             if (orderId) {
-                // Hacer petición AJAX para verificar si la orden fue ligada
                 fetch(`/business/orders/${orderId}/check-linked`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.is_linked) {
-                            // Cerrar el modal
                             const modalInstance = bootstrap.Modal.getInstance(modal);
-                            if (modalInstance) {
-                                modalInstance.hide();
-                            }
-                            // Recargar la página para actualizar la vista
-                            setTimeout(() => {
-                                window.location.reload();
-                            }, 500);
+                            if (modalInstance) modalInstance.hide();
+                            setTimeout(() => { window.location.reload(); }, 500);
                         }
                     })
-                    .catch(error => console.log('Error verificando estado de orden:', error));
+                    .catch(error => console.log('Error:', error));
             }
         });
     }
