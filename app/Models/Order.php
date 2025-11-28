@@ -178,7 +178,10 @@ class Order extends Model
                 $order->qr_token = \Illuminate\Support\Str::random(32);
             }
             if (!$order->order_number) {
-                $order->order_number = 'ORD-' . date('Y') . '-' . str_pad(static::count() + 1, 4, '0', STR_PAD_LEFT);
+                // Generar order_number único basado en el último registro
+                $lastOrder = static::orderBy('order_id', 'desc')->lockForUpdate()->first();
+                $nextNumber = $lastOrder ? ((int) substr($lastOrder->order_number, -4)) + 1 : 1;
+                $order->order_number = 'ORD-' . date('Y') . '-' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
             }
         });
 

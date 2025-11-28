@@ -297,7 +297,7 @@
             position: businessLocation,
             map: map,
             title: '{{ $business->business_name }}',
-            draggable: false,
+            draggable: false, 
             animation: google.maps.Animation.DROP
         });
 

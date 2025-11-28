@@ -217,14 +217,34 @@ class OrderService
     protected function generateFolioNumber(int $businessId): string
     {
         $business = Business::findOrFail($businessId);
-        $lastOrder = Order::where('business_id', $businessId)
-            ->latest('order_id')
-            ->first();
-
-        $nextNumber = $lastOrder ? (int) substr($lastOrder->folio_number, -4) + 1 : 1;
         $prefix = strtoupper(substr($business->business_name, 0, 3));
 
-        return sprintf('%s-%04d', $prefix, $nextNumber);
+        // Buscar el último folio con este prefijo específico
+        $lastOrder = Order::where('business_id', $businessId)
+            ->where('folio_number', 'like', $prefix . '-%')
+            ->orderBy('folio_number', 'desc')
+            ->lockForUpdate() // Bloquear para evitar condiciones de carrera
+            ->first();
+
+        $nextNumber = 1;
+
+        if ($lastOrder) {
+            // Extraer el número del último folio
+            $lastNumber = (int) substr($lastOrder->folio_number, strlen($prefix) + 1);
+            $nextNumber = $lastNumber + 1;
+        }
+
+        $folioNumber = sprintf('%s-%04d', $prefix, $nextNumber);
+
+        // Verificar que no exista (por si acaso)
+        $attempt = 0;
+        while (Order::where('folio_number', $folioNumber)->exists() && $attempt < 100) {
+            $nextNumber++;
+            $folioNumber = sprintf('%s-%04d', $prefix, $nextNumber);
+            $attempt++;
+        }
+
+        return $folioNumber;
     }
 
     /**

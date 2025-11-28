@@ -29,11 +29,11 @@
     background-color: rgba(251, 80, 59, 0.15); /* cetam-secondary con opacidad */
 }
 
-/* Active State - Naranja CETAM */
+/* Active State - Estilo Volt (sutil) */
 .sidebar .nav-item.active .nav-link {
-    color: #ffffff;
-    background-color: var(--cetam-secondary);
-    border-radius: 0.375rem;
+    color: #F2F4F6 !important;
+    background-color: #374151 !important;
+    border-radius: 0.375rem !important;
 }
 
 /* Iconos del sidebar */
@@ -48,12 +48,21 @@
 }
 
 .sidebar .nav-item.active .nav-link .sidebar-icon svg {
-    color: #ffffff;
+    color: #F2F4F6 !important;
 }
 
 /* Divider en sidebar */
 .sidebar .dropdown-divider.border-gray-700 {
-    border-color: rgba(255, 255, 255, 0.1) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.2) !important;
+    margin: 1rem 0.75rem !important;
+    opacity: 1 !important;
+}
+
+.sidebar .sidebar-divider {
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 1rem 0.75rem;
+    opacity: 1;
 }
 
 /* User card en mobile */
@@ -97,10 +106,10 @@
     }
 }
 
-/* Efecto de profundidad en items activos */
-.sidebar .nav-item.active .nav-link {
+/* Efecto de profundidad en items activos - Deshabilitado para seguir estilo Volt */
+/* .sidebar .nav-item.active .nav-link {
     box-shadow: 0 2px 8px rgba(251, 80, 59, 0.3);
-}
+} */
 
 /* Animación suave en transiciones */
 .sidebar .nav-item .nav-link,

@@ -33,8 +33,9 @@ class Icon extends Component
         public string $name,
         public ?string $class = ''
     ) {
-        $icons = config('icons.icons', []);
-        $this->iconClass = $icons[$name] ?? 'fa-solid fa-circle-question';
+        // Obtener iconos del catálogo (sin anidación)
+        $icons = config('icons', []);
+        $this->iconClass = $icons[$name] ?? 'fas fa-question-circle';
         $this->additionalClasses = $class ?? '';
     }
 

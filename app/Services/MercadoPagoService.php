@@ -47,12 +47,6 @@ class MercadoPagoService
                     "email" => $business->email,
                     "name" => $business->business_name
                 ],
-                "back_urls" => [
-                    "success" => $successUrl,
-                    "failure" => $failureUrl,
-                    "pending" => $pendingUrl
-                ],
-                "auto_return" => "approved",
                 "external_reference" => "{$business->business_id}-{$plan->plan_id}",
                 "metadata" => [
                     "business_id" => (string) $business->business_id,
@@ -62,15 +56,24 @@ class MercadoPagoService
                 "notification_url" => $webhookUrl
             ];
 
+            // Solo agregar back_urls y auto_return si no es localhost
+            // En sandbox/localhost, MercadoPago rechaza estas URLs
+            if (!str_contains($baseUrl, 'localhost') && !str_contains($baseUrl, '127.0.0.1')) {
+                $preferenceData["back_urls"] = [
+                    "success" => $successUrl,
+                    "failure" => $failureUrl,
+                    "pending" => $pendingUrl
+                ];
+                $preferenceData["auto_return"] = "approved";
+            }
+
             Log::info('Creating MercadoPago preference', [
-                'back_urls' => $preferenceData['back_urls'],
+                'back_urls' => $preferenceData['back_urls'] ?? 'Not set (localhost)',
                 'business_id' => $business->business_id,
             ]);
 
             $preference = $client->create($preferenceData);
 
-            // El SDK v3 devuelve un objeto MercadoPago\Resources\Preference
-            // Acceder a propiedades con -> (usa __get mágico)
             $preferenceId = $preference->id;
             $initPoint = $preference->init_point;
             $sandboxInitPoint = $preference->sandbox_init_point;

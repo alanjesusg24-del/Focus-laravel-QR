@@ -17,15 +17,12 @@
                 <div class="row justify-content-center">
                     <div class="col-12 d-flex align-items-center justify-content-center flex-column">
                         
-                        {{-- TARJETA BLANCA --}}
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500 mb-4">
                             
-                            <!-- Título -->
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-0 h3">Inicio de Sesión</h1>
                             </div>
 
-                            <!-- Alertas -->
                             @if(session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     <x-icon name="check" class="me-2" />
@@ -42,7 +39,6 @@
                                 </div>
                             @endif
 
-                            <!-- Formulario (Ruta corregida: business.login) -->
                             <form method="POST" action="{{ route('business.login') }}" class="mt-4">
                                 @csrf
 
@@ -57,7 +53,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Contraseña -->
                                 <div class="form-group mb-4">
                                     <label for="password">Contraseña</label>
                                     <div class="input-group">
@@ -68,7 +63,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Opciones -->
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" value="" id="remember" name="remember">
@@ -76,30 +70,27 @@
                                             Recuerdame
                                         </label>
                                     </div>
-                                    {{-- Enlace desactivado temporalmente --}}
                                     <a href="#" onclick="alert('Función no disponible por el momento')" class="small text-right text-gray-600">
                                         ¿Olvidaste tu contraseña?
                                     </a>
                                 </div>
 
-                                <!-- Botón -->
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-gray-800">Iniciar Sesión</button>
                                 </div>
                             </form>
                             
-                            <!-- Link Registro -->
                             <div class="d-flex justify-content-center align-items-center mt-4">
                                 <span class="fw-normal">
                                     ¿No estás registrado?
-                                    {{-- Ruta corregida: business.register --}}
+                                        
                                     <a href="{{ route('business.register') }}" class="fw-bold text-dark ms-1">Crear Cuenta</a>
                                 </span>
                             </div>
 
-                        </div> {{-- Fin de Tarjeta --}}
+                        </div> 
 
-                        {{-- FOOTER --}}
+
                         @include('partials.footer')
 
                     </div>

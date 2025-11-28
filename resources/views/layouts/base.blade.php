@@ -16,6 +16,7 @@ CETAM - Base Layout
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <title>@yield('title', config('app.name'))</title>
     @if(env('IS_DEMO')) 
