@@ -71,9 +71,9 @@ return [
     */
 
     'mercadopago' => [
-        'public_key'   => env('CETAM_FQR_MP_PUBLIC_KEY'),
-        'access_token' => env('CETAM_FQR_MP_ACCESS_TOKEN'),
-        'mode'         => env('CETAM_FQR_MP_MODE', 'sandbox'), // sandbox o production
+        'public_key'   => env('MERCADOPAGO_PUBLIC_KEY'),
+        'access_token' => env('MERCADOPAGO_ACCESS_TOKEN'),
+        'mode'         => env('MERCADOPAGO_MODE', 'sandbox'), // sandbox o production
     ],
 
 ];

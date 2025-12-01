@@ -64,15 +64,8 @@
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" value="" id="remember" name="remember">
-                                        <label class="form-check-label mb-0" for="remember">
-                                            Recuerdame
-                                        </label>
-                                    </div>
-                                    <a href="#" onclick="alert('Función no disponible por el momento')" class="small text-right text-gray-600">
-                                        ¿Olvidaste tu contraseña?
-                                    </a>
+                                    
+                                    
                                 </div>
 
                                 <div class="d-grid">

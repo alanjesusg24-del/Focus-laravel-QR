@@ -13,6 +13,12 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
+            <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                        <li class="breadcrumb-item">
+                            <a href="#"><x-icon name="home" /></a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    </ol>
             <h2 class="h4">Reportes y Análisis</h2>
             <p class="mb-0">Visualiza el rendimiento de tu negocio</p>
         </div>
@@ -356,6 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Filtrar solo estados con órdenes
         const filteredData = [];
         const filteredLabels = [];
+        const filteredColors = [];
         const labelMap = {
             'pending': 'Pendientes',
             'ready': 'Listas',
@@ -363,10 +370,19 @@ document.addEventListener('DOMContentLoaded', function() {
             'cancelled': 'Canceladas'
         };
 
+        // Colores según estándares CETAM
+        const colorMap = {
+            'pending': '#FBA918',    // Ámbar (Warning)
+            'ready': '#10B981',      // Verde (Success)
+            'delivered': '#3B82F6',  // Azul (Info)
+            'cancelled': '#EF4444'   // Rojo (Danger)
+        };
+
         statusDistributionLabels.forEach((label, index) => {
             if (statusDistributionData[index] > 0) {
                 filteredData.push(statusDistributionData[index]);
                 filteredLabels.push(labelMap[label] || label);
+                filteredColors.push(colorMap[label] || '#6B7280');
             }
         });
 
@@ -377,7 +393,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 height: 300
             },
             labels: filteredLabels,
-            colors: ['#f59e0b', '#10b981', '#3b82f6', '#ef4444'],
+            colors: filteredColors,
             legend: {
                 position: 'bottom'
             },

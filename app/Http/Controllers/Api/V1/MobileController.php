@@ -64,19 +64,19 @@ class MobileController extends Controller
 
         // Asociar según el método de autenticación
         if ($user) {
-            // Usuario autenticado: asociar a user_id
-            $order->user_id = $user->id;
-            $order->mobile_user_id = $mobileUser ? $mobileUser->id : null; // Guardar también mobile_user_id como backup
+            // Usuario autenticado desde mobile_users: asociar solo a mobile_user_id
+            // NOTA: user_id se deja NULL porque mobile_users es una tabla diferente a users
+            $order->mobile_user_id = $user->id; // $user viene de mobile_users cuando usa Sanctum
             $order->associated_at = now();
             $order->save();
 
-            \Log::info('Order associated to authenticated user', [
+            \Log::info('Order associated to authenticated mobile user', [
                 'order_id' => $order->order_id,
-                'user_id' => $user->id,
+                'mobile_user_id' => $user->id,
                 'email' => $user->email,
             ]);
         } else if ($mobileUser) {
-            // Sin autenticación: asociar solo a mobile_user_id (sistema antiguo)
+            // Sin autenticación: asociar solo a mobile_user_id (sistema antiguo - device_id)
             $order->mobile_user_id = $mobileUser->id;
             $order->associated_at = now();
             $order->save();
@@ -124,16 +124,17 @@ class MobileController extends Controller
         $user = $request->user('sanctum'); // Usuario autenticado (si existe)
         $mobileUser = $request->mobile_user ?? null; // Dispositivo del middleware
 
-        // IMPORTANTE: Priorizar usuario autenticado sobre mobile_user_id
+        // IMPORTANTE: Tanto usuarios autenticados como dispositivos usan mobile_user_id
+        // porque mobile_users es una tabla separada de users
         if ($user) {
-            // Usuario autenticado: filtrar por user_id
-            $query = Order::where('user_id', $user->id);
-            \Log::info('Fetching orders for authenticated user', [
-                'user_id' => $user->id,
+            // Usuario autenticado desde mobile_users: filtrar por mobile_user_id
+            $query = Order::where('mobile_user_id', $user->id);
+            \Log::info('Fetching orders for authenticated mobile user', [
+                'mobile_user_id' => $user->id,
                 'email' => $user->email
             ]);
         } else if ($mobileUser) {
-            // Sin autenticación: filtrar por mobile_user_id (sistema antiguo)
+            // Sin autenticación: filtrar por mobile_user_id (sistema antiguo - device_id)
             $query = Order::where('mobile_user_id', $mobileUser->id);
             \Log::info('Fetching orders for device', [
                 'mobile_user_id' => $mobileUser->id
@@ -184,8 +185,8 @@ class MobileController extends Controller
         $query = Order::where('order_id', $orderId);
 
         if ($user) {
-            // Usuario autenticado: verificar que sea del usuario
-            $query->where('user_id', $user->id);
+            // Usuario autenticado desde mobile_users: verificar que sea del usuario
+            $query->where('mobile_user_id', $user->id);
         } else if ($mobileUser) {
             // Sin autenticación: verificar que sea del dispositivo
             $query->where('mobile_user_id', $mobileUser->id);
@@ -224,15 +225,43 @@ class MobileController extends Controller
     {
         $validated = $request->validate([
             'fcm_token' => 'required|string',
+            'platform' => 'nullable|string|in:ios,android',
         ]);
 
-        $request->mobile_user->update([
-            'fcm_token' => $validated['fcm_token'],
+        $user = $request->user('sanctum');
+        $mobileUser = $request->mobile_user ?? null;
+
+        // Determinar el mobile_user_id
+        $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
+
+        if (!$mobileUserId) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Se requiere autenticación o device_id',
+            ], 401);
+        }
+
+        // Crear o actualizar dispositivo
+        $device = \App\Models\MobileDevice::updateOrCreate(
+            [
+                'mobile_user_id' => $mobileUserId,
+                'fcm_token' => $validated['fcm_token'],
+            ],
+            [
+                'platform' => $validated['platform'] ?? 'android',
+                'is_active' => true,
+            ]
+        );
+
+        \Log::info('FCM token updated', [
+            'mobile_user_id' => $mobileUserId,
+            'device_id' => $device->mobile_device_id,
         ]);
 
         return response()->json([
             'success' => true,
             'message' => 'FCM token updated successfully',
+            'device_id' => $device->mobile_device_id,
         ], 200);
     }
 
