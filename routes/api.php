@@ -19,6 +19,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\MobileController;
+use App\Http\Controllers\Api\V1\BusinessLocationController;
 use App\Http\Controllers\Api\BusinessApiController;
 use App\Http\Controllers\Api\ChatApiController;
 use App\Http\Controllers\Api\MobileAuthController;
@@ -124,13 +125,18 @@ Route::prefix('v1')->group(function () {
     | Business Location API (Public - para app móvil)
     |--------------------------------------------------------------------------
     */
-    Route::prefix('businesses')->group(function () {
-        // Obtener lista de negocios activos con ubicación
-        // Query params opcionales: user_lat, user_lng, radius (km)
-        Route::get('/', [BusinessApiController::class, 'index']);
+    Route::prefix('businesses')->middleware('throttle:60,1')->group(function () {
+        // Obtener todos los negocios con paginación
+        Route::get('/', [BusinessLocationController::class, 'index']);
+
+        // Buscar negocios cercanos basado en geolocalización
+        Route::get('/nearby', [BusinessLocationController::class, 'nearby']);
+
+        // Buscar negocios por ciudad, estado o código postal
+        Route::get('/search', [BusinessLocationController::class, 'search']);
 
         // Obtener detalles de un negocio específico
-        Route::get('/{id}', [BusinessApiController::class, 'show']);
+        Route::get('/{businessId}', [BusinessLocationController::class, 'show']);
     });
 
     // TODO: Implement Mobile API Controllers
