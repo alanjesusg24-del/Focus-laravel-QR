@@ -49,6 +49,6 @@ class GlobalOrderController extends Controller
         // Get all businesses for filter dropdown
         $businesses = Business::orderBy('business_name')->get();
 
-        return view('superadmin.orders.index', compact('orders', 'businesses'));
+        return view('modules.superadmin.orders.index', compact('orders', 'businesses'));
     }
 }

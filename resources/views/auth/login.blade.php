@@ -77,7 +77,7 @@
                                 <span class="fw-normal">
                                     ¿No estás registrado?
                                         
-                                    <a href="{{ route('business.register') }}" class="fw-bold text-dark ms-1">Crear Cuenta</a>
+                                    <a href="{{ route('business.register') }}" class="fw-bold text-info ms-1">Crear Cuenta</a>
                                 </span>
                             </div>
 

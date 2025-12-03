@@ -15,7 +15,7 @@ class ProfileController extends Controller
     public function index()
     {
         $superAdmin = auth()->guard('superadmin')->user();
-        return view('superadmin.profile.index', compact('superAdmin'));
+        return view('modules.superadmin.profile.index', compact('superAdmin'));
     }
 
     /**
@@ -24,7 +24,7 @@ class ProfileController extends Controller
     public function edit()
     {
         $superAdmin = auth()->guard('superadmin')->user();
-        return view('superadmin.profile.edit', compact('superAdmin'));
+        return view('modules.superadmin.profile.edit', compact('superAdmin'));
     }
 
     /**

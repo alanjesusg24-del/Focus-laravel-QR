@@ -57,7 +57,7 @@ class ReportController extends Controller
         $recentOrders = Order::orderBy('created_at', 'desc')->limit(5)->get();
         $recentPayments = Payment::orderBy('payment_date', 'desc')->limit(5)->get();
 
-        return view('superadmin.reports.index', compact(
+        return view('modules.superadmin.reports.index', compact(
             'totalBusinesses',
             'activeBusinesses',
             'inactiveBusinesses',

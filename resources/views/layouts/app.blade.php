@@ -21,12 +21,12 @@
 
     @if($isAppShell)
         {{-- Nav --}}
-        @include('layouts.nav')
+        @include('partials.nav')
         {{-- SideNav --}}
-        @include('layouts.sidenav')
+        @include('partials.sidenav')
         <main class="content">
             {{-- TopBar --}}
-            @include('layouts.topbar')
+            @include('partials.topbar')
             @hasSection('page')
                 @yield('page')
             @else

@@ -15,7 +15,7 @@ class PlanManagementController extends Controller
     {
         $plans = Plan::withCount('businesses')->paginate(15);
 
-        return view('superadmin.plans.index', compact('plans'));
+        return view('modules.superadmin.plans.index', compact('plans'));
     }
 
     /**
@@ -23,7 +23,7 @@ class PlanManagementController extends Controller
      */
     public function create()
     {
-        return view('superadmin.plans.create');
+        return view('modules.superadmin.plans.create');
     }
 
     /**
@@ -85,7 +85,7 @@ class PlanManagementController extends Controller
     {
         $plan = Plan::withCount('businesses')->findOrFail($id);
 
-        return view('superadmin.plans.show', compact('plan'));
+        return view('modules.superadmin.plans.show', compact('plan'));
     }
 
     /**
@@ -95,7 +95,7 @@ class PlanManagementController extends Controller
     {
         $plan = Plan::findOrFail($id);
 
-        return view('superadmin.plans.edit', compact('plan'));
+        return view('modules.superadmin.plans.edit', compact('plan'));
     }
 
     /**

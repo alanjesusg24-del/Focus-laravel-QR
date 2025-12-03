@@ -87,7 +87,7 @@ class DashboardController extends Controller
             ->limit(5)
             ->get();
 
-        return view('superadmin.dashboard', compact(
+        return view('modules.superadmin.dashboard', compact(
             'stats',
             'ordersByStatus',
             'businessesPerMonth',

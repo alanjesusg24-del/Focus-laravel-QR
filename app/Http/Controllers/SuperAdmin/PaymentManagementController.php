@@ -55,6 +55,6 @@ class PaymentManagementController extends Controller
         $businesses = Business::orderBy('business_name')->get();
         $plans = Plan::orderBy('name')->get();
 
-        return view('superadmin.payments.index', compact('payments', 'businesses', 'plans'));
+        return view('modules.superadmin.payments.index', compact('payments', 'businesses', 'plans'));
     }
 }

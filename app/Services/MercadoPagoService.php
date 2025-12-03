@@ -14,8 +14,10 @@ class MercadoPagoService
 {
     public function __construct()
     {
-        // Configurar SDK de MercadoPago v3.x
-        MercadoPagoConfig::setAccessToken(config('services.mercadopago.access_token'));
+        // Configurar SDK de MercadoPago v3.x solo si está habilitado y las credenciales existen
+        if (config('cetam.cs.features.mercadopago') && config('services.mercadopago.access_token')) {
+            MercadoPagoConfig::setAccessToken(config('services.mercadopago.access_token'));
+        }
     }
 
     /**

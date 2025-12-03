@@ -46,7 +46,7 @@ class TicketManagementController extends Controller
         // Get all businesses for filter dropdown
         $businesses = Business::orderBy('business_name')->get();
 
-        return view('superadmin.tickets.index', compact('tickets', 'businesses'));
+        return view('modules.superadmin.tickets.index', compact('tickets', 'businesses'));
     }
 
     /**
@@ -55,7 +55,7 @@ class TicketManagementController extends Controller
     public function show(SupportTicket $ticket)
     {
         $ticket->load('business');
-        return view('superadmin.tickets.show', compact('ticket'));
+        return view('modules.superadmin.tickets.show', compact('ticket'));
     }
 
     /**
@@ -71,7 +71,7 @@ class TicketManagementController extends Controller
         }
 
         $ticket->load('business');
-        return view('superadmin.tickets.respond', compact('ticket'));
+        return view('modules.superadmin.tickets.respond', compact('ticket'));
     }
 
     /**

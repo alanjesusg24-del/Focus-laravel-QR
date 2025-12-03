@@ -31,7 +31,7 @@ return [
         'chat' => true,
         'qr_scanner' => true,
         'payments' => true,
-        'mercadopago' => env('MERCADOPAGO_PUBLIC_KEY') !== null,
+        'mercadopago' => false, // DESHABILITADO
     ],
 
     // Configuración de base de datos

@@ -52,7 +52,7 @@ class BusinessManagementController extends Controller
         $businesses = $query->paginate(15)->withQueryString();
         $plans = Plan::all();
 
-        return view('superadmin.businesses.index', compact('businesses', 'plans'));
+        return view('modules.superadmin.businesses.index', compact('businesses', 'plans'));
     }
 
     /**
@@ -75,7 +75,7 @@ class BusinessManagementController extends Controller
         $recentOrders = $business->orders()->latest()->limit(10)->get();
         $recentPayments = $business->payments()->latest()->limit(10)->get();
 
-        return view('superadmin.businesses.show', compact('business', 'stats', 'recentOrders', 'recentPayments'));
+        return view('modules.superadmin.businesses.show', compact('business', 'stats', 'recentOrders', 'recentPayments'));
     }
 
     /**
@@ -86,7 +86,7 @@ class BusinessManagementController extends Controller
         $business = Business::findOrFail($id);
         $plans = Plan::all();
 
-        return view('superadmin.businesses.edit', compact('business', 'plans'));
+        return view('modules.superadmin.businesses.edit', compact('business', 'plans'));
     }
 
     /**
