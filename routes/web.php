@@ -196,7 +196,7 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
         // Businesses Management
         Route::prefix('businesses')->as('businesses.')->group(function () {
             Route::get('/', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'index'])->name('index');
-            Route::get('/{id}', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'show'])->name('show');
+            // Route::get('/{id}', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'show'])->name('show'); // DESACTIVADO - Vista de detalle no se usa
             Route::get('/{id}/edit', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'edit'])->name('edit');
             Route::put('/{id}', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'update'])->name('update');
             Route::post('/{id}/toggle', [App\Http\Controllers\SuperAdmin\BusinessManagementController::class, 'toggleStatus'])->name('toggle');

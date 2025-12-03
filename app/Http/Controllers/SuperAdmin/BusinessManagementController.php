@@ -45,8 +45,8 @@ class BusinessManagementController extends Controller
         }
 
         // Sort
-        $sortBy = $request->get('sort_by', 'registration_date');
-        $sortOrder = $request->get('sort_order', 'desc');
+        $sortBy = $request->get('sort_by', 'business_id');
+        $sortOrder = $request->get('sort_order', 'asc');
         $query->orderBy($sortBy, $sortOrder);
 
         $businesses = $query->paginate(15)->withQueryString();
@@ -57,26 +57,27 @@ class BusinessManagementController extends Controller
 
     /**
      * Display the specified business
+     * DESACTIVADO - No se usa la vista de detalle
      */
-    public function show($id)
-    {
-        $business = Business::with(['plan', 'orders', 'payments', 'supportTickets'])
-            ->findOrFail($id);
+    // public function show($id)
+    // {
+    //     $business = Business::with(['plan', 'orders', 'payments', 'supportTickets'])
+    //         ->findOrFail($id);
 
-        // Get statistics for this business
-        $stats = [
-            'total_orders' => $business->orders()->count(),
-            'pending_orders' => $business->orders()->where('status', 'pending')->count(),
-            'delivered_orders' => $business->orders()->where('status', 'delivered')->count(),
-            'total_payments' => $business->payments()->sum('amount'),
-            'open_tickets' => $business->supportTickets()->where('status', 'open')->count(),
-        ];
+    //     // Get statistics for this business
+    //     $stats = [
+    //         'total_orders' => $business->orders()->count(),
+    //         'pending_orders' => $business->orders()->where('status', 'pending')->count(),
+    //         'delivered_orders' => $business->orders()->where('status', 'delivered')->count(),
+    //         'total_payments' => $business->payments()->sum('amount'),
+    //         'open_tickets' => $business->supportTickets()->where('status', 'open')->count(),
+    //     ];
 
-        $recentOrders = $business->orders()->latest()->limit(10)->get();
-        $recentPayments = $business->payments()->latest()->limit(10)->get();
+    //     $recentOrders = $business->orders()->latest()->limit(10)->get();
+    //     $recentPayments = $business->payments()->latest()->limit(10)->get();
 
-        return view('superadmin.businesses.show', compact('business', 'stats', 'recentOrders', 'recentPayments'));
-    }
+    //     return view('superadmin.businesses.show', compact('business', 'stats', 'recentOrders', 'recentPayments'));
+    // }
 
     /**
      * Show the form for editing the specified business

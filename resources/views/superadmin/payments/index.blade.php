@@ -106,84 +106,58 @@
             <thead class="thead-light">
                 <tr>
                     <th class="border-bottom" scope="col">ID</th>
-                    <th class="border-bottom" scope="col">NEGOCIO</th>
-                    <th class="border-bottom" scope="col">PLAN</th>
-                    <th class="border-bottom" scope="col">MONTO</th>
-                    <th class="border-bottom" scope="col">FECHA PAGO</th>
-                    <th class="border-bottom" scope="col">PRÓXIMO PAGO</th>
-                    <th class="border-bottom" scope="col">ESTADO</th>
-                    <th class="border-bottom" scope="col">MÉTODO</th>
+                    <th class="border-bottom" scope="col">Negocio</th>
+                    <th class="border-bottom" scope="col">Plan</th>
+                    <th class="border-bottom" scope="col">Monto</th>
+                    <th class="border-bottom" scope="col">Fecha Pago</th>
+                    <th class="border-bottom" scope="col">Próximo Pago</th>
+                    <th class="border-bottom" scope="col">Estado</th>
+                    <th class="border-bottom" scope="col">Método</th>
                 </tr>
             </thead>
             <tbody>
                 @forelse($payments as $payment)
                     <tr>
-                        <td class="fw-bold">#{{ $payment->payment_id }}</td>
-                        <td>
-                            @if($payment->business)
-                                <div class="d-flex align-items-center">
-                                    @if($payment->business->photo)
-                                        <img src="{{ asset('storage/' . $payment->business->photo) }}" class="avatar rounded-circle me-2" alt="{{ $payment->business->business_name }}">
-                                    @else
-                                        <div class="avatar rounded-circle bg-secondary me-2 d-flex align-items-center justify-content-center">
-                                            <span class="text-white fw-bold small">{{ substr($payment->business->business_name, 0, 1) }}</span>
-                                        </div>
-                                    @endif
-                                    <span>{{ $payment->business->business_name }}</span>
-                                </div>
-                            @else
-                                <span class="text-muted">N/A</span>
-                            @endif
+                        <td class="text-gray-500">#{{ $payment->payment_id }}</td>
+                        <td class="fw-bolder text-gray-500">
+                            {{ $payment->business->business_name ?? 'N/A' }}
                         </td>
-                        <td>
-                            @if($payment->plan)
-                                <span class="badge bg-secondary">{{ $payment->plan->name }}</span>
-                            @else
-                                <span class="text-muted">N/A</span>
-                            @endif
+                        <td class="fw-bold text-secondary">
+                            {{ $payment->plan->name ?? 'N/A' }}
                         </td>
                         <td class="fw-bold text-success">${{ number_format($payment->amount, 2) }}</td>
-                        <td>
-                            <div>{{ $payment->payment_date?->format('d/m/Y') ?? 'N/A' }}</div>
-                            @if($payment->payment_date)
-                                <div class="small text-gray">{{ $payment->payment_date->format('H:i') }}</div>
-                            @endif
+                        <td class="text-gray-500">
+                            {{ $payment->payment_date?->format('d/m/Y') ?? 'N/A' }}
                         </td>
-                        <td>
-                            @if($payment->next_payment_date)
-                                <div>{{ $payment->next_payment_date->format('d/m/Y') }}</div>
-                                <div class="small text-gray">{{ $payment->next_payment_date->diffForHumans() }}</div>
+                        <td class="text-gray-500">
+                            @if($payment->payment_date)
+                                {{ $payment->payment_date->addMonth()->format('d/m/Y') }}
                             @else
-                                <span class="text-muted">N/A</span>
+                                N/A
                             @endif
                         </td>
                         <td>
                             @switch($payment->status)
                                 @case('completed')
-                                    <span class="badge bg-success">Completado</span>
+                                    <span class="fw-bold text-success">Completado</span>
                                     @break
                                 @case('pending')
-                                    <span class="badge bg-warning">Pendiente</span>
+                                    <span class="fw-bold text-warning">Pendiente</span>
                                     @break
                                 @case('failed')
-                                    <span class="badge bg-danger">Fallido</span>
+                                    <span class="fw-bold text-danger">Fallido</span>
                                     @break
                                 @default
-                                    <span class="badge bg-secondary">{{ ucfirst($payment->status) }}</span>
+                                    <span class="fw-bold text-secondary">{{ ucfirst($payment->status) }}</span>
                             @endswitch
                         </td>
-                        <td>
+                        <td class="text-gray-500">
                             @if($payment->stripe_payment_id)
-                                <div class="small">
-                                    <svg class="icon icon-xxs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                        <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
-                                        <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
-                                    </svg>
-                                    Stripe
-                                </div>
-                                <div class="small text-gray">{{ substr($payment->stripe_payment_id, 0, 20) }}...</div>
+                                Stripe
+                            @elseif($payment->mercadopago_payment_id)
+                                MercadoPago
                             @else
-                                <span class="text-muted">N/A</span>
+                                N/A
                             @endif
                         </td>
                     </tr>

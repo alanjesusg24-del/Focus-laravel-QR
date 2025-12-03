@@ -27,18 +27,29 @@
     </div>
 
     <ul class="nav flex-column pt-3 pt-md-0">
-      {{-- DESACTIVADO: Dashboard --}}
-      {{-- <li class="nav-item {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
+
+      <li class="nav-item mb-4">
+        <a href="{{ route('superadmin.dashboard') }}" class="nav-link d-flex align-items-center">
+          <span class="sidebar-icon me-3">
+            <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
+                 style="width: 30px; height: 30px; background-color: #EF4444;">
+                {{ substr(auth()->guard('superadmin')->user()->name ?? 'SA', 0, 2) }}
+            </div>
+          </span>
+          <span class="mt-1 ms-1 sidebar-text fw-bold">
+            {{ auth()->guard('superadmin')->user()->name ?? 'Super Admin' }}
+          </span>
+        </a>
+      </li>
+
+      <li class="nav-item {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
         <a href="{{ route('superadmin.dashboard') }}" class="nav-link">
           <span class="sidebar-icon">
-            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
-              <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
-            </svg>
+            <x-icon name="dashboard" class="me-2" />
           </span>
           <span class="sidebar-text">Dashboard</span>
         </a>
-      </li> --}}
+      </li>
 
       {{-- Businesses --}}
       <li class="nav-item {{ request()->routeIs('superadmin.businesses.*') ? 'active' : '' }}">
@@ -82,7 +93,9 @@
         </a>
       </li> --}}
 
-      <li role="separator" class="dropdown-divider mt-4 mb-3 border-gray-700"></li>
+      <li class="nav-item" role="separator" style="list-style: none;">
+         <div style="height: 1px !important; background-color: rgba(255, 255, 255, 0.3) !important; margin: 1.5rem 1rem;"></div>
+      </li>
 
       {{-- Profile --}}
       <li class="nav-item {{ request()->routeIs('superadmin.profile.*') ? 'active' : '' }}">
