@@ -109,7 +109,7 @@
                 <div class="mb-3">
                     <small class="text-gray-500">Archivo Adjunto</small>
                     <div class="mt-1">
-                        <a href="{{ $ticket->attachment_url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                        <a href="{{ $ticket->attachment_url }}" target="_blank" class="btn btn-primary btn-sm">
                             <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd"></path>
                             </svg>
@@ -185,7 +185,7 @@
                                             <span id="fileName" class="fw-bold"></span>
                                             <small id="fileSize" class="text-muted d-block"></small>
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-danger" onclick="clearFileInput()">
+                                        <button type="button" class="btn btn-sm btn-primary" onclick="clearFileInput()">
                                             <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                                 <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
                                             </svg>
@@ -214,7 +214,7 @@
 
                     <!-- Action Buttons -->
                     <div class="d-flex justify-content-between align-items-center mt-4">
-                        <a href="{{ route('superadmin.tickets.show', $ticket->support_ticket_id) }}" class="btn btn-light">
+                        <a href="{{ route('superadmin.tickets.show', $ticket->support_ticket_id) }}" class="btn btn-primary">
                             <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
                             </svg>

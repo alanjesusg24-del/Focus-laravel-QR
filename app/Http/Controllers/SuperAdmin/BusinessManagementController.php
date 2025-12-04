@@ -99,26 +99,27 @@ class BusinessManagementController extends Controller
 
         $request->validate([
             'business_name' => 'required|string|max:255',
-            'rfc' => 'nullable|string|max:13',
+            'rfc' => 'required|string|max:13',
             'email' => [
                 'required',
                 'email',
                 Rule::unique('businesses', 'email')->ignore($business->business_id, 'business_id')
             ],
-            'phone' => 'nullable|string|max:20',
+            'phone' => 'required|string|max:20',
             'address' => 'nullable|string|max:500',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'location_description' => 'nullable|string|max:500',
             'plan_id' => 'required|exists:plans,plan_id',
             'is_active' => 'boolean',
             'password' => 'nullable|string|min:8',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'business_name.required' => 'El nombre del negocio es obligatorio.',
+            'rfc.required' => 'El RFC es obligatorio.',
             'email.required' => 'El correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico debe ser válido.',
             'email.unique' => 'Este correo electrónico ya está registrado.',
+            'phone.required' => 'El teléfono es obligatorio.',
             'plan_id.required' => 'El plan es obligatorio.',
             'plan_id.exists' => 'El plan seleccionado no es válido.',
             'latitude.between' => 'La latitud debe estar entre -90 y 90.',

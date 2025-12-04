@@ -40,6 +40,36 @@
     </div>
 @endif
 
+<!-- Filters Card -->
+<div class="card card-body border-0 shadow mb-4">
+    <form method="GET" action="{{ route('superadmin.plans.index') }}" id="filterForm">
+        <div class="row align-items-end">
+            <div class="col-md-9 mb-3 mb-md-0">
+                <label for="search" class="form-label">Buscar</label>
+                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Buscar por nombre del plan...">
+            </div>
+            <div class="col-md-3 mb-3 mb-md-0">
+                <label for="status" class="form-label">Estado</label>
+                <select class="form-select auto-submit" id="status" name="status">
+                    <option value="">Todos</option>
+                    <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Activo</option>
+                    <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactivo</option>
+                </select>
+            </div>
+        </div>
+        @if(request()->hasAny(['search', 'status']))
+            <div class="row mt-3">
+                <div class="col-12">
+                    <a href="{{ route('superadmin.plans.index') }}" class="btn btn-sm btn-primary">
+                        <x-icon name="close" class="me-1" />
+                        Limpiar filtros
+                    </a>
+                </div>
+            </div>
+        @endif
+    </form>
+</div>
+
 <div class="card border-0 shadow">
     <div class="card-header">
         <div class="row align-items-center">
@@ -141,3 +171,27 @@
     @endif
 </div>
 @endsection
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const filterForm = document.getElementById('filterForm');
+    const searchInput = document.getElementById('search');
+
+    // Auto-submit para selector de Estado
+    document.querySelectorAll('.auto-submit').forEach(function(select) {
+        select.addEventListener('change', function() {
+            filterForm.submit();
+        });
+    });
+
+    // Submit solo al presionar Enter en búsqueda
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            filterForm.submit();
+        }
+    });
+});
+</script>
+@endpush

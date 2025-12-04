@@ -6,7 +6,7 @@
 <div class="py-4">
     <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}"><svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></a></li>
+            <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}">Inicio</a></li>
             <li class="breadcrumb-item"><a href="{{ route('superadmin.plans.index') }}">Planes</a></li>
             <li class="breadcrumb-item active" aria-current="page">Editar</li>
         </ol>
@@ -32,19 +32,14 @@
 @endif
 
 @if($plan->businesses()->count() > 0)
-    <div class="alert alert-warning alert-dismissible fade show d-flex align-items-center" role="alert">
-        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20">
-            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-        </svg>
-        <div>
-            <strong>Advertencia:</strong> Este plan tiene {{ $plan->businesses()->count() }} negocio(s) asociado(s).
-            Los cambios en el precio o características afectarán a los negocios existentes.
-        </div>
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        <strong>Advertencia:</strong> Este plan tiene {{ $plan->businesses()->count() }} negocio(s) asociado(s).
+        Los cambios en el precio o características afectarán a los negocios existentes.
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     </div>
 @endif
 
-<form method="POST" action="{{ route('superadmin.plans.update', $plan->plan_id) }}">
+<form method="POST" action="{{ route('superadmin.plans.update', $plan->plan_id) }}" novalidate>
     @csrf
     @method('PUT')
 
@@ -53,140 +48,114 @@
 
             <!-- Información Básica -->
             <div class="card border-0 shadow mb-4">
-                <div class="card-header">
+                <div class="card-header border-bottom">
                     <h2 class="fs-5 fw-bold mb-0">Información Básica</h2>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-8 mb-3">
-                            <label for="name" class="form-label">Nombre del Plan *</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $plan->name) }}" required>
-                            @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-4 mb-3">
-                            <label for="duration_days" class="form-label">Duración (días) *</label>
-                            <input type="number" class="form-control @error('duration_days') is-invalid @enderror" id="duration_days" name="duration_days" value="{{ old('duration_days', $plan->duration_days) }}" min="1" required>
-                            @error('duration_days')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                    <!-- Nombre del Plan -->
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold">Nombre del Plan <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $plan->name) }}" required>
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Descripción</label>
-                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="2">{{ old('description', $plan->description) }}</textarea>
-                        <small class="text-muted">Descripción breve del plan</small>
+                    <!-- Duración -->
+                    <div class="mb-4">
+                        <label for="duration_days" class="form-label fw-bold">Duración (días) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control @error('duration_days') is-invalid @enderror" id="duration_days" name="duration_days" value="{{ old('duration_days', $plan->duration_days) }}" min="1" required>
+                        @error('duration_days')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
+                        <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" required>{{ old('description', $plan->description) }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label for="retention_days" class="form-label">Retención de datos (días)</label>
-                            <input type="number" class="form-control @error('retention_days') is-invalid @enderror" id="retention_days" name="retention_days" value="{{ old('retention_days', $plan->retention_days) }}" min="0">
-                            <small class="text-muted">Días para retener historial</small>
-                            @error('retention_days')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                    <!-- Retención de datos -->
+                    <div class="mb-4">
+                        <label for="retention_days" class="form-label fw-bold">Retención de datos (días) <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control @error('retention_days') is-invalid @enderror" id="retention_days" name="retention_days" value="{{ old('retention_days', $plan->retention_days) }}" min="1" required>
+                        @error('retention_days')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
 
-                        <div class="col-md-6">
-                            <div class="form-check form-switch mt-4 pt-2">
-                                <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $plan->is_active) ? 'checked' : '' }}>
-                                <label class="form-check-label fw-bold" for="is_active">Plan Activo</label>
-                            </div>
+                    <!-- Estado del Plan -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $plan->is_active) ? 'checked' : '' }}>
+                            <label class="form-check-label fw-bold" for="is_active">Plan Activo</label>
                         </div>
+                        <small class="form-text text-muted">Los planes inactivos no se pueden seleccionar en nuevas suscripciones</small>
                     </div>
                 </div>
             </div>
 
             <!-- Módulo de Chat -->
             <div class="card border-0 shadow mb-4">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <svg class="icon icon-xs text-primary me-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"></path>
-                        </svg>
-                        <h2 class="fs-5 fw-bold mb-0">Módulo de Chat</h2>
-                    </div>
-                    <span class="badge bg-success">+$50/mes</span>
+                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                    <h2 class="fs-5 fw-bold mb-0">Módulo de Chat</h2>
+                    <span class="text-success fw-bold">+$50/mes</span>
                 </div>
                 <div class="card-body">
-                    <div class="form-check form-switch">
+                    <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" id="has_chat_module" name="has_chat_module" value="1" {{ old('has_chat_module', $plan->has_chat_module) ? 'checked' : '' }} onchange="calculatePrice()">
                         <label class="form-check-label fw-bold" for="has_chat_module">Habilitar módulo de chat</label>
                     </div>
-                    <small class="text-muted d-block mt-2">
-                        <svg class="icon icon-xxs text-info me-1" fill="currentColor" viewBox="0 0 20 20">
-                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                        </svg>
-                        Permite comunicación en tiempo real entre el negocio y sus clientes
-                    </small>
                 </div>
             </div>
 
             <!-- Sistema de Re-Alertas -->
             <div class="card border-0 shadow mb-4">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <div class="d-flex align-items-center">
-                        <svg class="icon icon-xs text-warning me-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
-                        </svg>
-                        <h2 class="fs-5 fw-bold mb-0">Sistema de Re-Alertas</h2>
-                    </div>
-                    <span class="badge bg-info" id="realerts-price-badge">Variable</span>
+                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                    <h2 class="fs-5 fw-bold mb-0">Sistema de Re-Alertas</h2>
+                    <span class="text-info fw-bold" id="realerts-price-badge">Variable</span>
                 </div>
                 <div class="card-body">
-                    <div class="form-check form-switch mb-3">
+                    <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" id="has_realerts" name="has_realerts" value="1" {{ old('has_realerts', $plan->has_realerts) ? 'checked' : '' }} onchange="toggleRealertFields()">
                         <label class="form-check-label fw-bold" for="has_realerts">Habilitar re-alertas automáticas</label>
-                        <div class="text-muted small mt-1">Notificaciones periódicas para pedidos listos no recogidos</div>
                     </div>
 
-                    <div id="realert-fields" style="display: {{ old('has_realerts', $plan->has_realerts) ? 'block' : 'none' }};">
-                        <div class="alert alert-light border mb-3">
-                            <div class="row g-2 align-items-center">
-                                <div class="col-auto">
-                                    <svg class="icon icon-xs text-info" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                    </svg>
-                                </div>
-                                <div class="col">
-                                    <small class="mb-0"><strong>Ejemplos:</strong> Comida rápida: cada 5 min | Tintorería: cada 1 día | Panadería: cada 30 min</small>
-                                </div>
-                            </div>
+                    <div id="realert-fields" style="display: {{ old('has_realerts', $plan->has_realerts) ? 'block' : 'none' }};" class="mt-4">
+
+                        <!-- Días -->
+                        <div class="mb-4">
+                            <label for="realert_days" class="form-label fw-bold">Días</label>
+                            <input type="number" class="form-control" id="realert_days" name="realert_days" value="{{ old('realert_days', $plan->realert_days ?? 0) }}" min="0" max="30" onchange="updateIntervalMinutes()">
                         </div>
 
-                        <div class="row mb-3">
-                            <div class="col-md-3">
-                                <label for="realert_days" class="form-label small">Días</label>
-                                <input type="number" class="form-control form-control-sm" id="realert_days" name="realert_days" value="{{ old('realert_days', $plan->realert_days ?? 0) }}" min="0" max="30" onchange="updateIntervalMinutes()">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="realert_hours" class="form-label small">Horas</label>
-                                <input type="number" class="form-control form-control-sm" id="realert_hours" name="realert_hours" value="{{ old('realert_hours', $plan->realert_hours ?? 0) }}" min="0" max="23" onchange="updateIntervalMinutes()">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="realert_minutes" class="form-label small">Minutos</label>
-                                <input type="number" class="form-control form-control-sm" id="realert_minutes" name="realert_minutes" value="{{ old('realert_minutes', $plan->realert_minutes ?? 15) }}" min="1" max="59" onchange="updateIntervalMinutes()">
-                            </div>
-                            <div class="col-md-3">
-                                <label for="realert_max_count" class="form-label small">Máximo alertas</label>
-                                <input type="number" class="form-control form-control-sm" id="realert_max_count" name="realert_max_count" value="{{ old('realert_max_count', $plan->realert_max_count ?? 4) }}" min="1" max="20">
-                            </div>
+                        <!-- Horas -->
+                        <div class="mb-4">
+                            <label for="realert_hours" class="form-label fw-bold">Horas</label>
+                            <input type="number" class="form-control" id="realert_hours" name="realert_hours" value="{{ old('realert_hours', $plan->realert_hours ?? 0) }}" min="0" max="23" onchange="updateIntervalMinutes()">
+                        </div>
+
+                        <!-- Minutos -->
+                        <div class="mb-4">
+                            <label for="realert_minutes" class="form-label fw-bold">Minutos</label>
+                            <input type="number" class="form-control" id="realert_minutes" name="realert_minutes" value="{{ old('realert_minutes', $plan->realert_minutes ?? 15) }}" min="1" max="59" onchange="updateIntervalMinutes()">
+                        </div>
+
+                        <!-- Máximo de alertas -->
+                        <div class="mb-4">
+                            <label for="realert_max_count" class="form-label fw-bold">Máximo de alertas</label>
+                            <input type="number" class="form-control" id="realert_max_count" name="realert_max_count" value="{{ old('realert_max_count', $plan->realert_max_count ?? 4) }}" min="1" max="20">
+                            <small class="form-text text-muted">Número máximo de re-alertas antes de detener las notificaciones</small>
                         </div>
 
                         <input type="hidden" id="realert_interval_minutes" name="realert_interval_minutes" value="{{ old('realert_interval_minutes', $plan->realert_interval_minutes ?? 15) }}">
 
-                        <div class="alert alert-success d-flex align-items-center py-2 mb-0">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                            </svg>
-                            <small id="interval-summary">Intervalo: <strong>15 minutos</strong> entre cada re-alerta</small>
+                        <div class="mb-0">
+                            <small class="text-success" id="interval-summary">Intervalo: <strong>15 minutos</strong> entre cada re-alerta</small>
                         </div>
                     </div>
                 </div>
@@ -216,15 +185,10 @@
             <!-- Botones de Acción -->
             <div class="card border-0 shadow">
                 <div class="card-body">
-                    <button type="submit" class="btn btn-primary btn-lg w-100 mb-2">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
-                        </svg>
-                        Guardar Cambios
-                    </button>
-                    <a href="{{ route('superadmin.plans.index') }}" class="btn btn-gray-800 w-100">
-                        Cancelar
-                    </a>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">Guardar Cambios</button>
+                        <a href="{{ route('superadmin.plans.index') }}" class="btn btn-primary btn-lg">Cancelar</a>
+                    </div>
                 </div>
             </div>
 
@@ -320,11 +284,11 @@
 
             // Update badge
             document.getElementById('realerts-price-badge').textContent = '+$' + realertsPrice + '/mes';
-            document.getElementById('realerts-price-badge').className = 'badge bg-warning';
+            document.getElementById('realerts-price-badge').className = 'text-warning fw-bold';
         } else {
             breakdown.push('Re-alertas: $0');
             document.getElementById('realerts-price-badge').textContent = 'Variable';
-            document.getElementById('realerts-price-badge').className = 'badge bg-info';
+            document.getElementById('realerts-price-badge').className = 'text-info fw-bold';
         }
 
         // Update display
