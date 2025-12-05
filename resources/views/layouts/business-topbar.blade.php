@@ -85,7 +85,8 @@
             <form action="{{ route('business.logout') }}" method="POST">
               @csrf
               <button type="submit" class="dropdown-item d-flex align-items-center">
-                <x-icon name="arrowRight" class="dropdown-icon text-danger me-2" />
+                {{-- Se cambia 'arrowRight' por 'logout' manteniendo el color rojo (text-danger) --}}
+                <x-icon name="logout" class="dropdown-icon text-danger me-2" />
                 Cerrar Sesión
               </button>
             </form>

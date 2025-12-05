@@ -7,14 +7,19 @@
     <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
-            <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                        <li class="breadcrumb-item">
-                            <a href="#"><x-icon name="home" /></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Chat de Órdenes</li>
-                    </ol>
-            <h2 class="h4">Chat de Órdenes</h2>
-            <p class="mb-0">Comunícate con tus clientes en tiempo real</p>
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        {{-- Enlace al Dashboard con color Primario forzado --}}
+                        <a href="{{ route('business.dashboard.index') }}" class="text-primary">
+                            <x-icon name="home" />
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Chat de Órdenes</li>
+                </ol>
+            </nav>
+            <h2 class="h4 mt-2">Chat de Órdenes</h2>
+            <p class="mb-0 text-muted">Comunícate con tus clientes en tiempo real</p>
         </div>
     </div>
 

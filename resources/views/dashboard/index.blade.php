@@ -1,9 +1,3 @@
-
-
-
-
-
-
 @extends('layouts.business-app')
 
 @section('title', 'Reportes - Sistema de Órdenes QR')
@@ -14,11 +8,15 @@
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                        <li class="breadcrumb-item">
-                            <a href="#"><x-icon name="home" /></a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-                    </ol>
+                <li class="breadcrumb-item">
+                    {{-- Enlace al Dashboard con color Primario forzado --}}
+                    <a href="{{ route('business.dashboard.index') }}" class="text-primary">
+                        <x-icon name="home" />
+                    </a>
+                </li>
+                {{-- El breadcrumb debe indicar la página actual (Reportes) --}}
+                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            </ol>
             <h2 class="h4">Reportes y Análisis</h2>
             <p class="mb-0">Visualiza el rendimiento de tu negocio</p>
         </div>

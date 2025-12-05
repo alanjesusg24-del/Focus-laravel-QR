@@ -12,23 +12,25 @@
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                             <li class="breadcrumb-item">
-                                <a href="{{ route('business.dashboard.index') }}">
-                                    <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                                <a href="{{ route('business.dashboard.index') }}" class="text-primary">
+                                    <x-icon name="home" />
                                 </a>
                             </li>
-                            <li class="breadcrumb-item"><a href="{{ route('business.orders.index') }}">Órdenes</a></li>
-                            <li class="breadcrumb-item"><a href="{{ route('business.orders.show', $order) }}">{{ $order->folio_number }}</a></li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('business.orders.index') }}" class="text-primary">Órdenes</a>
+                            </li>
+                            <li class="breadcrumb-item">
+                                <a href="{{ route('business.orders.show', $order) }}" class="text-primary">{{ $order->folio_number }}</a>
+                            </li>
                             <li class="breadcrumb-item active" aria-current="page">Editar</li>
                         </ol>
                     </nav>
-                    <h2 class="h4">Editar Orden</h2>
-                    <p class="mb-0">{{ $order->folio_number }}</p>
+                    <h2 class="h4 mt-1">Editar Orden</h2>
+                    <p class="mb-0 text-muted">{{ $order->folio_number }}</p>
                 </div>
                 <div class="btn-toolbar">
-                    <a href="{{ route('business.orders.show', $order) }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
-                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
+                    <a href="{{ route('business.orders.show', $order) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                        <x-icon name="back" class="me-2"/>
                         Volver a la orden
                     </a>
                 </div>
@@ -113,7 +115,7 @@
                                 <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
                                 </svg>
-                                Guardar Cambios
+                                Guardar 
                             </button>
                         </div>
                     </form>

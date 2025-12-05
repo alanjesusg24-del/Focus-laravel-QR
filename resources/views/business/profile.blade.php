@@ -10,7 +10,8 @@
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
-                        <a href="{{ route('business.dashboard.index') }}">
+                        {{-- Enlace con color Primario forzado --}}
+                        <a href="{{ route('business.dashboard.index') }}" class="text-primary">
                             <x-icon name="home" />
                         </a>
                     </li>
@@ -18,7 +19,7 @@
                 </ol>
             </nav>
             <h2 class="h4">Mi Perfil</h2>
-            <p class="mb-0">Administra la información de tu negocio</p>
+            <p class="mb-0 text-muted">Administra la información de tu negocio</p>
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.profile.edit') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">

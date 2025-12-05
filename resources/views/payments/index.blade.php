@@ -3,12 +3,12 @@
     Project: FOCUS-LARAVEL-QR
     File: index.blade.php
     Created on: 28/11/2025
-    Created by: [Tu Nombre]
-    Approved by: [Nombre del Revisor]
+    Created by: Vanessa
+    Approved by: Alan
 
     Changelog:
     - ID: 1 | Date: 28/11/2025
-        Modified by: [Tu Nombre]
+        Modified by: Vanessa
         Description: Implementation of payment plans view following FoodFlow design and CETAM standards.
 --}}
 
@@ -41,13 +41,17 @@
                 <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                     <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                         <li class="breadcrumb-item">
-                            <a href="#"><x-icon name="home" /></a>
+                            {{-- Enlace al Dashboard con color Primario forzado --}}
+                            <a href="{{ route('business.dashboard.index') }}" class="text-primary">
+                                <x-icon name="home" />
+                            </a>
                         </li>
+                        {{-- Muestra la ubicación actual --}}
                         <li class="breadcrumb-item active" aria-current="page">Pagos</li>
                     </ol>
                 </nav>
                 <h2 class="h4 mt-2">Planes de Membresía</h2>
-                <p class="text-muted">Elige el plan que mejor se adapte a tus necesidades.</p>
+                <p class="mb-0 text-muted">Elige el plan que mejor se adapte a tus necesidades.</p>
             </div>
         </div>
 

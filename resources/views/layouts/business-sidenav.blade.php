@@ -75,7 +75,7 @@
           <span class="sidebar-icon">
             <x-icon name="creditCard" class="me-2" />
           </span>
-          <span class="sidebar-text">Pagos</span>
+          <span class="sidebar-text">Suscripción</span>
         </a>
       </li>
 
