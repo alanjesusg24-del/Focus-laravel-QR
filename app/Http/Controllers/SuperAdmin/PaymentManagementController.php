@@ -40,12 +40,11 @@ class PaymentManagementController extends Controller
             $query->whereDate('payment_date', '<=', $request->date_to);
         }
 
-        // Search by stripe payment ID
+        // Search by business name
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function ($q) use ($search) {
-                $q->where('stripe_payment_id', 'like', "%{$search}%")
-                  ->orWhere('stripe_subscription_id', 'like', "%{$search}%");
+            $query->whereHas('business', function ($q) use ($search) {
+                $q->where('business_name', 'like', "%{$search}%");
             });
         }
 

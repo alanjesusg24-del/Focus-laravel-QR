@@ -11,9 +11,21 @@ class PlanManagementController extends Controller
     /**
      * Display a listing of plans
      */
-    public function index()
+    public function index(Request $request)
     {
-        $plans = Plan::withCount('businesses')->paginate(15);
+        $query = Plan::withCount('businesses');
+
+        // Search by name
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Filter by status
+        if ($request->filled('status')) {
+            $query->where('is_active', $request->status === 'active');
+        }
+
+        $plans = $query->orderBy('plan_id', 'desc')->paginate(15);
 
         return view('superadmin.plans.index', compact('plans'));
     }
@@ -33,10 +45,10 @@ class PlanManagementController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
+            'description' => 'required|string|max:1000',
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
-            'retention_days' => 'nullable|integer|min:0',
+            'retention_days' => 'required|integer|min:1',
             'is_active' => 'boolean',
             'has_chat_module' => 'boolean',
             'has_realerts' => 'boolean',
@@ -47,12 +59,15 @@ class PlanManagementController extends Controller
             'realert_minutes' => 'nullable|integer|min:0|max:59',
         ], [
             'name.required' => 'El nombre del plan es obligatorio.',
+            'description.required' => 'La descripción es obligatoria.',
             'price.required' => 'El precio es obligatorio.',
             'price.numeric' => 'El precio debe ser un número.',
             'price.min' => 'El precio debe ser mayor o igual a 0.',
             'duration_days.required' => 'La duración es obligatoria.',
             'duration_days.integer' => 'La duración debe ser un número entero.',
             'duration_days.min' => 'La duración debe ser al menos 1 día.',
+            'retention_days.required' => 'La retención de datos es obligatoria.',
+            'retention_days.min' => 'La retención de datos debe ser al menos de 1 día.',
             'realert_interval_minutes.required_if' => 'El intervalo de re-alertas es obligatorio cuando las re-alertas están activas.',
             'realert_interval_minutes.min' => 'El intervalo debe ser al menos 1 minuto.',
             'realert_interval_minutes.max' => 'El intervalo no puede ser mayor a 1440 minutos (24 horas).',
@@ -107,10 +122,10 @@ class PlanManagementController extends Controller
 
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
+            'description' => 'required|string|max:1000',
             'price' => 'required|numeric|min:0',
             'duration_days' => 'required|integer|min:1',
-            'retention_days' => 'nullable|integer|min:0',
+            'retention_days' => 'required|integer|min:1',
             'is_active' => 'boolean',
             'has_chat_module' => 'boolean',
             'has_realerts' => 'boolean',
@@ -121,12 +136,15 @@ class PlanManagementController extends Controller
             'realert_minutes' => 'nullable|integer|min:0|max:59',
         ], [
             'name.required' => 'El nombre del plan es obligatorio.',
+            'description.required' => 'La descripción es obligatoria.',
             'price.required' => 'El precio es obligatorio.',
             'price.numeric' => 'El precio debe ser un número.',
             'price.min' => 'El precio debe ser mayor o igual a 0.',
             'duration_days.required' => 'La duración es obligatoria.',
             'duration_days.integer' => 'La duración debe ser un número entero.',
             'duration_days.min' => 'La duración debe ser al menos 1 día.',
+            'retention_days.required' => 'La retención de datos es obligatoria.',
+            'retention_days.min' => 'La retención de datos debe ser al menos de 1 día.',
             'realert_interval_minutes.required_if' => 'El intervalo de re-alertas es obligatorio cuando las re-alertas están activas.',
             'realert_interval_minutes.min' => 'El intervalo debe ser al menos 1 minuto.',
             'realert_interval_minutes.max' => 'El intervalo no puede ser mayor a 1440 minutos (24 horas).',

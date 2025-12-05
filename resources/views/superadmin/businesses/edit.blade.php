@@ -8,8 +8,7 @@
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
             <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}"><svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></a></li>
             <li class="breadcrumb-item"><a href="{{ route('superadmin.businesses.index') }}">Negocios</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.businesses.show', $business->business_id) }}">{{ $business->business_name }}</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+            <li class="breadcrumb-item active" aria-current="page">Editar {{ $business->business_name }}</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between w-100 flex-wrap">
@@ -32,65 +31,68 @@
     </div>
 @endif
 
-<form method="POST" action="{{ route('superadmin.businesses.update', $business->business_id) }}" enctype="multipart/form-data">
+<form method="POST" action="{{ route('superadmin.businesses.update', $business->business_id) }}" enctype="multipart/form-data" novalidate>
     @csrf
     @method('PUT')
 
-    <div class="row">
-        <div class="col-12 col-lg-8 mb-4">
-            <div class="card border-0 shadow">
-                <div class="card-header">
-                    <h2 class="fs-5 fw-bold mb-0">Información General</h2>
+    <!-- Formulario en una sola columna (formato pila) -->
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-8">
+            <div class="card border-0 shadow mb-4">
+                <div class="card-header border-bottom d-flex align-items-center justify-content-between">
+                    <h2 class="fs-5 fw-bold mb-0">Información del Negocio</h2>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <label for="business_name" class="form-label">Nombre del Negocio *</label>
+                    <!-- Nombre del Negocio -->
+                    <div class="mb-4">
+                        <label for="business_name" class="form-label fw-bold">Nombre del Negocio <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('business_name') is-invalid @enderror" id="business_name" name="business_name" value="{{ old('business_name', $business->business_name) }}" required>
                         @error('business_name')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="rfc" class="form-label">RFC</label>
-                            <input type="text" class="form-control @error('rfc') is-invalid @enderror" id="rfc" name="rfc" value="{{ old('rfc', $business->rfc) }}" maxlength="13">
-                            @error('rfc')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="col-md-6 mb-3">
-                            <label for="phone" class="form-label">Teléfono</label>
-                            <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $business->phone) }}">
-                            @error('phone')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
-                        </div>
+                    <!-- RFC -->
+                    <div class="mb-4">
+                        <label for="rfc" class="form-label fw-bold">RFC <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('rfc') is-invalid @enderror" id="rfc" name="rfc" value="{{ old('rfc', $business->rfc) }}" maxlength="13" required>
+                        @error('rfc')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email *</label>
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label for="email" class="form-label fw-bold">Email <span class="text-danger">*</span></label>
                         <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $business->email) }}" required>
                         @error('email')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Dirección</label>
+                    <!-- Teléfono -->
+                    <div class="mb-4">
+                        <label for="phone" class="form-label fw-bold">Teléfono <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $business->phone) }}" required>
+                        @error('phone')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Dirección -->
+                    <div class="mb-4">
+                        <label for="address" class="form-label fw-bold">Dirección</label>
                         <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" value="{{ old('address', $business->address) }}" placeholder="Buscar dirección...">
-                        <small class="text-muted">Escribe la dirección y selecciona del mapa</small>
                         @error('address')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <!-- Mapa de Google Maps -->
-                    <div class="mb-3">
-                        <label class="form-label">Ubicación en el Mapa</label>
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">Ubicación en el Mapa</label>
                         <div id="map" class="border rounded" style="height: 400px; width: 100%;"></div>
-                        <small class="text-muted d-block mt-2">
+                        <small class="form-text text-muted d-block mt-2">
                             <svg class="icon icon-xxs text-info me-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
                             </svg>
@@ -102,49 +104,9 @@
                     <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude', $business->latitude) }}">
                     <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude', $business->longitude) }}">
 
-                    <div class="mb-3">
-                        <label for="location_description" class="form-label">Descripción de Ubicación</label>
-                        <input type="text" class="form-control @error('location_description') is-invalid @enderror" id="location_description" name="location_description" value="{{ old('location_description', $business->location_description) }}" placeholder="Ej: Entre calle X y Y, frente al parque">
-                        <small class="text-muted">Referencias adicionales para encontrar el negocio</small>
-                        @error('location_description')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="password" class="form-label">Nueva Contraseña</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Dejar en blanco para mantener la actual">
-                        <small class="text-muted">Mínimo 8 caracteres. Solo completar si desea cambiar la contraseña.</small>
-                        @error('password')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="photo" class="form-label">Foto del Negocio</label>
-                        @if($business->photo)
-                            <div class="mb-2">
-                                <img src="{{ asset('storage/' . $business->photo) }}" class="rounded" style="max-width: 150px;" alt="{{ $business->business_name }}">
-                            </div>
-                        @endif
-                        <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo" name="photo" accept="image/*">
-                        <small class="text-muted">Formatos permitidos: JPG, PNG. Tamaño máximo: 2MB</small>
-                        @error('photo')
-                            <div class="invalid-feedback">{{ $message }}</div>
-                        @enderror
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-lg-4 mb-4">
-            <div class="card border-0 shadow mb-4">
-                <div class="card-header">
-                    <h2 class="fs-5 fw-bold mb-0">Configuración del Plan</h2>
-                </div>
-                <div class="card-body">
-                    <div class="mb-3">
-                        <label for="plan_id" class="form-label">Plan *</label>
+                    <!-- Plan -->
+                    <div class="mb-4">
+                        <label for="plan_id" class="form-label fw-bold">Plan <span class="text-danger">*</span></label>
                         <select class="form-select @error('plan_id') is-invalid @enderror" id="plan_id" name="plan_id" required>
                             <option value="">Seleccionar plan...</option>
                             @foreach($plans as $plan)
@@ -160,34 +122,65 @@
                         @error('plan_id')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
+
+                        <!-- Info del plan seleccionado -->
+                        <div id="plan-info" class="alert alert-light border mt-3" style="display: none;">
+                            <small class="d-block mb-1"><strong>Precio:</strong> <span id="plan-price">-</span></small>
+                            <small class="d-block mb-1"><strong>Chat:</strong> <span id="plan-chat">-</span></small>
+                            <small class="d-block"><strong>Re-alertas:</strong> <span id="plan-realerts">-</span></small>
+                        </div>
                     </div>
 
-                    <!-- Info del plan seleccionado -->
-                    <div id="plan-info" class="alert alert-light border mb-3" style="display: none;">
-                        <small class="d-block mb-1"><strong>Precio:</strong> <span id="plan-price">-</span></small>
-                        <small class="d-block mb-1"><strong>Chat:</strong> <span id="plan-chat">-</span></small>
-                        <small class="d-block"><strong>Re-alertas:</strong> <span id="plan-realerts">-</span></small>
+                    <!-- Nueva Contraseña -->
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-bold">Nueva Contraseña</label>
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Dejar en blanco para mantener la actual">
+                        <small class="form-text text-muted">Mínimo 8 caracteres. Solo completar si desea cambiar la contraseña.</small>
+                        @error('password')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
                     </div>
 
-                    <div class="form-check form-switch">
-                        <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $business->is_active) ? 'checked' : '' }}>
-                        <label class="form-check-label fw-bold" for="is_active">Negocio Activo</label>
-                        <div class="text-muted small mt-1">Los negocios inactivos no pueden acceder al sistema</div>
+                    <!-- Foto del Negocio -->
+                    <div class="mb-4">
+                        <label for="photo" class="form-label fw-bold">Foto del Negocio</label>
+                        @if($business->photo)
+                            <div class="mb-3">
+                                <img src="{{ asset('storage/' . $business->photo) }}" class="rounded shadow-sm" style="max-width: 200px;" alt="{{ $business->business_name }}">
+                            </div>
+                        @endif
+                        <input type="file" class="form-control @error('photo') is-invalid @enderror" id="photo" name="photo" accept="image/*">
+                        <small class="form-text text-muted">Formatos permitidos: JPG, PNG. Tamaño máximo: 2MB</small>
+                        @error('photo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <!-- Estado del Negocio -->
+                    <div class="mb-4">
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $business->is_active) ? 'checked' : '' }}>
+                            <label class="form-check-label fw-bold" for="is_active">Negocio Activo</label>
+                        </div>
+                        <small class="form-text text-muted">Los negocios inactivos no pueden acceder al sistema</small>
                     </div>
                 </div>
             </div>
 
+            <!-- Botones de acción -->
             <div class="card border-0 shadow">
                 <div class="card-body">
-                    <button type="submit" class="btn btn-primary w-100 mb-2">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
-                        </svg>
-                        Guardar Cambios
-                    </button>
-                    <a href="{{ route('superadmin.businesses.show', $business->business_id) }}" class="btn btn-secondary w-100">
-                        Cancelar
-                    </a>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
+                            </svg>
+                            Guardar Cambios
+                        </button>
+                        <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-primary btn-lg">
+                            Cancelar
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

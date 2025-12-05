@@ -35,22 +35,11 @@
 <div class="card card-body border-0 shadow mb-4">
     <form method="GET" action="{{ route('superadmin.payments.index') }}" id="filterForm">
         <div class="row align-items-end">
-            <div class="col-md-3 mb-3 mb-md-0">
+            <div class="col-md-6 mb-3 mb-md-0">
                 <label for="search" class="form-label">Buscar</label>
-                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="ID Stripe...">
+                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Buscar por nombre del negocio...">
             </div>
             <div class="col-md-3 mb-3 mb-md-0">
-                <label for="business_id" class="form-label">Negocio</label>
-                <select class="form-select auto-submit" id="business_id" name="business_id">
-                    <option value="">Todos los negocios</option>
-                    @foreach($businesses as $business)
-                        <option value="{{ $business->business_id }}" {{ request('business_id') == $business->business_id ? 'selected' : '' }}>
-                            {{ $business->business_name }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-            <div class="col-md-2 mb-3 mb-md-0">
                 <label for="plan_id" class="form-label">Plan</label>
                 <select class="form-select auto-submit" id="plan_id" name="plan_id">
                     <option value="">Todos los planes</option>
@@ -61,7 +50,7 @@
                     @endforeach
                 </select>
             </div>
-            <div class="col-md-2 mb-3 mb-md-0">
+            <div class="col-md-3 mb-3 mb-md-0">
                 <label for="status" class="form-label">Estado</label>
                 <select class="form-select auto-submit" id="status" name="status">
                     <option value="">Todos</option>
@@ -70,19 +59,11 @@
                     <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Fallido</option>
                 </select>
             </div>
-            <div class="col-md-1 mb-3 mb-md-0">
-                <label for="date_from" class="form-label">Desde</label>
-                <input type="date" class="form-control auto-submit" id="date_from" name="date_from" value="{{ request('date_from') }}">
-            </div>
-            <div class="col-md-1 mb-3 mb-md-0">
-                <label for="date_to" class="form-label">Hasta</label>
-                <input type="date" class="form-control auto-submit" id="date_to" name="date_to" value="{{ request('date_to') }}">
-            </div>
         </div>
-        @if(request()->hasAny(['search', 'business_id', 'plan_id', 'status', 'date_from', 'date_to']))
+        @if(request()->hasAny(['search', 'plan_id', 'status']))
             <div class="row mt-3">
                 <div class="col-12">
-                    <a href="{{ route('superadmin.payments.index') }}" class="btn btn-sm btn-secondary">
+                    <a href="{{ route('superadmin.payments.index') }}" class="btn btn-sm btn-primary">
                         <x-icon name="close" class="me-1" />
                         Limpiar filtros
                     </a>
@@ -112,7 +93,6 @@
                     <th class="border-bottom" scope="col">Fecha Pago</th>
                     <th class="border-bottom" scope="col">Próximo Pago</th>
                     <th class="border-bottom" scope="col">Estado</th>
-                    <th class="border-bottom" scope="col">Método</th>
                 </tr>
             </thead>
             <tbody>
@@ -151,19 +131,10 @@
                                     <span class="fw-bold text-secondary">{{ ucfirst($payment->status) }}</span>
                             @endswitch
                         </td>
-                        <td class="text-gray-500">
-                            @if($payment->stripe_payment_id)
-                                Stripe
-                            @elseif($payment->mercadopago_payment_id)
-                                MercadoPago
-                            @else
-                                N/A
-                            @endif
-                        </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="8" class="text-center py-4">
+                        <td colspan="7" class="text-center py-4">
                             <div class="text-gray-500">
                                 <svg class="icon icon-lg mb-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
@@ -197,26 +168,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     let searchTimeout;
 
-    // Auto-submit para selectores y fechas
+    // Auto-submit para selectores
     document.querySelectorAll('.auto-submit').forEach(function(element) {
         element.addEventListener('change', function() {
             filterForm.submit();
         });
     });
 
-    // Auto-submit para búsqueda con debounce
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(function() {
-            filterForm.submit();
-        }, 500);
-    });
-
-    // Submit inmediato al presionar Enter
+    // Submit solo al presionar Enter
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            clearTimeout(searchTimeout);
             filterForm.submit();
         }
     });

@@ -31,13 +31,13 @@
       <li class="nav-item mb-4">
         <a href="{{ route('superadmin.dashboard') }}" class="nav-link d-flex align-items-center">
           <span class="sidebar-icon me-3">
-            <div class="d-flex align-items-center justify-content-center rounded-circle text-white fw-bold"
-                 style="width: 30px; height: 30px; background-color: #EF4444;">
-                {{ substr(auth()->guard('superadmin')->user()->name ?? 'SA', 0, 2) }}
-            </div>
+            <svg class="text-white" style="width: 30px; height: 30px;" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path>
+              <path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path>
+            </svg>
           </span>
           <span class="mt-1 ms-1 sidebar-text fw-bold">
-            {{ auth()->guard('superadmin')->user()->name ?? 'Super Admin' }}
+            Focus QR System
           </span>
         </a>
       </li>
