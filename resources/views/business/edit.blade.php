@@ -23,8 +23,8 @@
         </div>
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.profile.index') }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
-                <x-icon name="arrowLeft" class="me-2" />
-                Volver al Perfil
+                <x-icon name="back" class="me-2" />
+                Atras
             </a>
         </div>
     </div>

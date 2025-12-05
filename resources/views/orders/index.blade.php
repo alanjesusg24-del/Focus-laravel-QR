@@ -135,7 +135,7 @@
                                             <x-icon name="order.qr" class="text-dark fs-5" />
                                         </button>
                                     @else
-                                        <span class="badge bg-success">Ligado</span>
+                                        <span class="text-success fw-bold">Ligado</span>
                                     @endif
                                 @endif
                             </td>
@@ -242,7 +242,7 @@
                 </table>
             </div>
         </div>
-        @if($orders->hasPages())
+        @if($orders->total() >= 10 && $orders->hasPages())
         <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
             {{ $orders->links('vendor.pagination.volt-custom') }}
         </div>

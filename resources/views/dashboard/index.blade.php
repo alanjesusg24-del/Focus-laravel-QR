@@ -123,25 +123,13 @@
     <!-- Gráficas de Análisis -->
     <div class="row">
         <!-- Órdenes por Día -->
-        <div class="col-12 col-lg-7 mb-4">
+        <div class="col-12 mb-4">
             <div class="card border-0 shadow h-100">
                 <div class="card-header">
                     <h2 class="fs-5 fw-bold mb-0">Órdenes por Día</h2>
                 </div>
                 <div class="card-body">
                     <div id="ordersPerDayChart" style="min-height: 350px;"></div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Distribución por Estado -->
-        <div class="col-12 col-lg-5 mb-4">
-            <div class="card border-0 shadow h-100">
-                <div class="card-header">
-                    <h2 class="fs-5 fw-bold mb-0">Distribución por Estado</h2>
-                </div>
-                <div class="card-body d-flex align-items-center justify-content-center">
-                    <div id="statusDistributionChart" style="min-height: 350px; width: 100%;"></div>
                 </div>
             </div>
         </div>
@@ -271,13 +259,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     const ordersPerDayData = @json(array_values($reportData['orders_per_day']));
     const ordersPerDayCategories = @json(array_keys($reportData['orders_per_day']));
-    const statusDistributionData = @json(array_values($reportData['status_distribution']));
-    const statusDistributionLabels = @json(array_keys($reportData['status_distribution']));
 
     console.log('Orders per day data:', ordersPerDayData);
     console.log('Orders per day categories:', ordersPerDayCategories);
-    console.log('Status distribution data:', statusDistributionData);
-    console.log('Status distribution labels:', statusDistributionLabels);
 
     // Gráfica de Órdenes por Día
     const ordersChartElement = document.querySelector("#ordersPerDayChart");
@@ -348,81 +332,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     } else if (ordersChartElement) {
         ordersChartElement.innerHTML = '<div class="text-center py-5"><i class="fas fa-chart-line fa-3x text-gray-300 mb-3"></i><p class="text-muted">No hay órdenes en este período</p></div>';
-    }
-
-    // Gráfica de Distribución por Estado
-    const statusChartElement = document.querySelector("#statusDistributionChart");
-    const totalStatusOrders = statusDistributionData.reduce((a, b) => a + b, 0);
-
-    console.log('Total status orders:', totalStatusOrders);
-
-    if (statusChartElement && totalStatusOrders > 0) {
-        // Filtrar solo estados con órdenes
-        const filteredData = [];
-        const filteredLabels = [];
-        const filteredColors = [];
-        const labelMap = {
-            'pending': 'Pendientes',
-            'ready': 'Listas',
-            'delivered': 'Entregadas',
-            'cancelled': 'Canceladas'
-        };
-
-        // Colores según estándares CETAM
-        const colorMap = {
-            'pending': '#FBA918',    // Ámbar (Warning)
-            'ready': '#10B981',      // Verde (Success)
-            'delivered': '#3B82F6',  // Azul (Info)
-            'cancelled': '#EF4444'   // Rojo (Danger)
-        };
-
-        statusDistributionLabels.forEach((label, index) => {
-            if (statusDistributionData[index] > 0) {
-                filteredData.push(statusDistributionData[index]);
-                filteredLabels.push(labelMap[label] || label);
-                filteredColors.push(colorMap[label] || '#6B7280');
-            }
-        });
-
-        const statusDistributionOptions = {
-            series: filteredData,
-            chart: {
-                type: 'donut',
-                height: 300
-            },
-            labels: filteredLabels,
-            colors: filteredColors,
-            legend: {
-                position: 'bottom'
-            },
-            plotOptions: {
-                pie: {
-                    donut: {
-                        size: '65%',
-                        labels: {
-                            show: true,
-                            total: {
-                                show: true,
-                                label: 'Total',
-                                formatter: function(w) {
-                                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        };
-
-        try {
-            const statusDistributionChart = new ApexCharts(statusChartElement, statusDistributionOptions);
-            statusDistributionChart.render();
-        } catch (error) {
-            console.error('Error rendering status chart:', error);
-            statusChartElement.innerHTML = '<div class="text-center py-5 text-danger"><p>Error al cargar gráfica</p></div>';
-        }
-    } else if (statusChartElement) {
-        statusChartElement.innerHTML = '<div class="text-center py-5"><i class="fas fa-chart-pie fa-3x text-gray-300 mb-3"></i><p class="text-muted">No hay órdenes en este período</p></div>';
     }
 });
 </script>

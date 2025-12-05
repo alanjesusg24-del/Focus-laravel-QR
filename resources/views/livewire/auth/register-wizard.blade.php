@@ -4,7 +4,7 @@
   File: register-wizard.blade.php
   Created on: 03/12/2025
   Created by: Vane
-  Approved by: Dani y Diego
+  Approved by:
 
   Changelog:
   - ID: 1 | Date: 03/12/2025

@@ -25,7 +25,7 @@
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.orders.index') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
                 <x-icon name="back" class="me-2"/>
-                Volver a órdenes
+                Atras
             </a>
         </div>
     </div>
