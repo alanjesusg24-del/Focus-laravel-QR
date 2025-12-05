@@ -27,12 +27,14 @@
     @endif
 
     {{-- ENCABEZADO Y BREADCRUMB --}}
+    {{-- ENCABEZADO DE PÁGINA (Título + Botón alineados) --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
+        
+        {{-- IZQUIERDA: Breadcrumb y Títulos --}}
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
-                        {{-- Casita en color primario (gris oscuro) --}}
                         <a href="{{ route('business.dashboard.index') }}" class="text-primary">
                             <x-icon name="home" />
                         </a>
@@ -43,28 +45,32 @@
             <h2 class="h4 mt-1">Gestión de Órdenes</h2>
             <p class="mb-0 text-muted">Administra las órdenes de tu negocio</p>
         </div>
+
+        {{-- DERECHA: Botón Nueva Orden (Movido aquí) --}}
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ route('business.orders.create') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                {{-- Usamos el icono estándar 'add' --}}
+                <x-icon name="action.create" class="me-2"/> Nueva Orden
+            </a>
+        </div>
     </div>
 
     {{-- 
-        BARRA DE HERRAMIENTAS (TOOLBAR) - Manual Sección 8.5
+        BARRA DE HERRAMIENTAS (Solo Buscador y Filtros)
     --}}
     <div class="table-settings mb-4">
         <div class="row align-items-center justify-content-between">
             
-            {{-- ZONA IZQUIERDA: Buscador + Filtro con Etiqueta --}}
-            <div class="col col-md-9 col-lg-9 col-xl-9 d-flex align-items-center flex-wrap gap-3">
+            {{-- OCUPA TODO EL ANCHO (col-12) --}}
+            <div class="col-12 d-flex align-items-center flex-wrap gap-3">
                 
-                {{-- 1. Buscador CON ICONO (Input Group) --}}
+                {{-- 1. Buscador --}}
                 <div class="input-group fmxw-300">
-                    <span class="input-group-text">
-                        <svg class="icon icon-xs text-gray-500" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
-                        </svg>
-                    </span>
+                
                     <input type="text" id="search-orders" class="form-control" placeholder="Buscar orden...">
                 </div>
 
-                {{-- 2. Filtro con Etiqueta "Filtrar por estado:" --}}
+                {{-- 2. Filtro --}}
                 <div class="d-flex align-items-center">
                     <span class="small fw-bold text-gray-600 me-2">Filtrar por estado:</span>
                     <form method="GET" action="{{ route('business.orders.index') }}">
@@ -78,16 +84,9 @@
                     </form>
                 </div>
             </div>
+            
+            {{-- (La columna derecha del botón se eliminó de aquí) --}}
 
-            {{-- ZONA DERECHA: Botón Nueva Orden --}}
-            <div class="col-3 col-md-3 col-lg-3 col-xl-3 text-end">
-                <button type="button" class="btn btn-primary d-inline-flex align-items-center" data-bs-toggle="modal" data-bs-target="#createOrderModal">
-                    <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"/>
-                    </svg>
-                    Nueva Orden
-                </button>
-            </div>
         </div>
     </div>
 
@@ -178,7 +177,7 @@
                                         @if(in_array($order->status, ['pending', 'ready']))
                                             <div role="separator" class="dropdown-divider my-1"></div>
                                             <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
-                                                <x-icon name="cancel" class="text-danger me-2"/> Cancelar Orden
+                                                <x-icon name="action.cancel" class="text-danger me-2"/> Cancelar Orden
                                             </a>
                                         @endif
                                     </div>

@@ -10,23 +10,29 @@
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
-                        <a href="{{ route('business.dashboard.index') }}">
-                            <svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
-                            </svg>
+                        <a href="{{ route('business.dashboard.index') }}" class="text-primary">
+                            <x-icon name="home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ route('business.support.index') }}">Tickets de Soporte</a>
+                        <a href="{{ route('business.support.index') }}" class="text-primary">Tickets de Soporte</a>
                     </li>
                     <li class="breadcrumb-item">
-                        <a href="{{ route('business.support.show', $supportTicket->support_ticket_id) }}">Ticket #{{ $supportTicket->support_ticket_id }}</a>
+                        <a href="{{ route('business.support.show', $supportTicket->support_ticket_id) }}" class="text-primary">
+                            Ticket #{{ $supportTicket->support_ticket_id }}
+                        </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">Editar</li>
                 </ol>
             </nav>
-            <h2 class="h4">Editar Ticket #{{ $supportTicket->support_ticket_id }}</h2>
-            <p class="mb-0">Modifica la descripcion de tu ticket de soporte</p>
+            <h2 class="h4 mt-1">Editar Ticket #{{ $supportTicket->support_ticket_id }}</h2>
+            <p class="mb-0 text-muted">Modifica la descripción de tu ticket de soporte</p>
+        </div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <a href="{{ route('business.support.show', $supportTicket->support_ticket_id) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
+                <x-icon name="back" class="me-2"/>
+                Volver al ticket
+            </a>
         </div>
     </div>
 
@@ -68,9 +74,7 @@
                                    disabled
                                    readonly>
                             <small class="form-text text-muted">
-                                <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                </svg>
+                                <x-icon name="info" class="icon-xs me-1" />
                                 El asunto no puede ser modificado
                             </small>
                         </div>
@@ -94,28 +98,22 @@
                         </div>
 
                         <!-- Info Alert -->
-                        <div class="alert alert-info d-flex align-items-start" role="alert">
-                            <svg class="icon icon-sm me-2 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                            </svg>
-                            <div>
-                                <strong>Nota:</strong> Solo puedes editar la descripcion del ticket. El asunto y los archivos adjuntos no pueden ser modificados una vez creado el ticket.
-                            </div>
+                    <div class="alert alert-info d-flex align-items-start" role="alert">
+                        <x-icon name="info" class="me-2 mt-1 flex-shrink-0" />
+                        <div>
+                            <strong>Nota:</strong> Solo puedes editar la descripción del ticket. El asunto y los archivos adjuntos no pueden ser modificados una vez creado el ticket.
                         </div>
+                    </div>
 
                         <!-- Action Buttons -->
-                        <div class="d-flex justify-content-between align-items-center mt-4">
-                            <a href="{{ route('business.support.show', $supportTicket->support_ticket_id) }}" class="btn btn-light">
-                                <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd"></path>
-                                </svg>
+                        <div class="d-flex justify-content-start align-items-center mt-4 gap-3">
+                            <a href="{{ route('business.support.show', $supportTicket->support_ticket_id) }}" class="btn btn-secondary">
+                                <x-icon name="action.cancel" class="me-2"/>
                                 Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
-                                </svg>
-                                Guardar Cambios
+                                <x-icon name="action.save" class="me-2"/>
+                                Guardar
                             </button>
                         </div>
                     </form>

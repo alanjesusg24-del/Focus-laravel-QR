@@ -172,18 +172,15 @@
 
         <!-- Barra Lateral -->
         <div class="col-12 col-xl-4">
-            <!-- Tarjeta de Código QR -->
             @if($order->qr_code_url && !$order->mobile_user_id)
             <div class="card border-0 shadow mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Código QR</h5>
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h5 class="mb-0 fw-bold text-primary">Código QR</h5>
                 </div>
                 <div class="card-body text-center">
-                    <img src="{{ $order->qr_code_url }}" alt="Código QR" class="img-fluid rounded border mb-3" style="max-width: 250px;">
-                    <a href="{{ route('business.orders.downloadQr', $order) }}" class="btn btn-outline-primary btn-sm w-100">
-                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
-                        </svg>
+                    <img src="{{ $order->qr_code_url }}" alt="Código QR" class="img-fluid rounded border mb-3 shadow-sm" style="max-width: 250px;">
+                    <a href="{{ route('business.orders.downloadQr', $order) }}" class="btn btn-outline-primary btn-sm w-100 d-inline-flex align-items-center justify-content-center">
+                        <x-icon name="action.download" class="me-2" />
                         Descargar QR
                     </a>
                 </div>
@@ -191,21 +188,22 @@
             @elseif($order->mobile_user_id)
             <div class="card border-0 shadow mb-4 border-success">
                 <div class="card-header bg-success text-white">
-                    <h5 class="mb-0">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z"></path>
-                        </svg>
+                    <h5 class="mb-0 d-flex align-items-center">
+                        {{-- Icono de enlace/cadena --}}
+                        <x-icon name="link" class="me-2 text-white" /> 
                         Orden Ligada
                     </h5>
                 </div>
-                <div class="card-body text-center">
-                    <svg class="icon icon-xl text-success mb-3" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                    </svg>
-                    <p class="text-muted mb-0">Esta orden está ligada a la app móvil del cliente</p>
+                <div class="card-body text-center py-4">
+                    {{-- Icono Grande de Éxito --}}
+                    <x-icon name="success" class="text-success mb-3 display-1" style="font-size: 3rem;" />
+                    <p class="text-muted mb-0 fw-bold">
+                        Esta orden está ligada a la app móvil del cliente
+                    </p>
                 </div>
             </div>
             @endif
+            
 
             <!-- Tarjeta de Token de Recogida -->
             <div class="card border-0 shadow mb-4">
@@ -227,56 +225,34 @@
                 </div>
                 <div class="card-body">
                     @if($order->status === 'pending' && $order->mobile_user_id)
-                    {{-- Solo mostrar "Marcar como Listo" si está ligado a celular --}}
                     <form action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="mb-2">
                         @csrf
-                        <button type="submit" class="btn btn-success w-100">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                            </svg>
-                            Marcar como Listo
+                        <button type="submit" class="btn btn-success w-100 d-inline-flex align-items-center justify-content-center">
+                            <x-icon name="success" class="me-2"/> Marcar como Listo
                         </button>
                     </form>
                     @elseif($order->status === 'pending' && !$order->mobile_user_id)
-                    {{-- Mostrar mensaje si no está ligado --}}
-                    <div class="alert alert-warning d-flex align-items-center mb-2">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
-                        </svg>
+                    <div class="alert alert-warning d-flex align-items-center mb-2" role="alert">
+                        <x-icon name="warning" class="me-2 flex-shrink-0"/>
                         <small>El cliente debe escanear el QR primero</small>
                     </div>
                     @endif
-
                     @if($order->status === 'ready')
-                    <button type="button" class="btn btn-info w-100 mb-2" onclick="startQRScanner()">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clip-rule="evenodd"></path>
-                            <path d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM7 11a1 1 0 100-2H4a1 1 0 100 2h3zM17 13a1 1 0 01-1 1h-2a1 1 0 110-2h2a1 1 0 011 1zM16 17a1 1 0 100-2h-3a1 1 0 100 2h3z"></path>
-                        </svg>
-                        Escanear QR para Entregar
+                    <button type="button" class="btn btn-primary w-100 mb-2 d-inline-flex align-items-center justify-content-center" onclick="startQRScanner()">
+                        <x-icon name="order.qr" class="me-2"/> Escanear QR para Entregar
                     </button>
-                    <button type="button" class="btn btn-outline-info w-100 mb-2" data-bs-toggle="modal" data-bs-target="#deliverModal">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z"></path>
-                        </svg>
-                        Ingresar Token Manualmente
+                    <button type="button" class="btn btn-secondary w-100 mb-2 d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#deliverModal">
+                        <x-icon name="key" class="me-2"/> Ingresar Token Manualmente
                     </button>
                     @endif
-
+                    {{-- ACCIONES COMUNES (Cancelar y Editar) --}}
                     @if(in_array($order->status, ['pending', 'ready']))
-                    <button type="button" class="btn btn-danger w-100 mb-2" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                        <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
-                        </svg>
-                        Cancelar Orden
+                    <button type="button" class="btn btn-danger w-100 mb-2 d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                        <x-icon name="action.cancel" class="me-2"/> Cancelar Orden
                     </button>
                     @endif
-
-                    <a href="{{ route('business.orders.edit', $order) }}" class="btn btn-outline-gray-800 w-100">
-                        <svg class="icon icon-xs me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                        </svg>
-                        Editar Descripción
+                    <a href="{{ route('business.orders.edit', $order) }}" class="btn btn-primary w-100 d-inline-flex align-items-center justify-content-center">
+                        <x-icon name="edit" class="me-2"/> Editar Descripción
                     </a>
                 </div>
             </div>
@@ -502,7 +478,7 @@ function processScannedToken(scannedValue) {
                 startQRScanner();
             }, 2000);
         }
-        // Si es detección automática, simplemente resetear sin mostrar error
+        
         scannedData = '';
     }
 }
@@ -516,7 +492,6 @@ function showError(message) {
     alert(message);
 }
 
-// Auto-envío del formulario manual de entrega con confirmación
 document.querySelector('#deliverModal form')?.addEventListener('submit', function(e) {
     e.preventDefault();
 

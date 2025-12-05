@@ -73,7 +73,7 @@
       <li class="nav-item {{ request()->routeIs('business.payments.*') ? 'active' : '' }}">
         <a href="{{ route('business.payments.index') }}" class="nav-link">
           <span class="sidebar-icon">
-            <x-icon name="creditCard" class="me-2" />
+            <x-icon name="money.invoice" class="me-2" />
           </span>
           <span class="sidebar-text">Suscripción</span>
         </a>

@@ -65,104 +65,100 @@
             </div>
         @endif
 
-        {{-- Plans Grid --}}
         <div class="row justify-content-center mb-5">
-            @foreach($plans as $plan)
-                <div class="col-12 col-lg-5 mb-4 px-lg-3">
-                    {{-- 
-                        Card Design:
-                        Using Bootstrap utility classes strictly. 
-                        Border-primary highlights the active plan.
-                    --}}
-                    <div class="card border-0 shadow-sm h-100 p-4 {{ $business->plan_id === $plan->plan_id ? 'border border-2 border-primary' : '' }}">
-                        <div class="card-body d-flex flex-column">
-                            
-                            {{-- Plan Header --}}
-                            <div class="text-center mb-4">
-                                <h3 class="h5 text-uppercase text-muted mb-3">{{ $plan->name }}</h3>
-                                <div class="d-flex justify-content-center align-items-baseline">
-                                    {{-- Typography: display-4 for price prominence [cite: 734] --}}
-                                    <span class="display-4 fw-bold text-dark">${{ number_format($plan->price, 2) }}</span>
-                                    <span class="text-muted ms-2">/mes</span>
-                                </div>
-                                <p class="text-muted small mt-2">{{ $plan->description }}</p>
+        @foreach($plans as $plan)
+            @php
+                $isCurrent = $business->plan_id === $plan->plan_id;
+                $isTopTier = $plan->price >= 899; 
+            @endphp
+
+            <div class="col-12 col-lg-4 mb-4 px-lg-3"> 
+                
+                <div class="card h-100 shadow-lg border border-2 border-primary">
+                    
+                    <div class="card-header text-center py-3 bg-primary">
+                        <h4 class="h5 mb-0 text-white fw-bold">{{ $plan->name }}</h4>
+                    </div>
+
+                    <div class="card-body d-flex flex-column p-4">
+                        
+                        <div class="text-center mb-2">
+                            <div class="d-flex justify-content-center align-items-baseline">
+                                <span class="display-4 fw-bold text-primary">${{ number_format($plan->price, 2) }}</span>
+                                <span class="text-muted ms-2">/mes</span>
                             </div>
-
-                            <hr class="text-gray-200 mb-4">
-
-                            {{-- Features List --}}
-                            <ul class="list-unstyled mb-5 flex-grow-1">
-                                {{-- Feature: Web Panel --}}
-                                <li class="d-flex align-items-center mb-3">
-                                    <x-icon name="checkCircle" class="text-success me-3" />
-                                    <span class="text-gray-700">Acceso al Panel Web (Gestión)</span>
-                                </li>
-
-                                {{-- Feature: Data Retention --}}
-                                <li class="d-flex align-items-center mb-3">
-                                    <x-icon name="checkCircle" class="text-success me-3" />
-                                    <span class="text-gray-700">{{ $plan->retention_days }} días de retención de datos</span>
-                                </li>
-
-                                {{-- Feature: Unlimited Orders --}}
-                                <li class="d-flex align-items-center mb-3">
-                                    <x-icon name="checkCircle" class="text-success me-3" />
-                                    <span class="text-gray-700">Órdenes ilimitadas</span>
-                                </li>
-
-                                 {{-- Feature: QR Generation --}}
-                                 <li class="d-flex align-items-center mb-3">
-                                    <x-icon name="checkCircle" class="text-success me-3" />
-                                    <span class="text-gray-700">Generación de códigos QR</span>
-                                </li>
-                            </ul>
-
-                            {{-- Action Buttons --}}
-                            {{-- 
-                                Button Standards:
-                                - Primary (Dark #1F2937): Main action "Adquirir Plan".
-                                - Secondary (Red/Orange #FB503B): Highlight/Current status "Plan Actual".
-                            --}}
-                            <div class="mt-auto">
-                                <form action="{{ route('business.payments.checkout', $plan) }}" method="GET">
-                                    @if($business->plan_id === $plan->plan_id)
-                                        <button type="button" class="btn btn-secondary w-100 fw-bold" disabled>
-                                            Plan Actual
-                                        </button>
-                                        <div class="text-center mt-2">
-                                            <small class="text-muted">Expira: {{ $business->subscription_end_date ? $business->subscription_end_date->format('d/m/Y') : 'N/A' }}</small>
-                                        </div>
-                                    @else
-                                        <button type="submit" class="btn btn-primary w-100 fw-bold">
-                                            Adquirir Plan
-                                        </button>
-                                    @endif
-                                </form>
-                            </div>
+                            <p class="text-muted small mt-2 mb-0">{{ $plan->description }}</p>
                         </div>
+                        <hr class="text-gray-200 mb-2">
+
+                        <ul class="list-unstyled text-start mb-4 flex-grow-1">
+                            
+                            <li class="d-flex align-items-center mb-3 small">
+                                <x-icon name="state.success" class="text-success me-2" />
+                                <span class="text-primary">Acceso al Panel Web</span>
+                            </li>
+
+                            <li class="d-flex align-items-center mb-3 small">
+                                <x-icon name="state.success" class="text-success me-2" />
+                                <span class="text-primary">{{ $plan->retention_days }} días de retención</span>
+                            </li>
+
+                            <li class="d-flex align-items-center mb-3 small">
+                                <x-icon name="state.success" class="text-success me-2" />
+                                <span class="text-primary">Órdenes ilimitadas</span>
+                            </li>
+
+                            <li class="d-flex align-items-center mb-3 small">
+                                @if($plan->has_chat_module ?? false)
+                                    <x-icon name="state.success" class="text-success me-2" />
+                                    <span class="text-primary fw-bold">Módulo de Chat Incluido</span>
+                                @else
+                                    <x-icon name="state.error" class="text-danger me-2" />
+                                    <span class="text-danger">Sin Módulo de Chat</span>
+                                @endif
+                            </li>
+                        </ul>
+
+                        <div class="mt-auto pt-3 border-top">
+                            <form action="{{ route('business.payments.checkout', $plan) }}" method="GET">
+                                @if($isCurrent)
+                                    <button type="button" class="btn btn-secondary w-100 fw-bold" disabled>
+                                        Plan Actual
+                                    </button>
+                                    
+                                @else
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold d-inline-flex align-items-center justify-content-center">
+                                        <x-icon name="creditCard" class="me-2" />
+                                        Adquirir Plan
+                                    </button>
+                                @endif
+                            </form>
+                        </div>
+
                     </div>
                 </div>
-            @endforeach
-        </div>
+            </div>
+        @endforeach
+    </div>
 
-        {{-- Recent Payments History --}}
+        
         @if($payments->count() > 0)
-            <div class="card border-0 shadow-sm mt-5">
-                <div class="card-header bg-white border-bottom-0 pt-4">
-                    <h5 class="mb-0">Historial de Pagos</h5>
+            <div class="card border-0 shadow-sm mt-5 mb-4">
+                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
+                    <h5 class="mb-0 fw-bold text-primary">Historial de Pagos</h5>
                 </div>
-                <div class="table-responsive">
-                    {{-- Table Standards [cite: 721] --}}
-                    <table class="table align-items-center table-flush">
-                        <thead class="thead-light">
-                            <tr>
-                                <th class="border-bottom" scope="col">Plan</th>
-                                <th class="border-bottom" scope="col">Fecha</th>
-                                <th class="border-bottom" scope="col">Monto</th>
-                                <th class="border-bottom" scope="col">Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th class="border-bottom" scope="col">Plan</th>
+                                    <th class="border-bottom" scope="col">Fecha</th>
+                                    <th class="border-bottom" scope="col">Monto</th>
+                                    <th class="border-bottom" scope="col">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                             @foreach($payments as $payment)
                             <tr>
                                 <td class="fw-bold">{{ $payment->plan->name }}</td>
@@ -170,15 +166,20 @@
                                 <td class="fw-bold">${{ number_format($payment->amount, 2) }}</td>
                                 <td>
                                     @if($payment->status == 'completed')
-                                        <span class="badge bg-success">Pagado</span>
+                                        <span class="fw-bold text-success">Pagado</span>
+                                    
+                                    @elseif($payment->status == 'pending')
+                                        <span class="fw-bold text-warning">Pendiente</span>
+                                    
                                     @else
-                                        <span class="badge bg-warning">{{ $payment->status }}</span>
+                                        <span class="fw-bold text-warning">{{ $payment->status }}</span>
                                     @endif
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
-                    </table>
+                        </table>
+                    </div>
                 </div>
             </div>
         @endif
