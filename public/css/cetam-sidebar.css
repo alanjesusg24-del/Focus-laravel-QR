@@ -130,3 +130,16 @@
 .sidebar .nav-link:not(.collapsed)::after {
     color: var(--cetam-secondary);
 }
+
+.nav.compact {
+    margin-bottom: 0;
+    padding: 0;
+
+    .nav-item {
+        margin-bottom: 0.2rem; 
+    }
+
+    .nav-link {
+        padding: 0.5rem 1rem;
+    }
+}

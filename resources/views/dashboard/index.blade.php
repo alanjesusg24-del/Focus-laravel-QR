@@ -15,7 +15,7 @@
                     </a>
                 </li>
                 {{-- El breadcrumb debe indicar la página actual (Reportes) --}}
-                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                <li class="breadcrumb-item active" aria-current="page">Inicio</li>
             </ol>
             <h2 class="h4">Reportes y Análisis</h2>
             <p class="mb-0">Visualiza el rendimiento de tu negocio</p>

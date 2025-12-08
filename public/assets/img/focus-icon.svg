@@ -1,0 +1,10 @@
+<svg width="120" height="120" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Outer circle -->
+  <circle cx="60" cy="60" r="40" stroke="#7B9FB8" stroke-width="3" fill="none" opacity="0.6"/>
+  <!-- Middle circle -->
+  <circle cx="60" cy="60" r="28" stroke="#4A7FA3" stroke-width="3" fill="none" opacity="0.8"/>
+  <!-- Inner circle -->
+  <circle cx="60" cy="60" r="17" stroke="#1d4976" stroke-width="3" fill="none"/>
+  <!-- Center dot -->
+  <circle cx="60" cy="60" r="9" fill="#de5629"/>
+</svg>

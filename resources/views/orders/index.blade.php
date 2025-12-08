@@ -63,11 +63,17 @@
             
             {{-- OCUPA TODO EL ANCHO (col-12) --}}
             <div class="col-12 d-flex align-items-center flex-wrap gap-3">
-                
+
                 {{-- 1. Buscador --}}
-                <div class="input-group fmxw-300">
-                
-                    <input type="text" id="search-orders" class="form-control" placeholder="Buscar orden...">
+                <div class="input-group" style="max-width: 350px;">
+                    <span class="input-group-text bg-white border-end-0">
+                        <x-icon name="action.search" class="text-gray-500" />
+                    </span>
+                    <input type="text"
+                           id="search-orders"
+                           class="form-control border-start-0 ps-0"
+                           placeholder="Buscar por folio o descripción..."
+                           autocomplete="off">
                 </div>
 
                 {{-- 2. Filtro --}}
@@ -91,9 +97,9 @@
     </div>
 
     {{-- TABLA --}}
-    <div class="card border-0 shadow mb-4">
-        <div class="card-body p-0">
-            <div class="table-responsive">
+    <div class="card border-0 shadow mb-4" style="overflow: visible;">
+        <div class="card-body p-0" style="overflow: visible;">
+            <div class="table-responsive" style="overflow: visible;">
                 <table class="table align-items-center table-flush table-hover">
                     <thead class="thead-light">
                         <tr>
@@ -152,15 +158,13 @@
                             @endif
                             
                             {{-- MENÚ DE ACCIONES (Alineado al centro) --}}
-                            <td class="text-center">
-                                <div class="dropdown">
-                                    <button class="btn btn-link text-dark dropdown-toggle m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                        </svg>
+                            <td class="text-center position-static">
+                                <div class="dropdown position-static">
+                                    <button class="btn btn-link text-dark m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <x-icon name="action.more" class="icon-xs text-dark" />
                                     </button>
                                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
-                                        
+
                                         <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
                                             <x-icon name="view" class="text-gray-400 me-2"/> Ver detalles
                                         </a>
@@ -242,7 +246,7 @@
                 </table>
             </div>
         </div>
-        @if($orders->total() >= 10 && $orders->hasPages())
+        @if($orders->hasPages())
         <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
             {{ $orders->links('vendor.pagination.volt-custom') }}
         </div>
@@ -282,17 +286,57 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-orders');
+        const tbody = document.querySelector('tbody');
+
         if (searchInput) {
+            // Búsqueda mejorada
             searchInput.addEventListener('input', function(e) {
-                const searchTerm = e.target.value.toLowerCase();
-                const rows = document.querySelectorAll('tbody tr:not(:last-child)');
+                const searchTerm = e.target.value.toLowerCase().trim();
+                const rows = document.querySelectorAll('tbody tr');
+                let visibleCount = 0;
+                let noResultsRow = document.getElementById('no-results-row');
+
                 rows.forEach(row => {
-                    if (row.querySelector('td[colspan]')) return;
-                    const text = row.textContent.toLowerCase();
-                    row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    // Ignorar filas vacías o de "no hay órdenes"
+                    if (row.querySelector('td[colspan]')) {
+                        if (row.id !== 'no-results-row') {
+                            row.style.display = 'none';
+                        }
+                        return;
+                    }
+
+                    // Buscar en folio y descripción específicamente
+                    const folio = row.querySelector('td:first-child')?.textContent.toLowerCase() || '';
+                    const description = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+
+                    const matches = folio.includes(searchTerm) || description.includes(searchTerm);
+                    row.style.display = matches ? '' : 'none';
+
+                    if (matches) visibleCount++;
                 });
+
+                // Mostrar mensaje de "sin resultados" si no hay coincidencias
+                if (searchTerm && visibleCount === 0) {
+                    if (!noResultsRow) {
+                        noResultsRow = document.createElement('tr');
+                        noResultsRow.id = 'no-results-row';
+                        noResultsRow.innerHTML = `
+                            <td colspan="7" class="text-center py-5">
+                                <p class="text-gray-600 mb-0">No se encontraron órdenes que coincidan con "<strong>${searchTerm}</strong>"</p>
+                                <small class="text-muted">Intenta buscar por otro folio o descripción</small>
+                            </td>
+                        `;
+                        tbody.appendChild(noResultsRow);
+                    } else {
+                        noResultsRow.querySelector('strong').textContent = searchTerm;
+                        noResultsRow.style.display = '';
+                    }
+                } else if (noResultsRow) {
+                    noResultsRow.style.display = 'none';
+                }
             });
         }
+
         @if($errors->any())
         const createOrderModal = new bootstrap.Modal(document.getElementById('createOrderModal'));
         createOrderModal.show();

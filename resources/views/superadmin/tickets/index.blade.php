@@ -41,7 +41,12 @@
         <div class="row align-items-end">
             <div class="col-md-4 mb-3 mb-md-0">
                 <label for="search" class="form-label">Buscar</label>
-                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Asunto o descripción...">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0">
+                        <x-icon name="action.search" class="text-gray-500" />
+                    </span>
+                    <input type="text" class="form-control border-start-0 ps-0" id="search" name="search" value="{{ request('search') }}" placeholder="Asunto o descripción..." autocomplete="off">
+                </div>
             </div>
             <div class="col-md-3 mb-3 mb-md-0">
                 <label for="business_id" class="form-label">Negocio</label>
@@ -215,7 +220,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const filterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('search');
-    let searchTimeout;
+    const tbody = document.querySelector('tbody');
 
     // Auto-submit para selectores
     document.querySelectorAll('.auto-submit').forEach(function(element) {
@@ -224,22 +229,66 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Auto-submit para búsqueda con debounce
-    searchInput.addEventListener('input', function() {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(function() {
-            filterForm.submit();
-        }, 500);
-    });
+    // Búsqueda en tiempo real del lado del cliente
+    if (searchInput && tbody) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const rows = document.querySelectorAll('tbody tr');
+            let visibleCount = 0;
+            let noResultsRow = document.getElementById('no-results-row');
 
-    // Submit inmediato al presionar Enter
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            clearTimeout(searchTimeout);
-            filterForm.submit();
-        }
-    });
+            rows.forEach(row => {
+                // Ignorar filas vacías o mensajes
+                if (row.querySelector('td[colspan]')) {
+                    if (row.id !== 'no-results-row') {
+                        row.style.display = 'none';
+                    }
+                    return;
+                }
+
+                // Buscar en ID, asunto y negocio
+                const ticketId = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
+                const subject = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                const business = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+
+                const matches = ticketId.includes(searchTerm) ||
+                               subject.includes(searchTerm) ||
+                               business.includes(searchTerm);
+
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) visibleCount++;
+            });
+
+            // Mostrar mensaje de "sin resultados"
+            if (searchTerm && visibleCount === 0) {
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="7" class="text-center py-5">
+                            <p class="text-gray-600 mb-0">No se encontraron tickets que coincidan con "<strong>${searchTerm}</strong>"</p>
+                            <small class="text-muted">Intenta buscar por otro asunto o negocio</small>
+                        </td>
+                    `;
+                    tbody.appendChild(noResultsRow);
+                } else {
+                    noResultsRow.querySelector('strong').textContent = searchTerm;
+                    noResultsRow.style.display = '';
+                }
+            } else if (noResultsRow) {
+                noResultsRow.style.display = 'none';
+            }
+        });
+
+        // Submit al presionar Enter (búsqueda del servidor)
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                filterForm.submit();
+            }
+        });
+    }
 });
 </script>
 @endpush

@@ -58,6 +58,7 @@ return [
     'action.sort' => 'fas fa-sort',
     'action.sort_up' => 'fas fa-sort-up',
     'action.sort_down' => 'fas fa-sort-down',
+    'action.more' => 'fas fa-ellipsis-h',
 
     // States
     'state.success' => 'fas fa-check-circle',

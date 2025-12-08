@@ -41,13 +41,13 @@
                 <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                     <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                         <li class="breadcrumb-item">
-                            {{-- Enlace al Dashboard con color Primario forzado --}}
+                            
                             <a href="{{ route('business.dashboard.index') }}" class="text-primary">
                                 <x-icon name="home" />
                             </a>
                         </li>
                         {{-- Muestra la ubicación actual --}}
-                        <li class="breadcrumb-item active" aria-current="page">Pagos</li>
+                        <li class="breadcrumb-item active" aria-current="page">Suscripción</li>
                     </ol>
                 </nav>
                 <h2 class="h4 mt-2">Planes de Membresía</h2>
