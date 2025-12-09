@@ -10,6 +10,7 @@
   - ID: 1 | Date: 03/12/2025
     Modified by: Vane
     Description: Wizard de registro de 3 pasos. Ajuste de botones a color primario y limpieza de inputs.
+    Updated: Títulos centrados.
 --}}
 
 <div class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
@@ -40,7 +41,8 @@
                     {{-- PASO 1: DATOS DEL NEGOCIO --}}
                     @if($currentStep === 1)
                         <div class="animate__animated animate__fadeIn">
-                            <h4 class="mb-4">Datos del Negocio</h4>
+                            {{-- Agregado text-center --}}
+                            <h4 class="mb-4 text-center">Datos del Negocio</h4>
 
                             <div class="mb-3">
                                 <label class="form-label">Nombre del Negocio <span class="text-danger">*</span></label>
@@ -71,7 +73,8 @@
                     {{-- PASO 2: DATOS DE ACCESO --}}
                     @if($currentStep === 2)
                         <div class="animate__animated animate__fadeIn">
-                            <h4 class="mb-4">Datos de Acceso</h4>
+                            {{-- Agregado text-center --}}
+                            <h4 class="mb-4 text-center">Datos de Acceso</h4>
 
                             <div class="mb-3">
                                 <label class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
@@ -101,9 +104,8 @@
                     {{-- PASO 3: FINALIZAR --}}
                     @if($currentStep === 3)
                         <div class="animate__animated animate__fadeIn">
-                            <h4 class="mb-4">Finalizar Registro</h4>
-
-                            
+                            {{-- Agregado text-center --}}
+                            <h4 class="mb-4 text-center">Finalizar Registro</h4>
 
                             <div class="form-check mb-4">
                                 <input wire:model="terms" class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" id="termsCheck">
@@ -119,16 +121,15 @@
                     <div class="mt-5 d-flex align-items-center {{ $currentStep > 1 ? 'justify-content-between' : 'justify-content-end' }}">
 
                         @if($currentStep > 1)
-                            {{-- Botón Atrás: Ahora es Primario (Gris Oscuro) como solicitaste --}}
-                            <button wire:click="previousStep" class="btn btn-primary px-4">
-                                <x-icon name="back" class="me-2"/> Atrás
+                            <button wire:click="previousStep" class="btn btn-secondary text-white px-4">
+                                <x-icon name="nav.back" class="me-2"/> Atrás
                             </button>
                         @endif
 
                         @if($currentStep < 3)
                             {{-- Botón Siguiente: Primario --}}
                             <button wire:click="nextStep" class="btn btn-primary px-4">
-                                Siguiente <x-icon name="forward" class="ms-2"/>
+                                Siguiente <x-icon name="nav.forward" class="ms-2"/>
                             </button>
                         @else
                             {{-- Botón Registrar: Primario --}}

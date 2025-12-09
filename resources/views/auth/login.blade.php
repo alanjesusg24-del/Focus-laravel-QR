@@ -25,7 +25,7 @@
 
                             @if(session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <x-icon name="check" class="me-2" />
+                                    <x-icon name="state.success" class="me-2" />
                                     <strong>¡Éxito!</strong> {{ session('success') }}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
@@ -40,13 +40,8 @@
                                     <label for="email">Correo electrónico</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon1">
-                                            <x-icon name="email" class="text-gray-600" />
+                                            <x-icon name="msg.email" class="text-gray-600" />
                                         </span>
-                                        {{-- 
-                                            LOGICA APLICADA:
-                                            1. value="{{ old('email') }}" mantiene el correo escrito si falla.
-                                            2. @error('email') is-invalid @enderror agrega la clase de error (borde rojo e icono).
-                                        --}}
                                         <input type="email" 
                                                class="form-control @error('email') is-invalid @enderror" 
                                                placeholder="ejemplo@institucion.com" 
@@ -56,8 +51,6 @@
                                                required 
                                                autofocus>
                                     </div>
-                                    
-                                    {{-- MENSAJE DE ERROR ESPECÍFICO DEL EMAIL --}}
                                     @error('email')
                                         <div class="text-danger mt-2 small fw-bold">
                                             {{ $message }}
@@ -69,7 +62,7 @@
                                     <label for="password">Contraseña</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="basic-addon2">
-                                            <x-icon name="lock" class="text-gray-600" />
+                                            <x-icon name="access.lock" class="text-gray-600" />
                                         </span>
                                         <input type="password" 
                                                placeholder="••••••••" 

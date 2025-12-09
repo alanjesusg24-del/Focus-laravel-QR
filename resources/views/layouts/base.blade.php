@@ -60,8 +60,8 @@ CETAM - Base Layout
     <!-- Datepicker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css">
 
-    <!-- Fontawesome -->
-    <link type="text/css" href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet">
+    <!-- Fontawesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Sweet Alert -->
     <link type="text/css" href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
@@ -70,10 +70,10 @@ CETAM - Base Layout
     <link type="text/css" href="{{ asset('vendor/notyf/notyf.min.css') }}" rel="stylesheet">
 
     <!-- Volt CSS -->
-    <link type="text/css" href="{{ asset('css/volt.css') }}" rel="stylesheet">
+    <link type="text/css" href="{{ asset('css/volt.css') }}?v={{ filemtime(public_path('css/volt.css')) }}" rel="stylesheet">
 
     <!-- CETAM Institutional Colors -->
-    <link type="text/css" href="{{ asset('css/cetam-colors.css') }}" rel="stylesheet">
+    <link type="text/css" href="{{ asset('css/cetam-colors.css') }}?v={{ filemtime(public_path('css/cetam-colors.css')) }}" rel="stylesheet">
 
     <!-- CETAM Sidebar Styles -->
     <link type="text/css" href="{{ asset('css/cetam-sidebar.css') }}" rel="stylesheet">
@@ -105,6 +105,43 @@ CETAM - Base Layout
 
     <!-- Sweet Alerts 2 -->
     <script src="{{ asset('assets/js/sweetalert2.all.min.js') }}"></script>
+
+    <!-- Session Messages Handler -->
+    <script>
+        @if(session('success'))
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Aceptar'
+            });
+        @elseif(session('error'))
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33',
+                confirmButtonText: 'Aceptar'
+            });
+        @elseif(session('warning'))
+            Swal.fire({
+                icon: 'warning',
+                title: 'Advertencia',
+                text: '{{ session('warning') }}',
+                confirmButtonColor: '#f0ad4e',
+                confirmButtonText: 'Aceptar'
+            });
+        @elseif(session('info'))
+            Swal.fire({
+                icon: 'info',
+                title: 'Información',
+                text: '{{ session('info') }}',
+                confirmButtonColor: '#5bc0de',
+                confirmButtonText: 'Aceptar'
+            });
+        @endif
+    </script>
 
     <!-- Moment JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>

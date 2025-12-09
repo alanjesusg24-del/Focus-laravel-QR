@@ -39,6 +39,8 @@ class Payment extends Model
         'amount',
         'stripe_payment_id',
         'stripe_subscription_id',
+        'mercadopago_preference_id',
+        'payment_provider',
         'status',
         'payment_date',
         'next_payment_date',

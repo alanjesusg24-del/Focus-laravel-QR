@@ -14,42 +14,37 @@
     {{-- ALERTAS DE SISTEMA --}}
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <x-icon name="success" class="me-2"/> {{ session('success') }}
+        <x-icon name="state.success" class="me-2"/> {{ session('success') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
     @endif
 
     @if(session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <x-icon name="error" class="me-2"/> {{ session('error') }}
+        <x-icon name="state.error" class="me-2"/> {{ session('error') }}
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
     </div>
     @endif
-
-    {{-- ENCABEZADO Y BREADCRUMB --}}
-    {{-- ENCABEZADO DE PÁGINA (Título + Botón alineados) --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         
-        {{-- IZQUIERDA: Breadcrumb y Títulos --}}
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
                         <a href="{{ route('business.dashboard.index') }}" class="text-primary">
-                            <x-icon name="home" />
+                            <x-icon name="nav.home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">Órdenes</li>
                 </ol>
             </nav>
             <h2 class="h4 mt-1">Gestión de Órdenes</h2>
-            <p class="mb-0 text-muted">Administra las órdenes de tu negocio</p>
+            <p class="mb-0 text-primary">Administra las órdenes de tu negocio</p>
         </div>
 
         {{-- DERECHA: Botón Nueva Orden (Movido aquí) --}}
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.orders.create') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                {{-- Usamos el icono estándar 'add' --}}
                 <x-icon name="action.create" class="me-2"/> Nueva Orden
             </a>
         </div>
@@ -138,7 +133,7 @@
                                 @if($order->qr_code_url)
                                     @if(!$order->mobile_user_id)
                                         <button type="button" class="btn btn-sm p-0" data-bs-toggle="modal" data-bs-target="#qrModal{{ $order->order_id }}" title="Ver QR">
-                                            <x-icon name="order.qr" class="text-dark fs-5" />
+                                            <x-icon name="action.scan" class="text-dark fs-5" />
                                         </button>
                                     @else
                                         <span class="text-success fw-bold">Ligado</span>
@@ -157,7 +152,7 @@
                             </td>
                             @endif
                             
-                            {{-- MENÚ DE ACCIONES (Alineado al centro) --}}
+    
                             <td class="text-center position-static">
                                 <div class="dropdown position-static">
                                     <button class="btn btn-link text-dark m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -166,12 +161,12 @@
                                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
 
                                         <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
-                                            <x-icon name="view" class="text-gray-400 me-2"/> Ver detalles
+                                            <x-icon name="action.view" class="text-gray-400 me-2"/> Ver detalles
                                         </a>
 
                                         @if($order->status === 'pending' && $order->mobile_user_id)
                                             <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
-                                                <x-icon name="success" class="text-success me-2"/> Marcar Listo
+                                                <x-icon name="state.success" class="text-success me-2"/> Marcar Listo
                                             </a>
                                             <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
                                                 @csrf @method('PUT')
@@ -181,7 +176,7 @@
                                         @if(in_array($order->status, ['pending', 'ready']))
                                             <div role="separator" class="dropdown-divider my-1"></div>
                                             <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
-                                                <x-icon name="action.cancel" class="text-danger me-2"/> Cancelar Orden
+                                                 Cancelar Orden
                                             </a>
                                         @endif
                                     </div>

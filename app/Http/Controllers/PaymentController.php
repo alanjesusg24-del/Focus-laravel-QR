@@ -69,49 +69,52 @@ class PaymentController extends Controller
     }
 
     /**
-     * Create MercadoPago checkout session and redirect
+     * Process simulated payment (for educational purposes)
      */
-    public function createCheckoutSession(Request $request, Plan $plan)
+    public function processSimulation(Request $request, Plan $plan)
     {
+        // Validar los datos del formulario
+        $validated = $request->validate([
+            'card_name' => 'required|string|max:255',
+            'card_number' => 'required|string|min:16|max:19',
+            'expiry_month' => 'required|string|size:2',
+            'expiry_year' => 'required|string|size:2',
+            'cvc' => 'required|string|min:3|max:4',
+        ]);
+
         $business = Auth::guard('business')->user();
 
         try {
-            // Crear preferencia de MercadoPago
-            $result = $this->mercadoPagoService->createPreference($business, $plan);
+            // Actualizar el plan del negocio
+            $business->plan_id = $plan->plan_id;
+            $business->last_payment_date = now();
+            $business->save();
 
-            if (!$result['success']) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Error al crear preferencia de pago: ' . $result['error']);
-            }
-
-            // Guardar registro preliminar del pago
-            $payment = Payment::create([
+            // Crear registro del pago simulado
+            Payment::create([
                 'business_id' => $business->business_id,
                 'plan_id' => $plan->plan_id,
                 'amount' => $plan->price,
-                'mercadopago_preference_id' => $result['preference_id'],
-                'payment_provider' => 'mercadopago',
-                'status' => 'pending',
+                'payment_provider' => 'simulated',
+                'status' => 'completed',
             ]);
 
-            Log::info('Payment preference created', [
-                'payment_id' => $payment->payment_id,
-                'preference_id' => $result['preference_id'],
+            Log::info('Simulated payment processed successfully', [
+                'business_id' => $business->business_id,
+                'plan_id' => $plan->plan_id,
+                'amount' => $plan->price,
             ]);
 
-            // Redirigir a MercadoPago checkout
-            $checkoutUrl = config('services.mercadopago.mode') === 'sandbox'
-                ? $result['sandbox_init_point']
-                : $result['init_point'];
-
-            return redirect($checkoutUrl);
+            // Redireccionar al dashboard con mensaje de éxito
+            return redirect()
+                ->route('business.dashboard.index')
+                ->with('success', '¡Pago procesado exitosamente! Tu plan ha sido actualizado.');
 
         } catch (\Exception $e) {
-            Log::error('MercadoPago checkout failed: ' . $e->getMessage());
+            Log::error('Simulated payment failed: ' . $e->getMessage());
             return redirect()
                 ->back()
-                ->with('error', 'Error al procesar el pago: ' . $e->getMessage());
+                ->with('error', 'Error al procesar el pago simulado: ' . $e->getMessage());
         }
     }
 

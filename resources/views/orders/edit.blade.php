@@ -13,7 +13,7 @@
                         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                             <li class="breadcrumb-item">
                                 <a href="{{ route('business.dashboard.index') }}" class="text-primary">
-                                    <x-icon name="home" />
+                                    <x-icon name="nav.home" />
                                 </a>
                             </li>
                             <li class="breadcrumb-item">

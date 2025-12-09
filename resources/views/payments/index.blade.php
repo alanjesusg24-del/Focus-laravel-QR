@@ -21,7 +21,7 @@
         {{-- Session Notifications --}}
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <x-icon name="checkCircle" class="me-2" />
+                <x-icon name="state.success" class="me-2" />
                 {{ session('success') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
@@ -29,7 +29,7 @@
 
         @if(session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <x-icon name="warning" class="me-2" />
+                <x-icon name="state.error" class="me-2" />
                 {{ session('error') }}
                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
@@ -41,29 +41,35 @@
                 <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                     <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                         <li class="breadcrumb-item">
-                            
                             <a href="{{ route('business.dashboard.index') }}" class="text-primary">
-                                <x-icon name="home" />
+                                <x-icon name="nav.home" />
                             </a>
                         </li>
-                        {{-- Muestra la ubicación actual --}}
                         <li class="breadcrumb-item active" aria-current="page">Suscripción</li>
                     </ol>
                 </nav>
                 <h2 class="h4 mt-2">Planes de Membresía</h2>
-                <p class="mb-0 text-muted">Elige el plan que mejor se adapte a tus necesidades.</p>
+                @php
+                    $currentPlanName = 'Gratuito';
+                    
+                    if ($business->plan) {
+                        $currentPlanName = $business->plan->name;
+                    } elseif ($business->plan_id) {
+                        $foundPlan = $plans->firstWhere('plan_id', $business->plan_id);
+                        if ($foundPlan) {
+                            $currentPlanName = $foundPlan->name;
+                        }
+                    }
+                @endphp
+
+                <p class="mb-0 text-primary">
+                    Tu plan actual es <strong class="text-primary">"{{ $currentPlanName }}"</strong>. 
+                    Elige el plan que mejor se adapte a tus necesidades.
+                </p>
             </div>
         </div>
 
         {{-- Subscription Status Alert --}}
-        @if(!$business->subscription_active)
-            <div class="alert alert-warning d-flex align-items-center shadow-sm border-0 mb-4" role="alert">
-                <x-icon name="warning" class="me-2" />
-                <div>
-                    <strong>Suscription Inactiva.</strong> Selecciona un plan para continuar.
-                </div>
-            </div>
-        @endif
 
         <div class="row justify-content-center mb-5">
         @foreach($plans as $plan)
@@ -128,7 +134,7 @@
                                     
                                 @else
                                     <button type="submit" class="btn btn-primary w-100 fw-bold d-inline-flex align-items-center justify-content-center">
-                                        <x-icon name="creditCard" class="me-2" />
+                                        <x-icon name="money.card" class="me-2" />
                                         Adquirir Plan
                                     </button>
                                 @endif
@@ -139,49 +145,5 @@
                 </div>
             </div>
         @endforeach
-    </div>
-
-        
-        @if($payments->count() > 0)
-            <div class="card border-0 shadow-sm mt-5 mb-4">
-                <div class="card-header bg-white border-bottom-0 pt-4 pb-0">
-                    <h5 class="mb-0 fw-bold text-primary">Historial de Pagos</h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table align-items-center table-flush">
-                            <thead class="thead-light">
-                                <tr>
-                                    <th class="border-bottom" scope="col">Plan</th>
-                                    <th class="border-bottom" scope="col">Fecha</th>
-                                    <th class="border-bottom" scope="col">Monto</th>
-                                    <th class="border-bottom" scope="col">Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            @foreach($payments as $payment)
-                            <tr>
-                                <td class="fw-bold">{{ $payment->plan->name }}</td>
-                                <td class="text-muted">{{ $payment->payment_date->format('d M, Y') }}</td>
-                                <td class="fw-bold">${{ number_format($payment->amount, 2) }}</td>
-                                <td>
-                                    @if($payment->status == 'completed')
-                                        <span class="fw-bold text-success">Pagado</span>
-                                    
-                                    @elseif($payment->status == 'pending')
-                                        <span class="fw-bold text-warning">Pendiente</span>
-                                    
-                                    @else
-                                        <span class="fw-bold text-warning">{{ $payment->status }}</span>
-                                    @endif
-                                </td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        @endif
     </div>
 @endsection

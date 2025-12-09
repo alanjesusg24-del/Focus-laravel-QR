@@ -7,7 +7,7 @@
     /* CETAM Institutional Colors */
     :root {
         --cetam-primary: #1F2937;      /* Gris oscuro slate */
-        --cetam-secondary: #FB503B;    /* Naranja rojizo vibrante */
+        --cetam-secondary: #FF8832 ;    /* Naranja rojizo vibrante */
         --cetam-tertiary: #31316A;     /* Azul índigo oscuro */
         --cetam-success: #10B981;      /* Verde */
         --cetam-warning: #FBA918;      /* Ámbar */

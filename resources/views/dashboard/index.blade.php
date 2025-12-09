@@ -9,12 +9,10 @@
         <div class="d-block mb-4 mb-md-0">
             <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                 <li class="breadcrumb-item">
-                    {{-- Enlace al Dashboard con color Primario forzado --}}
                     <a href="{{ route('business.dashboard.index') }}" class="text-primary">
-                        <x-icon name="home" />
+                        <x-icon name="nav.home" />
                     </a>
                 </li>
-                {{-- El breadcrumb debe indicar la página actual (Reportes) --}}
                 <li class="breadcrumb-item active" aria-current="page">Inicio</li>
             </ol>
             <h2 class="h4">Reportes y Análisis</h2>

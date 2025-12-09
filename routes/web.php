@@ -86,7 +86,7 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
         Route::prefix('payments')->as('payments.')->group(function () {
             Route::get('/', [App\Http\Controllers\PaymentController::class, 'index'])->name('index');
             Route::get('/plans/{plan}/checkout', [App\Http\Controllers\PaymentController::class, 'create'])->name('checkout');
-            Route::post('/plans/{plan}/checkout-session', [App\Http\Controllers\PaymentController::class, 'createCheckoutSession'])->name('create-checkout-session');
+            Route::post('/plans/{plan}/process-simulation', [App\Http\Controllers\PaymentController::class, 'processSimulation'])->name('process-simulation');
             Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('success');
             Route::get('/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('cancel');
             Route::get('/history', [App\Http\Controllers\PaymentController::class, 'history'])->name('history');
