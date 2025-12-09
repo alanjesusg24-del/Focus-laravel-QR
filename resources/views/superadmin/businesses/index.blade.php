@@ -45,30 +45,33 @@
     </div>
 @endif
 
-<!-- Filters Card -->
-<div class="card card-body border-0 shadow mb-4">
-    <form method="GET" action="{{ route('superadmin.businesses.index') }}" id="filterForm">
-        <div class="row align-items-end">
-            <div class="col-md-5 mb-3 mb-md-0">
-                <label for="search" class="form-label">Buscar</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white border-end-0">
-                        <x-icon name="action.search" class="text-gray-500" />
-                    </span>
-                    <input type="text" class="form-control border-start-0 ps-0" id="search" name="search" value="{{ request('search') }}" placeholder="Nombre, email, RFC..." autocomplete="off">
-                </div>
+<!-- Filters -->
+<div class="mb-4">
+    <div class="row align-items-end">
+        <div class="col-md-5 mb-3 mb-md-0">
+            <label for="search" class="form-label">Buscar</label>
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <x-icon name="action.search" class="text-gray-500" />
+                </span>
+                <input type="text" class="form-control border-start-0 ps-0" id="search" placeholder="Nombre, email, RFC..." autocomplete="off">
             </div>
-            <div class="col-md-3 mb-3 mb-md-0">
-                <label for="status" class="form-label">Estado</label>
-                <select class="form-select auto-submit" id="status" name="status">
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <label for="status" class="form-label">Estado</label>
+            <form method="GET" action="{{ route('superadmin.businesses.index') }}" class="d-inline-block w-100">
+                <select class="form-select" id="status" name="status" onchange="this.form.submit()">
                     <option value="">Todos</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Activos</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactivos</option>
                 </select>
-            </div>
-            <div class="col-md-4 mb-3 mb-md-0">
-                <label for="plan_id" class="form-label">Plan</label>
-                <select class="form-select auto-submit" id="plan_id" name="plan_id">
+            </form>
+        </div>
+        <div class="col-md-4 mb-3 mb-md-0">
+            <label for="plan_id" class="form-label">Plan</label>
+            <form method="GET" action="{{ route('superadmin.businesses.index') }}" class="d-inline-block w-100">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <select class="form-select" id="plan_id" name="plan_id" onchange="this.form.submit()">
                     <option value="">Todos los planes</option>
                     @foreach($plans as $plan)
                         <option value="{{ $plan->plan_id }}" {{ request('plan_id') == $plan->plan_id ? 'selected' : '' }}>
@@ -76,21 +79,21 @@
                         </option>
                     @endforeach
                 </select>
+            </form>
+        </div>
+    </div>
+    @if(request()->hasAny(['status', 'plan_id']))
+        <div class="row mt-3">
+            <div class="col-12">
+                <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-sm btn-primary">
+                    <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+                    </svg>
+                    Limpiar filtros
+                </a>
             </div>
         </div>
-        @if(request()->hasAny(['search', 'status', 'plan_id']))
-            <div class="row mt-3">
-                <div class="col-12">
-                    <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-sm btn-primary">
-                        <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                        </svg>
-                        Limpiar filtros
-                    </a>
-                </div>
-            </div>
-        @endif
-    </form>
+    @endif
 </div>
 
 <!-- Businesses Table -->
@@ -210,27 +213,19 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const filterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('search');
     const tbody = document.querySelector('tbody');
 
-    // Auto-submit para selectores (Estado y Plan)
-    document.querySelectorAll('.auto-submit').forEach(function(select) {
-        select.addEventListener('change', function() {
-            filterForm.submit();
-        });
-    });
-
-    // Búsqueda en tiempo real del lado del cliente
+    // Búsqueda en tiempo real del lado del cliente (sin recargar página)
     if (searchInput && tbody) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase().trim();
-            const rows = document.querySelectorAll('tbody tr');
+            const rows = tbody.querySelectorAll('tr');
             let visibleCount = 0;
             let noResultsRow = document.getElementById('no-results-row');
 
             rows.forEach(row => {
-                // Ignorar filas vacías o mensajes
+                // Ignorar filas de mensajes (colspan)
                 if (row.querySelector('td[colspan]')) {
                     if (row.id !== 'no-results-row') {
                         row.style.display = 'none';
@@ -238,15 +233,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Buscar en nombre, email y RFC
+                // Buscar en nombre, email, teléfono y RFC
                 const businessName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                 const email = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
                 const phone = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
 
-                const matches = businessName.includes(searchTerm) ||
-                               email.includes(searchTerm) ||
-                               phone.includes(searchTerm);
-
+                const matches = businessName.includes(searchTerm) || email.includes(searchTerm) || phone.includes(searchTerm);
                 row.style.display = matches ? '' : 'none';
 
                 if (matches) visibleCount++;
@@ -270,14 +262,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             } else if (noResultsRow) {
                 noResultsRow.style.display = 'none';
-            }
-        });
-
-        // Submit al presionar Enter (búsqueda del servidor)
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                filterForm.submit();
             }
         });
     }

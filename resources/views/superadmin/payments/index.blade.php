@@ -31,17 +31,18 @@
     </div>
 @endif
 
-<!-- Filters Card -->
-<div class="card card-body border-0 shadow mb-4">
-    <form method="GET" action="{{ route('superadmin.payments.index') }}" id="filterForm">
-        <div class="row align-items-end">
-            <div class="col-md-6 mb-3 mb-md-0">
-                <label for="search" class="form-label">Buscar</label>
-                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Buscar por nombre del negocio...">
-            </div>
-            <div class="col-md-3 mb-3 mb-md-0">
-                <label for="plan_id" class="form-label">Plan</label>
-                <select class="form-select auto-submit" id="plan_id" name="plan_id">
+<!-- Filters -->
+<div class="mb-4">
+    <div class="row align-items-end">
+        <div class="col-md-6 mb-3 mb-md-0">
+            <label for="search" class="form-label">Buscar</label>
+            <input type="text" class="form-control" id="search" placeholder="Buscar por nombre del negocio...">
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <label for="plan_id" class="form-label">Plan</label>
+            <form method="GET" action="{{ route('superadmin.payments.index') }}" class="d-inline-block w-100">
+                <input type="hidden" name="status" value="{{ request('status') }}">
+                <select class="form-select" id="plan_id" name="plan_id" onchange="this.form.submit()">
                     <option value="">Todos los planes</option>
                     @foreach($plans as $plan)
                         <option value="{{ $plan->plan_id }}" {{ request('plan_id') == $plan->plan_id ? 'selected' : '' }}>
@@ -49,28 +50,31 @@
                         </option>
                     @endforeach
                 </select>
-            </div>
-            <div class="col-md-3 mb-3 mb-md-0">
-                <label for="status" class="form-label">Estado</label>
-                <select class="form-select auto-submit" id="status" name="status">
+            </form>
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <label for="status" class="form-label">Estado</label>
+            <form method="GET" action="{{ route('superadmin.payments.index') }}" class="d-inline-block w-100">
+                <input type="hidden" name="plan_id" value="{{ request('plan_id') }}">
+                <select class="form-select" id="status" name="status" onchange="this.form.submit()">
                     <option value="">Todos</option>
                     <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completado</option>
                     <option value="pending" {{ request('status') === 'pending' ? 'selected' : '' }}>Pendiente</option>
                     <option value="failed" {{ request('status') === 'failed' ? 'selected' : '' }}>Fallido</option>
                 </select>
+            </form>
+        </div>
+    </div>
+    @if(request()->hasAny(['plan_id', 'status']))
+        <div class="row mt-3">
+            <div class="col-12">
+                <a href="{{ route('superadmin.payments.index') }}" class="btn btn-sm btn-primary">
+                    <x-icon name="close" class="me-1" />
+                    Limpiar filtros
+                </a>
             </div>
         </div>
-        @if(request()->hasAny(['search', 'plan_id', 'status']))
-            <div class="row mt-3">
-                <div class="col-12">
-                    <a href="{{ route('superadmin.payments.index') }}" class="btn btn-sm btn-primary">
-                        <x-icon name="close" class="me-1" />
-                        Limpiar filtros
-                    </a>
-                </div>
-            </div>
-        @endif
-    </form>
+    @endif
 </div>
 
 <!-- Payments Table -->
@@ -164,24 +168,57 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const filterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('search');
-    let searchTimeout;
+    const tbody = document.querySelector('tbody');
 
-    // Auto-submit para selectores
-    document.querySelectorAll('.auto-submit').forEach(function(element) {
-        element.addEventListener('change', function() {
-            filterForm.submit();
+    // Búsqueda en tiempo real del lado del cliente (sin recargar página)
+    if (searchInput && tbody) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const rows = tbody.querySelectorAll('tr');
+            let visibleCount = 0;
+            let noResultsRow = document.getElementById('no-results-row');
+
+            rows.forEach(row => {
+                // Ignorar filas de mensajes (colspan)
+                if (row.querySelector('td[colspan]')) {
+                    if (row.id !== 'no-results-row') {
+                        row.style.display = 'none';
+                    }
+                    return;
+                }
+
+                // Buscar en nombre del negocio y plan
+                const businessName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                const planName = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+
+                const matches = businessName.includes(searchTerm) || planName.includes(searchTerm);
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) visibleCount++;
+            });
+
+            // Mostrar mensaje de "sin resultados"
+            if (searchTerm && visibleCount === 0) {
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="7" class="text-center py-5">
+                            <p class="text-gray-600 mb-0">No se encontraron pagos que coincidan con "<strong>${searchTerm}</strong>"</p>
+                            <small class="text-muted">Intenta buscar por otro negocio</small>
+                        </td>
+                    `;
+                    tbody.appendChild(noResultsRow);
+                } else {
+                    noResultsRow.querySelector('strong').textContent = searchTerm;
+                    noResultsRow.style.display = '';
+                }
+            } else if (noResultsRow) {
+                noResultsRow.style.display = 'none';
+            }
         });
-    });
-
-    // Submit solo al presionar Enter
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            filterForm.submit();
-        }
-    });
+    }
 });
 </script>
 @endpush

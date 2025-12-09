@@ -40,34 +40,34 @@
     </div>
 @endif
 
-<!-- Filters Card -->
-<div class="card card-body border-0 shadow mb-4">
-    <form method="GET" action="{{ route('superadmin.plans.index') }}" id="filterForm">
-        <div class="row align-items-end">
-            <div class="col-md-9 mb-3 mb-md-0">
-                <label for="search" class="form-label">Buscar</label>
-                <input type="text" class="form-control" id="search" name="search" value="{{ request('search') }}" placeholder="Buscar por nombre del plan...">
-            </div>
-            <div class="col-md-3 mb-3 mb-md-0">
-                <label for="status" class="form-label">Estado</label>
-                <select class="form-select auto-submit" id="status" name="status">
+<!-- Filters -->
+<div class="mb-4">
+    <div class="row align-items-end">
+        <div class="col-md-9 mb-3 mb-md-0">
+            <label for="search" class="form-label">Buscar</label>
+            <input type="text" class="form-control" id="search" placeholder="Buscar por nombre del plan...">
+        </div>
+        <div class="col-md-3 mb-3 mb-md-0">
+            <label for="status" class="form-label">Estado</label>
+            <form method="GET" action="{{ route('superadmin.plans.index') }}" class="d-inline-block w-100">
+                <select class="form-select" id="status" name="status" onchange="this.form.submit()">
                     <option value="">Todos</option>
                     <option value="active" {{ request('status') === 'active' ? 'selected' : '' }}>Activo</option>
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Inactivo</option>
                 </select>
+            </form>
+        </div>
+    </div>
+    @if(request()->hasAny(['status']))
+        <div class="row mt-3">
+            <div class="col-12">
+                <a href="{{ route('superadmin.plans.index') }}" class="btn btn-sm btn-primary">
+                    <x-icon name="close" class="me-1" />
+                    Limpiar filtros
+                </a>
             </div>
         </div>
-        @if(request()->hasAny(['search', 'status']))
-            <div class="row mt-3">
-                <div class="col-12">
-                    <a href="{{ route('superadmin.plans.index') }}" class="btn btn-sm btn-primary">
-                        <x-icon name="close" class="me-1" />
-                        Limpiar filtros
-                    </a>
-                </div>
-            </div>
-        @endif
-    </form>
+    @endif
 </div>
 
 <div class="card border-0 shadow">
@@ -175,23 +175,57 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const filterForm = document.getElementById('filterForm');
     const searchInput = document.getElementById('search');
+    const tbody = document.querySelector('tbody');
 
-    // Auto-submit para selector de Estado
-    document.querySelectorAll('.auto-submit').forEach(function(select) {
-        select.addEventListener('change', function() {
-            filterForm.submit();
+    // Búsqueda en tiempo real del lado del cliente (sin recargar página)
+    if (searchInput && tbody) {
+        searchInput.addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase().trim();
+            const rows = tbody.querySelectorAll('tr');
+            let visibleCount = 0;
+            let noResultsRow = document.getElementById('no-results-row');
+
+            rows.forEach(row => {
+                // Ignorar filas de mensajes (colspan)
+                if (row.querySelector('td[colspan]')) {
+                    if (row.id !== 'no-results-row') {
+                        row.style.display = 'none';
+                    }
+                    return;
+                }
+
+                // Buscar en nombre del plan y descripción
+                const planName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                const description = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
+
+                const matches = planName.includes(searchTerm) || description.includes(searchTerm);
+                row.style.display = matches ? '' : 'none';
+
+                if (matches) visibleCount++;
+            });
+
+            // Mostrar mensaje de "sin resultados"
+            if (searchTerm && visibleCount === 0) {
+                if (!noResultsRow) {
+                    noResultsRow = document.createElement('tr');
+                    noResultsRow.id = 'no-results-row';
+                    noResultsRow.innerHTML = `
+                        <td colspan="8" class="text-center py-5">
+                            <p class="text-gray-600 mb-0">No se encontraron planes que coincidan con "<strong>${searchTerm}</strong>"</p>
+                            <small class="text-muted">Intenta buscar por otro nombre</small>
+                        </td>
+                    `;
+                    tbody.appendChild(noResultsRow);
+                } else {
+                    noResultsRow.querySelector('strong').textContent = searchTerm;
+                    noResultsRow.style.display = '';
+                }
+            } else if (noResultsRow) {
+                noResultsRow.style.display = 'none';
+            }
         });
-    });
-
-    // Submit solo al presionar Enter en búsqueda
-    searchInput.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            filterForm.submit();
-        }
-    });
+    }
 });
 </script>
 @endpush

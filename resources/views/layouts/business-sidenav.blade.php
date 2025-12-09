@@ -31,17 +31,15 @@
         {{-- Menú Principal --}}
         <ul class="nav flex-column nav-compact pt-3 pt-md-0">
             
-            {{-- 1. Logo / Marca del Negocio --}}
+            {{-- 1. Logo / Marca del Sistema --}}
             <li class="nav-item mb-2">
                 <a href="{{ route('business.dashboard.index') }}" class="d-flex align-items-center px-2 py-2 text-decoration-none text-white">
-                    <img src="{{ asset('assets/img/focus-icon.svg') }}" 
-                         alt="Focus QR" 
-                         class="me-2" 
-                         width="28" 
+                    <img src="{{ asset('assets/img/focus-icon.svg') }}"
+                         alt="Focus QR"
+                         class="me-2"
+                         width="28"
                          height="28">
-                    <span class="sidebar-text fw-bold">
-                        {{ auth()->guard('business')->user()->business_name ?? 'Mi Negocio' }}
-                    </span>
+                    <span class="sidebar-text fw-bold">Focus QR System</span>
                 </a>
             </li>
 
