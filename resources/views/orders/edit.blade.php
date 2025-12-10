@@ -5,8 +5,9 @@
 @section('page')
 <div class="py-4">
     <div class="row">
-        <div class="col-12 col-xl-8 mx-auto">
-            <!-- Encabezado de Página -->
+        {{-- CAMBIO: Usamos col-12 para estandarizar con la vista 'Crear' --}}
+        <div class="col-12">
+            
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
                 <div class="d-block">
                     <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
@@ -19,20 +20,11 @@
                             <li class="breadcrumb-item">
                                 <a href="{{ route('business.orders.index') }}" class="text-primary">Órdenes</a>
                             </li>
-                            <li class="breadcrumb-item">
-                                <a href="{{ route('business.orders.show', $order) }}" class="text-primary">{{ $order->folio_number }}</a>
-                            </li>
                             <li class="breadcrumb-item active" aria-current="page">Editar</li>
                         </ol>
                     </nav>
                     <h2 class="h4 mt-1">Editar Orden</h2>
                     <p class="mb-0 text-muted">{{ $order->folio_number }}</p>
-                </div>
-                <div class="btn-toolbar">
-                    <a href="{{ route('business.orders.show', $order) }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                        <x-icon name="back" class="me-2"/>
-                        Volver a la orden
-                    </a>
                 </div>
             </div>
 
@@ -43,13 +35,13 @@
             </div>
             @endif
 
-            <!-- Tarjeta de información de la orden -->
             <div class="card border-0 shadow mb-4">
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col">
                             <h3 class="h5 mb-2">{{ $order->folio_number }}</h3>
-                            <p class="text-gray-600 mb-0">
+                            <p class="text-gray-600 mb-0 d-flex align-items-center">
+                                {{-- Si tienes un x-icon para reloj/calendario úsalo aquí, si no, dejé el SVG original para no romper el diseño --}}
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
                                 Creada el {{ $order->created_at->format('d/m/Y \a \l\a\s H:i') }}
                             </p>
@@ -75,20 +67,15 @@
                 </div>
             </div>
 
-            <!-- Formulario de edición -->
             <div class="card border-0 shadow">
-                <div class="card-header">
-                    <h5 class="mb-0">Editar Orden</h5>
-                </div>
                 <div class="card-body">
                     <form action="{{ route('business.orders.update', $order) }}" method="POST">
                         @csrf
                         @method('PUT')
 
-                        <!-- Folio del Negocio -->
                         <div class="mb-4">
                             <label for="business_folio" class="form-label">
-                                Folio del Negocio (opcional)
+                                Folio del Negocio <span class="text-danger">*</span>
                             </label>
                             <input
                                 type="text"
@@ -99,11 +86,10 @@
                                 autocomplete="off">
 
                             @error('business_folio')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="text-danger mt-2">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Descripción -->
                         <div class="mb-4">
                             <label for="description" class="form-label">
                                 Descripción de la Orden (opcional)
@@ -112,25 +98,24 @@
                                 name="description"
                                 id="description"
                                 rows="6"
-                                class="form-control @error('description') is-invalid @enderror">{{ old('description', $order->description) }}</textarea>
+                                class="form-control">{{ old('description', $order->description) }}</textarea>
 
                             @error('description')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="text-danger small mt-1">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <!-- Botones de acción -->
-                        <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                            <a href="{{ route('business.orders.index') }}" class="btn btn-secondary">
-                                Cancelar
-                            </a>
+                        <div class="d-flex justify-content-start gap-3 pt-3 border-top">
 
                             <button type="submit" class="btn btn-primary">
-                                <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
-                                </svg>
+                                <x-icon name="action.save" class="w-4 h-4 me-2" />
                                 Guardar
                             </button>
+
+                            <a href="{{ route('business.orders.index') }}" class="btn btn-gray-500">
+                                Cancelar
+                            </a>
+                            
                         </div>
                     </form>
                 </div>

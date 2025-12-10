@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('business_name', 255)->comment('Business legal name');
             $table->string('rfc', 13)->unique();
             $table->string('email', 255)->unique();
-            $table->string('password_hash', 255);
+            $table->string('password', 255);
             $table->string('phone', 10);
             $table->text('address');
             $table->decimal('latitude', 10, 8)->nullable();

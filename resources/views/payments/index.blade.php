@@ -18,23 +18,6 @@
 
 @section('page')
     <div class="py-4">
-        {{-- Session Notifications --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <x-icon name="state.success" class="me-2" />
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <x-icon name="state.error" class="me-2" />
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-            </div>
-        @endif
-
         {{-- Page Header --}}
         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
             <div class="d-block mb-4 mb-md-0">
@@ -163,13 +146,13 @@
                         <div class="mt-auto pt-3 border-top">
                             <form action="{{ route('business.payments.checkout', $plan) }}" method="GET">
                                 @if($isCurrent)
-                                    <button type="submit" class="btn btn-success w-100 fw-bold d-inline-flex align-items-center justify-content-center">
-                                        <i class="fas fa-sync-alt me-2"></i>
+                                    <button type="submit" class="btn btn-secondary text-white w-100 fw-bold d-inline-flex align-items-center justify-content-center">
+                                        <x-icon name="money.card" class="me-2 " />
                                         Renovar Plan
                                     </button>
                                 @elseif($hasPaid)
                                     <button type="submit" class="btn btn-primary w-100 fw-bold d-inline-flex align-items-center justify-content-center">
-                                        <i class="fas fa-exchange-alt me-2"></i>
+                                        <x-icon name="money.card" class="me-2" />
                                         Cambiar a este Plan
                                     </button>
                                 @else

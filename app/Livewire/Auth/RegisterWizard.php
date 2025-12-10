@@ -31,7 +31,7 @@ class RegisterWizard extends Component
     public $password_confirmation;
 
     // Paso 3: Plan
-    public $plan_id = 4; // Plan por defecto (primer plan activo)
+    public $plan_id = 1; // Plan por defecto (primer plan activo)
     public $terms = false;
 
     protected function rules()
@@ -55,15 +55,18 @@ class RegisterWizard extends Component
 
     // Mensajes en Español
     protected $messages = [
-        'business_name.required' => 'El nombre del negocio es obligatorio.',
-        'rfc.required' => 'El RFC es obligatorio.',
+        'business_name.required' => 'El campo nombre del negocio es obligatorio.',
+        'business_name.max' => 'El nombre del negocio no puede tener más de 255 caracteres.',
+        'rfc.required' => 'El campo RFC es obligatorio.',
+        'rfc.max' => 'El RFC no puede tener más de 13 caracteres.',
         'rfc.unique' => 'Este RFC ya está registrado. Por favor verifica tus datos.',
-        'phone.required' => 'El teléfono es obligatorio.',
+        'phone.required' => 'El campo teléfono es obligatorio.',
+        'phone.numeric' => 'El teléfono debe contener solo números.',
         'phone.digits' => 'El teléfono debe tener 10 dígitos.',
-        'email.required' => 'El correo electrónico es obligatorio.',
-        'email.email' => 'El formato del correo no es válido.',
+        'email.required' => 'El campo correo electrónico es obligatorio.',
+        'email.email' => 'El correo electrónico debe ser una dirección válida.',
         'email.unique' => 'Este correo electrónico ya está registrado.',
-        'password.required' => 'La contraseña es obligatoria.',
+        'password.required' => 'El campo contraseña es obligatorio.',
         'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
         'password.confirmed' => 'Las contraseñas no coinciden.',
         'terms.accepted' => 'Debes aceptar los términos y condiciones.',

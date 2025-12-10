@@ -12,7 +12,7 @@
                     <li class="breadcrumb-item">
                         {{-- Enlace al Dashboard con color Primario forzado --}}
                         <a href="{{ route('business.dashboard.index') }}" class="text-primary">
-                            <x-icon name="home" />
+                            <x-icon name="nav.home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item active" aria-current="page">Chat de Órdenes</li>

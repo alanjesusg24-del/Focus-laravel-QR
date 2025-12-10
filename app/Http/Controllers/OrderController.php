@@ -67,10 +67,11 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'business_folio' => 'nullable|string|max:100',
+            'business_folio' => 'required|string|max:100',
             'description' => 'nullable|string|max:500',
             'mobile_user_id' => 'nullable|integer',
         ], [
+            'business_folio.required' => 'El campo folio del negocio es obligatorio.',
             'business_folio.max' => 'El folio del negocio no puede tener más de 100 caracteres.',
             'description.max' => 'La descripción no puede tener más de 500 caracteres.',
         ]);
@@ -117,9 +118,10 @@ class OrderController extends Controller
         $this->authorize('update', $order);
 
         $validated = $request->validate([
-            'business_folio' => 'nullable|string|max:100',
+            'business_folio' => 'required|string|max:100',
             'description' => 'nullable|string|max:500',
         ], [
+            'business_folio.required' => 'El campo folio del negocio es obligatorio.',
             'business_folio.max' => 'El folio del negocio no puede tener más de 100 caracteres.',
             'description.max' => 'La descripción no puede tener más de 500 caracteres.',
         ]);

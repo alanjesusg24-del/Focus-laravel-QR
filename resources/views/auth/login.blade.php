@@ -11,7 +11,6 @@
 
 @section('content')
     <main>
-        {{-- Fondo gris claro --}}
         <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
             <div class="container">
                 <div class="row justify-content-center">
@@ -31,7 +30,6 @@
                                 </div>
                             @endif
 
-                            {{-- ELIMINADO: El bloque de $errors->any() general para evitar la alerta superior --}}
 
                             <form method="POST" action="{{ route('business.login') }}" class="mt-4">
                                 @csrf
@@ -42,17 +40,16 @@
                                         <span class="input-group-text" id="basic-addon1">
                                             <x-icon name="msg.email" class="text-gray-600" />
                                         </span>
-                                        <input type="email" 
-                                               class="form-control @error('email') is-invalid @enderror" 
-                                               placeholder="ejemplo@institucion.com" 
-                                               id="email" 
-                                               name="email" 
-                                               value="{{ old('email') }}" 
-                                               required 
+                                        <input type="email"
+                                               class="form-control @error('email') is-invalid @enderror"
+                                               placeholder="ejemplo@institucion.com"
+                                               id="email"
+                                               name="email"
+                                               value="{{ old('email') }}"
                                                autofocus>
                                     </div>
                                     @error('email')
-                                        <div class="text-danger mt-2 small fw-bold">
+                                        <div class="text-danger mt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
@@ -64,23 +61,20 @@
                                         <span class="input-group-text" id="basic-addon2">
                                             <x-icon name="access.lock" class="text-gray-600" />
                                         </span>
-                                        <input type="password" 
-                                               placeholder="••••••••" 
-                                               class="form-control @error('password') is-invalid @enderror" 
-                                               id="password" 
-                                               name="password" 
-                                               required>
+                                        <input type="password"
+                                               placeholder="••••••••"
+                                               class="form-control @error('password') is-invalid @enderror"
+                                               id="password"
+                                               name="password">
                                     </div>
-                                    {{-- MENSAJE DE ERROR ESPECÍFICO DE PASSWORD (Opcional) --}}
                                     @error('password')
-                                        <div class="text-danger mt-2 small fw-bold">
+                                        <div class="text-danger mt-2">
                                             {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
 
                                 <div class="d-flex justify-content-between align-items-center mb-4">
-                                    {{-- Espacio para "Recordarme" o "Olvidé contraseña" si se requiere a futuro --}}
                                 </div>
 
                                 <div class="d-grid">

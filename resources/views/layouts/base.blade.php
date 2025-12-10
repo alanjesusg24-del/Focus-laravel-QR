@@ -108,39 +108,44 @@ CETAM - Base Layout
 
     <!-- Session Messages Handler -->
     <script>
-        @if(session('success'))
-            Swal.fire({
-                icon: 'success',
-                title: '¡Éxito!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'Aceptar'
-            });
-        @elseif(session('error'))
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#d33',
-                confirmButtonText: 'Aceptar'
-            });
-        @elseif(session('warning'))
-            Swal.fire({
-                icon: 'warning',
-                title: 'Advertencia',
-                text: '{{ session('warning') }}',
-                confirmButtonColor: '#f0ad4e',
-                confirmButtonText: 'Aceptar'
-            });
-        @elseif(session('info'))
-            Swal.fire({
-                icon: 'info',
-                title: 'Información',
-                text: '{{ session('info') }}',
-                confirmButtonColor: '#5bc0de',
-                confirmButtonText: 'Aceptar'
-            });
-        @endif
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener el color primario del sistema
+            const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#262B40';
+
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: '¡Éxito!',
+                    text: {!! json_encode(session('success')) !!},
+                    confirmButtonColor: primaryColor,
+                    confirmButtonText: 'Aceptar'
+                });
+            @elseif(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: {!! json_encode(session('error')) !!},
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Aceptar'
+                });
+            @elseif(session('warning'))
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Advertencia',
+                    text: {!! json_encode(session('warning')) !!},
+                    confirmButtonColor: '#f0ad4e',
+                    confirmButtonText: 'Aceptar'
+                });
+            @elseif(session('info'))
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Información',
+                    text: {!! json_encode(session('info')) !!},
+                    confirmButtonColor: primaryColor,
+                    confirmButtonText: 'Aceptar'
+                });
+            @endif
+        });
     </script>
 
     <!-- Moment JS -->

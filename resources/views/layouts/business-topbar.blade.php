@@ -65,15 +65,15 @@
           </a>
           <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.profile.index') }}">
-              <x-icon name="user" class="dropdown-icon text-gray-400 me-2" />
+              <x-icon name="user.profile" class="dropdown-icon text-gray-400 me-2" />
               Mi Perfil
             </a>
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.profile.change-password') }}">
-              <x-icon name="lock" class="dropdown-icon text-gray-400 me-2" />
+              <x-icon name="access. lock" class="dropdown-icon text-gray-400 me-2" />
               Cambiar Contraseña
             </a>
             <a class="dropdown-item d-flex align-items-center" href="{{ route('business.support.index') }}">
-              <x-icon name="info" class="dropdown-icon text-gray-400 me-2" />
+              <x-icon name="state.info" class="dropdown-icon text-gray-400 me-2" />
               Soporte
             </a>
             <div role="separator" class="dropdown-divider my-1"></div>
@@ -81,7 +81,7 @@
               @csrf
               <button type="submit" class="dropdown-item d-flex align-items-center">
                 {{-- Se cambia 'arrowRight' por 'logout' manteniendo el color rojo (text-danger) --}}
-                <x-icon name="logout" class="dropdown-icon text-danger me-2" />
+                <x-icon name="auth.logout" class="dropdown-icon text-danger me-2" />
                 Cerrar Sesión
               </button>
             </form>

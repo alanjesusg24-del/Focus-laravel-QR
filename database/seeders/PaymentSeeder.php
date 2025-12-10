@@ -25,8 +25,8 @@ class PaymentSeeder extends Seeder
             ],
             [
                 'business_id' => 2,
-                'plan_id' => 2,
-                'amount' => 599.00,
+                'plan_id' => 1,
+                'amount' => 299.00,
                 'stripe_payment_id' => 'pi_3DEF456ghi789',
                 'stripe_subscription_id' => 'sub_1DEF456ghi789',
                 'status' => 'completed',
@@ -35,8 +35,8 @@ class PaymentSeeder extends Seeder
             ],
             [
                 'business_id' => 3,
-                'plan_id' => 3,
-                'amount' => 999.00,
+                'plan_id' => 1,
+                'amount' => 299.00,
                 'stripe_payment_id' => 'pi_3GHI789jkl012',
                 'stripe_subscription_id' => 'sub_1GHI789jkl012',
                 'status' => 'completed',

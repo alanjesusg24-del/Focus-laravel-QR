@@ -10,21 +10,7 @@
 
 @section('page')
 <div class="py-4">
-    
-    {{-- ALERTAS DE SISTEMA --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <x-icon name="state.success" class="me-2"/> {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
-    @endif
 
-    @if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <x-icon name="state.error" class="me-2"/> {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
-    @endif
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         
         <div class="d-block mb-4 mb-md-0">
@@ -42,7 +28,6 @@
             <p class="mb-0 text-primary">Administra las órdenes de tu negocio</p>
         </div>
 
-        {{-- DERECHA: Botón Nueva Orden (Movido aquí) --}}
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.orders.create') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
                 <x-icon name="action.create" class="me-2"/> Nueva Orden
@@ -50,9 +35,6 @@
         </div>
     </div>
 
-    {{-- 
-        BARRA DE HERRAMIENTAS (Solo Buscador y Filtros)
-    --}}
     <div class="table-settings mb-4">
         <div class="row align-items-center justify-content-between">
             
@@ -71,7 +53,6 @@
                            autocomplete="off">
                 </div>
 
-                {{-- 2. Filtro --}}
                 <div class="d-flex align-items-center">
                     <span class="small fw-bold text-gray-600 me-2">Filtrar por estado:</span>
                     <form method="GET" action="{{ route('business.orders.index') }}">
@@ -85,18 +66,15 @@
                     </form>
                 </div>
             </div>
-            
-            {{-- (La columna derecha del botón se eliminó de aquí) --}}
 
         </div>
     </div>
 
-    {{-- TABLA --}}
     <div class="card border-0 shadow mb-4" style="overflow: visible;">
-        <div class="card-body p-0" style="overflow: visible;">
+        <div class="card-body" style="overflow: visible; padding: 20px 24px;">
             <div class="table-responsive" style="overflow: visible;">
-                <table class="table align-items-center table-flush table-hover">
-                    <thead class="thead-light">
+                <table class="table align-items-center table-flush table-hover ">
+                    <thead class="thead-light rounded" >
                         <tr>
                             <th class="border-bottom" scope="col">ID</th>
                             <th class="border-bottom" scope="col">Folio</th>
@@ -179,7 +157,7 @@
                                             {{-- Editar solo si está pendiente y NO ligada --}}
                                             @if($order->status === 'pending' && !$order->mobile_user_id)
                                                 <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.edit', $order) }}">
-                                                    <x-icon name="edit" class="text-gray-400 me-2"/> Editar Orden
+                                                    <x-icon name="action.edit" class="text-gray-400 me-2"/> Editar Orden
                                                 </a>
                                             @endif
 
@@ -227,9 +205,6 @@
                                     <div class="modal-body text-center py-4">
                                         <img src="{{ $order->qr_code_url }}" alt="QR" class="img-fluid rounded border shadow-sm" style="max-width: 350px;">
                                     </div>
-                                    <div class="modal-footer border-0">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -252,7 +227,6 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                                             <button type="submit" class="btn btn-danger">Cancelar Orden</button>
                                         </div>
                                     </form>
@@ -276,7 +250,6 @@
                                         @csrf @method('PUT')
 
                                         <div class="modal-body">
-                                            {{-- Info de la orden --}}
                                             <div class="alert alert-light border d-flex align-items-center mb-3">
                                                 <x-icon name="nav.home" class="me-2 text-muted"/>
                                                 <div>
@@ -296,7 +269,6 @@
                                         </div>
 
                                         <div class="modal-footer border-0">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                                             <button type="submit" class="btn btn-primary">
                                                 <x-icon name="state.success" class="me-2"/>
                                                 Confirmar Entrega
@@ -308,23 +280,41 @@
                         </div>
                         @endif
 
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-5">
-                                <p class="text-gray-600 mb-3">No hay órdenes disponibles</p>
-                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#createOrderModal">Crear Primera Orden</button>
-                            </td>
-                        </tr>
+                       @empty
+                            <tr>
+                                <td colspan="7" class="text-center py-5">
+                                    <div class="d-flex flex-column align-items-center justify-content-center" style="font-size: 3rem;">
+                                        <x-icon name="state.info" class="text-gray-300 mb-3"/>
+                                        
+                                        <h6 class="text-gray-500 fw-bold mb-1">No se encontraron órdenes</h6>
+                                    </div>
+                                </td>
+                            </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
-        @if($orders->hasPages())
         <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
-            {{ $orders->links('vendor.pagination.volt-custom') }}
+            @if($orders->hasPages())
+                {{ $orders->links('vendor.pagination.volt-custom') }}
+            @else
+                {{-- Espacio vacío a la izquierda cuando no hay paginación --}}
+                <div></div>
+                {{-- Mensaje de conteo cuando no hay paginación --}}
+                @if($orders->total() > 0)
+                    <div class="fw-normal small">
+                        Mostrando
+                        <span class="fw-bold">{{ $orders->firstItem() }}</span>
+                        a
+                        <span class="fw-bold">{{ $orders->lastItem() }}</span>
+                        de
+                        <span class="fw-bold">{{ $orders->total() }}</span>
+                        {{ $orders->total() == 1 ? 'entrada' : 'entradas' }}
+                    </div>
+                @endif
+            @endif
         </div>
-        @endif
     </div>
 </div>
 

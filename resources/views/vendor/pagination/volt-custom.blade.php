@@ -63,8 +63,10 @@
             @endif
         </ul>
     </nav>
+@endif
 
-    {{-- Results Count Info --}}
+{{-- Results Count Info - Siempre se muestra --}}
+@if ($paginator->total() > 0)
     <div class="fw-normal small mt-3 mt-lg-0">
         Mostrando
         <span class="fw-bold">{{ $paginator->firstItem() }}</span>
@@ -72,6 +74,6 @@
         <span class="fw-bold">{{ $paginator->lastItem() }}</span>
         de
         <span class="fw-bold">{{ $paginator->total() }}</span>
-        resultados
+        {{ $paginator->total() == 1 ? 'entrada' : 'entradas' }}
     </div>
 @endif
