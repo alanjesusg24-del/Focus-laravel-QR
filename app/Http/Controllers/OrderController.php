@@ -67,8 +67,12 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'description' => 'required|string|max:500',
+            'business_folio' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:500',
             'mobile_user_id' => 'nullable|integer',
+        ], [
+            'business_folio.max' => 'El folio del negocio no puede tener más de 100 caracteres.',
+            'description.max' => 'La descripción no puede tener más de 500 caracteres.',
         ]);
 
         try {
@@ -113,13 +117,17 @@ class OrderController extends Controller
         $this->authorize('update', $order);
 
         $validated = $request->validate([
-            'description' => 'required|string|max:500',
+            'business_folio' => 'nullable|string|max:100',
+            'description' => 'nullable|string|max:500',
+        ], [
+            'business_folio.max' => 'El folio del negocio no puede tener más de 100 caracteres.',
+            'description.max' => 'La descripción no puede tener más de 500 caracteres.',
         ]);
 
         $order->update($validated);
 
         return redirect()
-            ->route('business.orders.show', $order->order_id)
+            ->route('business.orders.index')
             ->with('success', 'Orden actualizada exitosamente');
     }
 
@@ -146,12 +154,8 @@ class OrderController extends Controller
     {
         $this->authorize('update', $order);
 
-        $validated = $request->validate([
-            'pickup_token' => 'required|string',
-        ]);
-
         try {
-            $this->orderService->markAsDelivered($order, $validated['pickup_token']);
+            $this->orderService->markAsDelivered($order);
 
             return back()->with('success', 'Orden entregada exitosamente');
         } catch (\Exception $e) {
@@ -224,5 +228,133 @@ class OrderController extends Controller
             'mobile_user_id' => $order->mobile_user_id,
             'associated_at' => $order->associated_at?->toIso8601String(),
         ]);
+    }
+
+    /**
+     * Associate order via QR scan (public route - no auth required)
+     * Works for both WEB browsers and MOBILE app
+     *
+     * - If request is from mobile app (Accept: application/json) -> Returns JSON
+     * - If request is from web browser -> Shows success/error view
+     */
+    public function associateOrder(Request $request, string $qr_token)
+    {
+        try {
+            // Find order by QR token
+            $order = Order::where('qr_token', $qr_token)
+                ->whereIn('status', ['pending'])
+                ->first();
+
+            $isApiRequest = $request->expectsJson() || $request->header('X-Requested-With') === 'XMLHttpRequest';
+
+            // Error: Invalid or already associated order
+            if (!$order) {
+                if ($isApiRequest) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Código QR inválido o la orden ya fue asociada',
+                        'error_code' => 'INVALID_QR'
+                    ], 404);
+                }
+
+                return view('orders.associate-error', [
+                    'message' => 'Código QR inválido o la orden ya fue asociada'
+                ]);
+            }
+
+            // Check if already associated
+            if ($order->mobile_user_id) {
+                if ($isApiRequest) {
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Esta orden ya fue tomada anteriormente',
+                        'order' => [
+                            'order_id' => $order->order_id,
+                            'folio_number' => $order->folio_number,
+                            'description' => $order->description,
+                            'status' => $order->status,
+                            'associated_at' => $order->associated_at?->toIso8601String(),
+                        ],
+                        'already_associated' => true
+                    ], 200);
+                }
+
+                return view('orders.associate-success', [
+                    'order' => $order,
+                    'message' => 'Esta orden ya fue tomada anteriormente'
+                ]);
+            }
+
+            // Determine if request comes from mobile app or web
+            $deviceId = $request->header('X-Device-ID', 'WEB_SYSTEM');
+            $deviceType = $request->header('X-Device-Type', 'web');
+            $deviceModel = $request->header('X-Device-Model', 'Browser');
+            $osVersion = $request->header('X-OS-Version', 'Web');
+            $appVersion = $request->header('X-App-Version', '1.0.0');
+
+            // Get or create user (phantom for web, real for mobile app)
+            $mobileUser = \App\Models\MobileUser::firstOrCreate(
+                ['device_id' => $deviceId],
+                [
+                    'device_type' => $deviceType,
+                    'device_model' => $deviceModel,
+                    'os_version' => $osVersion,
+                    'app_version' => $appVersion,
+                    'is_active' => true,
+                    'last_seen_at' => now(),
+                ]
+            );
+
+            // Update last_seen_at if user already exists
+            $mobileUser->touch('last_seen_at');
+
+            // Associate order with mobile user
+            $order->mobile_user_id = $mobileUser->id;
+            $order->associated_at = now();
+            $order->save();
+
+            // Return JSON response for mobile app
+            if ($isApiRequest) {
+                return response()->json([
+                    'success' => true,
+                    'message' => '¡Orden tomada exitosamente!',
+                    'order' => [
+                        'order_id' => $order->order_id,
+                        'folio_number' => $order->folio_number,
+                        'description' => $order->description,
+                        'status' => $order->status,
+                        'business_id' => $order->business_id,
+                        'associated_at' => $order->associated_at->toIso8601String(),
+                        'pickup_token' => $order->pickup_token,
+                    ],
+                    'mobile_user_id' => $mobileUser->id
+                ], 200);
+            }
+
+            // Return web view for browser
+            return view('orders.associate-success', [
+                'order' => $order,
+                'message' => '¡Orden tomada exitosamente!'
+            ]);
+
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Error associating order', [
+                'qr_token' => $qr_token,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Ocurrió un error al procesar la orden',
+                    'error_code' => 'SERVER_ERROR'
+                ], 500);
+            }
+
+            return view('orders.associate-error', [
+                'message' => 'Ocurrió un error al procesar la orden. Por favor intenta nuevamente.'
+            ]);
+        }
     }
 }

@@ -98,6 +98,7 @@
                 <table class="table align-items-center table-flush table-hover">
                     <thead class="thead-light">
                         <tr>
+                            <th class="border-bottom" scope="col">ID</th>
                             <th class="border-bottom" scope="col">Folio</th>
                             <th class="border-bottom" scope="col">Descripción</th>
                             <th class="border-bottom" scope="col">Estado</th>
@@ -112,7 +113,16 @@
                     <tbody>
                         @forelse($orders as $order)
                         <tr>
-                            <td class="fw-bolder text-gray-500">{{ $order->folio_number }}</td>
+                            <td class="text-gray-500">
+                                <small>{{ $order->folio_number }}</small>
+                            </td>
+                            <td>
+                                @if($order->business_folio)
+                                    <span class="fw-bold text-primary">{{ $order->business_folio }}</span>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
+                            </td>
                             <td class="text-gray-900">{{ Str::limit($order->description ?? 'Sin descripción', 50) }}</td>
                             
                             <td>
@@ -160,24 +170,43 @@
                                     </button>
                                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
 
-                                        <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
-                                            <x-icon name="action.view" class="text-gray-400 me-2"/> Ver detalles
-                                        </a>
-
-                                        @if($order->status === 'pending' && $order->mobile_user_id)
-                                            <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
-                                                <x-icon name="state.success" class="text-success me-2"/> Marcar Listo
+                                        @if($order->status === 'ready')
+                                            {{-- Solo mostrar Entregar Orden cuando esté lista --}}
+                                            <a class="dropdown-item d-flex align-items-center text-primary" href="#" data-bs-toggle="modal" data-bs-target="#deliverModal{{ $order->order_id }}">
+                                                <x-icon name="action.edit" class="text-primary me-2"/> Entregar Orden
                                             </a>
-                                            <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
-                                                @csrf @method('PUT')
-                                            </form>
-                                        @endif
+                                        @else
+                                            {{-- Editar solo si está pendiente y NO ligada --}}
+                                            @if($order->status === 'pending' && !$order->mobile_user_id)
+                                                <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.edit', $order) }}">
+                                                    <x-icon name="edit" class="text-gray-400 me-2"/> Editar Orden
+                                                </a>
+                                            @endif
 
-                                        @if(in_array($order->status, ['pending', 'ready']))
-                                            <div role="separator" class="dropdown-divider my-1"></div>
-                                            <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
-                                                 Cancelar Orden
-                                            </a>
+                                            {{-- Ver detalles solo para órdenes entregadas o canceladas --}}
+                                            @if(in_array($order->status, ['delivered', 'cancelled']))
+                                                <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
+                                                    <x-icon name="action.view" class="text-gray-400 me-2"/> Ver detalles
+                                                </a>
+                                            @endif
+
+                                            {{-- Marcar como Listo si está pendiente y ligada --}}
+                                            @if($order->status === 'pending' && $order->mobile_user_id)
+                                                <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
+                                                    <x-icon name="state.success" class="text-success me-2"/> Marcar Listo
+                                                </a>
+                                                <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
+                                                    @csrf @method('PUT')
+                                                </form>
+                                            @endif
+
+                                            {{-- Cancelar solo si está pendiente (ligada o no) --}}
+                                            @if($order->status === 'pending')
+                                                <div role="separator" class="dropdown-divider my-1"></div>
+                                                <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
+                                                     Cancelar Orden
+                                                </a>
+                                            @endif
                                         @endif
                                     </div>
                                 </div>
@@ -190,7 +219,9 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header border-0">
-                                        <h5 class="modal-title">Código QR - {{ $order->folio_number }}</h5>
+                                        <h5 class="modal-title">
+                                            Código QR - {{ $order->folio_number }}@if($order->business_folio) - {{ $order->business_folio }}@endif
+                                        </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                     </div>
                                     <div class="modal-body text-center py-4">
@@ -229,6 +260,54 @@
                             </div>
                         </div>
 
+                        {{-- Modal Entregar Orden --}}
+                        @if($order->status === 'ready')
+                        <div class="modal fade" id="deliverModal{{ $order->order_id }}" tabindex="-1" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header border-0 bg-light">
+                                        <h5 class="modal-title">
+                                            <x-icon name="action.send" class="text-primary me-2"/>
+                                            Entregar Orden
+                                        </h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                    </div>
+                                    <form action="{{ route('business.orders.markAsDelivered', $order) }}" method="POST">
+                                        @csrf @method('PUT')
+
+                                        <div class="modal-body">
+                                            {{-- Info de la orden --}}
+                                            <div class="alert alert-light border d-flex align-items-center mb-3">
+                                                <x-icon name="nav.home" class="me-2 text-muted"/>
+                                                <div>
+                                                    @if($order->business_folio)
+                                                        <strong>Folio: {{ $order->business_folio }}</strong><br>
+                                                        <small class="text-muted">Sistema: {{ $order->folio_number }}</small>
+                                                    @else
+                                                        <strong>Orden: {{ $order->folio_number }}</strong>
+                                                    @endif
+                                                    @if($order->description)
+                                                        <br><small class="text-muted">{{ Str::limit($order->description, 50) }}</small>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <p class="text-muted mb-0">¿Confirmas que deseas marcar esta orden como entregada?</p>
+                                        </div>
+
+                                        <div class="modal-footer border-0">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                            <button type="submit" class="btn btn-primary">
+                                                <x-icon name="state.success" class="me-2"/>
+                                                Confirmar Entrega
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        @endif
+
                         @empty
                         <tr>
                             <td colspan="7" class="text-center py-5">
@@ -261,8 +340,28 @@
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="description" class="form-label">Descripción de la Orden <span class="text-danger">*</span></label>
-                        <textarea name="description" id="description" rows="4" required class="form-control @error('description') is-invalid @enderror" placeholder="Ej: 2 cafés americanos...">{{ old('description') }}</textarea>
+                        <label for="business_folio" class="form-label">
+                            Folio del Negocio (opcional)
+                        </label>
+                        <input type="text"
+                               name="business_folio"
+                               id="business_folio"
+                               class="form-control @error('business_folio') is-invalid @enderror"
+                               value="{{ old('business_folio') }}"
+                               autocomplete="off">
+                        @error('business_folio')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">
+                            Descripción de la Orden (opcional)
+                        </label>
+                        <textarea name="description"
+                                  id="description"
+                                  rows="4"
+                                  class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -270,7 +369,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-primary">Crear Orden</button>
+                    <button type="submit" class="btn btn-primary">
+                        <x-icon name="action.create" class="me-2"/>
+                        Crear Orden
+                    </button>
                 </div>
             </form>
         </div>
@@ -300,11 +402,13 @@
                         return;
                     }
 
-                    // Buscar en folio y descripción específicamente
-                    const folio = row.querySelector('td:first-child')?.textContent.toLowerCase() || '';
-                    const description = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                    // Buscar en ID, Folio y Descripción
+                    const idCell = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
+                    const folioCell = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                    const description = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
 
-                    const matches = folio.includes(searchTerm) || description.includes(searchTerm);
+                    // Busca en todas las columnas relevantes
+                    const matches = idCell.includes(searchTerm) || folioCell.includes(searchTerm) || description.includes(searchTerm);
                     row.style.display = matches ? '' : 'none';
 
                     if (matches) visibleCount++;

@@ -85,9 +85,10 @@ class PaymentController extends Controller
         $business = Auth::guard('business')->user();
 
         try {
-            // Actualizar el plan del negocio
+            // Actualizar el plan del negocio y activar la cuenta
             $business->plan_id = $plan->plan_id;
             $business->last_payment_date = now();
+            $business->is_active = true; // Activar cuenta después del pago
             $business->save();
 
             // Crear registro del pago simulado

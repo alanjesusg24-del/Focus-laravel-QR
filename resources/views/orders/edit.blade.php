@@ -78,36 +78,50 @@
             <!-- Formulario de edición -->
             <div class="card border-0 shadow">
                 <div class="card-header">
-                    <h5 class="mb-0">Editar Descripción</h5>
+                    <h5 class="mb-0">Editar Orden</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('business.orders.update', $order) }}" method="POST">
                         @csrf
                         @method('PUT')
 
+                        <!-- Folio del Negocio -->
+                        <div class="mb-4">
+                            <label for="business_folio" class="form-label">
+                                Folio del Negocio (opcional)
+                            </label>
+                            <input
+                                type="text"
+                                name="business_folio"
+                                id="business_folio"
+                                class="form-control @error('business_folio') is-invalid @enderror"
+                                value="{{ old('business_folio', $order->business_folio) }}"
+                                autocomplete="off">
+
+                            @error('business_folio')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Descripción -->
                         <div class="mb-4">
                             <label for="description" class="form-label">
-                                Descripción de la Orden <span class="text-danger">*</span>
+                                Descripción de la Orden (opcional)
                             </label>
                             <textarea
                                 name="description"
                                 id="description"
                                 rows="6"
-                                required
-                                class="form-control @error('description') is-invalid @enderror"
-                                placeholder="Ej: 2 cafés americanos, 1 latte grande, 1 bagel...">{{ old('description', $order->description) }}</textarea>
+                                class="form-control @error('description') is-invalid @enderror">{{ old('description', $order->description) }}</textarea>
 
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-
-                            <small class="form-text text-muted">Máximo 500 caracteres</small>
                         </div>
 
                         <!-- Botones de acción -->
                         <div class="d-flex justify-content-end gap-2 pt-3 border-top">
-                            <a href="{{ route('business.orders.show', $order) }}" class="btn btn-secondary">
+                            <a href="{{ route('business.orders.index') }}" class="btn btn-secondary">
                                 Cancelar
                             </a>
 
@@ -115,7 +129,7 @@
                                 <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
                                 </svg>
-                                Guardar 
+                                Guardar
                             </button>
                         </div>
                     </form>

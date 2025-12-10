@@ -29,9 +29,9 @@ class QrCodeService
                 $order->pickup_token = Str::random(16);
             }
 
-            // Create QR code data URL
-            $mobileAppUrl = config('app.url', env('APP_URL', 'http://localhost'));
-            $qrData = "{$mobileAppUrl}/order/scan/{$order->qr_token}";
+            // Create QR code data URL - Web URL for browser scanning
+            $appUrl = config('app.url', env('APP_URL', 'http://localhost'));
+            $qrData = "{$appUrl}/orders/associate/{$order->qr_token}";
 
             Log::info('Generating QR code', [
                 'order_id' => $order->order_id,

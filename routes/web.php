@@ -150,6 +150,9 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
 Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'webhook'])->name('webhook.stripe');
 Route::post('/webhook/mercadopago', [App\Http\Controllers\MercadoPagoWebhookController::class, 'handleWebhook'])->name('webhook.mercadopago');
 
+// Public order association route (for QR code scanning without mobile app)
+Route::get('/orders/associate/{qr_token}', [App\Http\Controllers\OrderController::class, 'associateOrder'])->name('orders.associate');
+
 // Test QR Scanner
 Route::get('/test-scanner', function() {
     return view('test-scanner');

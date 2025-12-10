@@ -17,24 +17,38 @@
                     <form action="{{ route('business.orders.store') }}" method="POST">
                         @csrf
 
+                        <!-- Folio del Negocio -->
+                        <div class="mb-4">
+                            <label for="business_folio" class="form-label">
+                                Folio del Negocio (opcional)
+                            </label>
+                            <input
+                                type="text"
+                                name="business_folio"
+                                id="business_folio"
+                                class="form-control @error('business_folio') is-invalid @enderror"
+                                value="{{ old('business_folio') }}"
+                                autocomplete="off">
+
+                            @error('business_folio')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
                         <!-- Descripción -->
                         <div class="mb-4">
                             <label for="description" class="form-label">
-                                Descripción de la Orden <span class="text-danger">*</span>
+                                Descripción de la Orden (opcional)
                             </label>
                             <textarea
                                 name="description"
                                 id="description"
                                 rows="4"
-                                required
-                                class="form-control @error('description') is-invalid @enderror"
-                                placeholder="Ej: 2 cafés americanos, 1 latte grande, 1 bagel...">{{ old('description') }}</textarea>
+                                class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
 
                             @error('description')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
-
-                            <small class="form-text text-muted">Máximo 500 caracteres</small>
                         </div>
 
                         <!-- Botones de acción -->

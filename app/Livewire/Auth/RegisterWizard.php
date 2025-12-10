@@ -31,7 +31,7 @@ class RegisterWizard extends Component
     public $password_confirmation;
 
     // Paso 3: Plan
-    public $plan_id = 1;
+    public $plan_id = 4; // Plan por defecto (primer plan activo)
     public $terms = false;
 
     protected function rules()
@@ -93,27 +93,39 @@ class RegisterWizard extends Component
 
         try {
             
-            Business::create([
+            $business = Business::create([
                 'business_name' => $this->business_name,
                 'rfc' => $this->rfc,
                 'email' => $this->email,
-                'password' => Hash::make($this->password), 
+                'password' => Hash::make($this->password),
                 'phone' => $this->phone,
-                'plan_id' => $this->plan_id,
-                'is_active' => true,
+                'address' => '', // Campo requerido por la base de datos
+                'plan_id' => $this->plan_id, // Plan seleccionado pero no pagado
+                'is_active' => false, // Se activa después del pago
                 'registration_date' => now(),
                 'latitude' => 0,
                 'longitude' => 0,
+                'last_payment_date' => null, // Sin pagos aún
             ]);
 
             DB::commit();
 
-            session()->flash('success', '¡Cuenta creada exitosamente! Ahora puedes iniciar sesión.');
+            // Iniciar sesión automáticamente después del registro
+            auth()->guard('business')->login($business);
 
-            return redirect()->route('business.login');
+            session()->flash('success', '¡Cuenta creada exitosamente! Para activar tu cuenta, realiza el pago de tu plan.');
+
+            return redirect()->route('business.payments.index');
 
         } catch (\Illuminate\Database\QueryException $e) {
             DB::rollBack();
+
+            // Log del error completo para depuración
+            \Log::error('Error de registro de negocio:', [
+                'code' => $e->getCode(),
+                'message' => $e->getMessage(),
+                'sql' => $e->getSql() ?? 'N/A'
+            ]);
 
             if ($e->getCode() == 23000) {
                 if (str_contains($e->getMessage(), 'rfc')) {
@@ -124,11 +136,15 @@ class RegisterWizard extends Component
                     session()->flash('error', 'Ya existe un registro con estos datos.');
                 }
             } else {
-                session()->flash('error', 'Error al procesar el registro. Por favor intenta nuevamente.');
+                session()->flash('error', 'Error al procesar el registro. Por favor intenta nuevamente. Código: ' . $e->getCode());
             }
         } catch (\Exception $e) {
             DB::rollBack();
-            session()->flash('error', 'Ocurrió un error inesperado. Por favor contacta al soporte.');
+            \Log::error('Error inesperado en registro:', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            session()->flash('error', 'Ocurrió un error inesperado: ' . $e->getMessage());
         }
     }
 

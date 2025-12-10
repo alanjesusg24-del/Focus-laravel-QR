@@ -37,6 +37,7 @@ class OrderService
             $order = Order::create([
                 'business_id' => $businessId,
                 'folio_number' => $folioNumber,
+                'business_folio' => $data['business_folio'] ?? null,
                 'description' => $data['description'] ?? null,
                 'qr_token' => Str::random(32),
                 'pickup_token' => Str::random(16),
@@ -114,17 +115,12 @@ class OrderService
      * Mark order as delivered
      *
      * @param Order $order
-     * @param string $pickupToken
      * @return Order
      */
-    public function markAsDelivered(Order $order, string $pickupToken): Order
+    public function markAsDelivered(Order $order): Order
     {
         if ($order->status !== 'ready') {
             throw new \Exception('Only ready orders can be delivered');
-        }
-
-        if ($order->pickup_token !== $pickupToken) {
-            throw new \Exception('Invalid pickup token');
         }
 
         return $this->updateOrderStatus($order, 'delivered');

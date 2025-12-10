@@ -50,22 +50,56 @@
                 </nav>
                 <h2 class="h4 mt-2">Planes de Membresía</h2>
                 @php
-                    $currentPlanName = 'Gratuito';
-                    
-                    if ($business->plan) {
-                        $currentPlanName = $business->plan->name;
-                    } elseif ($business->plan_id) {
-                        $foundPlan = $plans->firstWhere('plan_id', $business->plan_id);
-                        if ($foundPlan) {
-                            $currentPlanName = $foundPlan->name;
+                    $hasPaid = $business->last_payment_date !== null;
+                    $currentPlanName = 'Sin plan activo';
+                    $nextPaymentDate = null;
+                    $daysUntilExpiration = null;
+                    $isExpired = false;
+
+                    if ($hasPaid && $business->last_payment_date) {
+                        // Calcular fecha de vencimiento (30 días después del último pago)
+                        $nextPaymentDate = \Carbon\Carbon::parse($business->last_payment_date)->addDays(30);
+                        $daysUntilExpiration = now()->diffInDays($nextPaymentDate, false);
+                        $isExpired = $daysUntilExpiration < 0;
+
+                        if ($business->plan) {
+                            $currentPlanName = $business->plan->name;
+                        } elseif ($business->plan_id) {
+                            $foundPlan = $plans->firstWhere('plan_id', $business->plan_id);
+                            if ($foundPlan) {
+                                $currentPlanName = $foundPlan->name;
+                            }
                         }
                     }
                 @endphp
 
-                <p class="mb-0 text-primary">
-                    Tu plan actual es <strong class="text-primary">"{{ $currentPlanName }}"</strong>. 
-                    Elige el plan que mejor se adapte a tus necesidades.
-                </p>
+                @if($hasPaid)
+                    <p class="mb-0 text-primary">
+                        Tu plan actual es <strong class="text-primary">"{{ $currentPlanName }}"</strong>.
+                    </p>
+                    @if($nextPaymentDate)
+                        @if($isExpired)
+                            <p class="mb-0 text-danger small">
+                                <i class="fas fa-exclamation-triangle me-1"></i>
+                                <strong>Plan vencido el {{ $nextPaymentDate->format('d/m/Y') }}</strong> - Renueva para seguir usando el sistema
+                            </p>
+                        @elseif($daysUntilExpiration <= 7)
+                            <p class="mb-0 text-warning small">
+                                <i class="fas fa-clock me-1"></i>
+                                Tu plan vence el {{ $nextPaymentDate->format('d/m/Y') }} ({{ abs($daysUntilExpiration) }} días restantes)
+                            </p>
+                        @else
+                            <p class="mb-0 text-muted small">
+                                <i class="fas fa-calendar me-1"></i>
+                                Próxima renovación: {{ $nextPaymentDate->format('d/m/Y') }}
+                            </p>
+                        @endif
+                    @endif
+                @else
+                    <p class="mb-0 text-warning">
+                        <strong>No tienes un plan activo.</strong> Selecciona un plan para comenzar a usar el sistema.
+                    </p>
+                @endif
             </div>
         </div>
 
@@ -74,8 +108,9 @@
         <div class="row justify-content-center mb-5">
         @foreach($plans as $plan)
             @php
-                $isCurrent = $business->plan_id === $plan->plan_id;
-                $isTopTier = $plan->price >= 899; 
+                $hasPaid = $business->last_payment_date !== null;
+                $isCurrent = $hasPaid && ($business->plan_id === $plan->plan_id);
+                $isTopTier = $plan->price >= 899;
             @endphp
 
             <div class="col-12 col-lg-4 mb-4 px-lg-3"> 
@@ -128,10 +163,15 @@
                         <div class="mt-auto pt-3 border-top">
                             <form action="{{ route('business.payments.checkout', $plan) }}" method="GET">
                                 @if($isCurrent)
-                                    <button type="button" class="btn btn-secondary w-100 fw-bold" disabled>
-                                        Plan Actual
+                                    <button type="submit" class="btn btn-success w-100 fw-bold d-inline-flex align-items-center justify-content-center">
+                                        <i class="fas fa-sync-alt me-2"></i>
+                                        Renovar Plan
                                     </button>
-                                    
+                                @elseif($hasPaid)
+                                    <button type="submit" class="btn btn-primary w-100 fw-bold d-inline-flex align-items-center justify-content-center">
+                                        <i class="fas fa-exchange-alt me-2"></i>
+                                        Cambiar a este Plan
+                                    </button>
                                 @else
                                     <button type="submit" class="btn btn-primary w-100 fw-bold d-inline-flex align-items-center justify-content-center">
                                         <x-icon name="money.card" class="me-2" />

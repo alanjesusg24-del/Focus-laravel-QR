@@ -35,6 +35,7 @@ class Order extends Model
         'business_id',
         'order_number',
         'folio_number',
+        'business_folio',
         'customer_name',
         'customer_phone',
         'customer_email',
