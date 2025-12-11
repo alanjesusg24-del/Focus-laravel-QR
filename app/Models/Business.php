@@ -60,8 +60,8 @@ class Business extends Authenticatable
         'is_location_public' => 'boolean',
         'data_retention_months' => 'integer',
         'monthly_price' => 'decimal:2',
-        'latitude' => 'decimal:8',
-        'longitude' => 'decimal:8',
+        'latitude' => 'float',
+        'longitude' => 'float',
         'registration_date' => 'datetime',
         'last_payment_date' => 'datetime',
     ];

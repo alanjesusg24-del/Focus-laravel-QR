@@ -54,8 +54,15 @@
 
                     <!-- Duración -->
                     <div class="mb-4">
-                        <label for="duration_days" class="form-label fw-bold">Duración (días) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control @error('duration_days') is-invalid @enderror" id="duration_days" name="duration_days" value="{{ old('duration_days', 30) }}" min="1" required>
+                        <label for="duration_months" class="form-label fw-bold">Duración (meses) <span class="text-danger">*</span></label>
+                        <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_months" onchange="updateDurationDays()">
+                            <option value="1" {{ old('duration_days', 30) == 30 ? 'selected' : '' }}>1 mes (30 días)</option>
+                            <option value="2" {{ old('duration_days') == 60 ? 'selected' : '' }}>2 meses (60 días)</option>
+                            <option value="3" {{ old('duration_days') == 90 ? 'selected' : '' }}>3 meses (90 días)</option>
+                            <option value="6" {{ old('duration_days') == 180 ? 'selected' : '' }}>6 meses (180 días)</option>
+                            <option value="12" {{ old('duration_days') == 365 ? 'selected' : '' }}>12 meses (365 días)</option>
+                        </select>
+                        <input type="hidden" id="duration_days" name="duration_days" value="{{ old('duration_days', 30) }}">
                         @error('duration_days')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -72,8 +79,16 @@
 
                     <!-- Retención de datos -->
                     <div class="mb-4">
-                        <label for="retention_days" class="form-label fw-bold">Retención de datos (días) <span class="text-danger">*</span></label>
-                        <input type="number" class="form-control @error('retention_days') is-invalid @enderror" id="retention_days" name="retention_days" value="{{ old('retention_days', 90) }}" min="1" required>
+                        <label for="retention_months" class="form-label fw-bold">Retención de datos (meses) <span class="text-danger">*</span></label>
+                        <select class="form-select @error('retention_days') is-invalid @enderror" id="retention_months" onchange="updateRetentionDays()">
+                            <option value="1" {{ old('retention_days', 30) == 30 ? 'selected' : '' }}>1 mes (incluido)</option>
+                            <option value="2" {{ old('retention_days') == 60 ? 'selected' : '' }}>2 meses (+$20)</option>
+                            <option value="3" {{ old('retention_days') == 90 ? 'selected' : '' }}>3 meses (+$30)</option>
+                            <option value="6" {{ old('retention_days') == 180 ? 'selected' : '' }}>6 meses (+$50)</option>
+                            <option value="12" {{ old('retention_days') == 365 ? 'selected' : '' }}>12 meses (+$80)</option>
+                        </select>
+                        <input type="hidden" id="retention_days" name="retention_days" value="{{ old('retention_days', 30) }}">
+                        <small class="text-muted">El precio base incluye 1 mes de retención. Meses adicionales tienen costo extra.</small>
                         @error('retention_days')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
@@ -94,13 +109,14 @@
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom d-flex align-items-center justify-content-between">
                     <h2 class="fs-5 fw-bold mb-0">Módulo de Chat</h2>
-                    <span class="text-success fw-bold">+$50/mes</span>
+                    <span class="text-success fw-bold" id="chat-price-badge">+$50</span>
                 </div>
                 <div class="card-body">
                     <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" id="has_chat_module" name="has_chat_module" value="1" {{ old('has_chat_module') ? 'checked' : '' }} onchange="calculatePrice()">
                         <label class="form-check-label fw-bold" for="has_chat_module">Habilitar módulo de chat</label>
                     </div>
+                    <small class="text-muted" id="chat-price-detail">$50 por 1 mes</small>
                 </div>
             </div>
 
@@ -161,10 +177,13 @@
                             <div class="small text-white-50" id="price-breakdown">
                                 Base: $200 + Chat: $0 + Re-alertas: $0
                             </div>
+                            <div class="small text-white-50 mt-1" id="price-per-month">
+                                $200/mes por 1 mes
+                            </div>
                         </div>
                         <div class="col-md-4 text-md-end">
                             <div class="display-4 fw-bold text-white" id="total-price-display">$200</div>
-                            <div class="small text-white-50">por mes</div>
+                            <div class="small text-white-50">total del plan</div>
                         </div>
                     </div>
                 </div>
@@ -190,24 +209,108 @@
 @push('scripts')
 <script>
     // Pricing constants
-    const BASE_PRICE = 200;
-    const CHAT_PRICE = 50;
+    const BASE_PRICE_PER_MONTH = 200;
+    const CHAT_PRICE_PER_MONTH = 50;
 
-    // Calculate re-alerts price based on frequency
-    function calculateRealertsPrice(intervalMinutes) {
-        if (intervalMinutes >= 1440) { // 1 día o más
-            return 10; // $10 por día o más
-        } else if (intervalMinutes >= 60) { // 1 hora o más
-            return 20; // $20 por hora
-        } else if (intervalMinutes >= 30) { // 30 minutos o más
-            return 30; // $30 por cada 30-59 minutos
-        } else if (intervalMinutes >= 15) { // 15 minutos o más
-            return 40; // $40 por cada 15-29 minutos
-        } else if (intervalMinutes >= 5) { // 5-14 minutos
-            return 50; // $50 por cada 5-14 minutos
-        } else { // Menos de 5 minutos
-            return 70; // $70 por menos de 5 minutos (muy frecuente)
+    // Update duration in days based on months selected
+    function updateDurationDays() {
+        const months = parseInt(document.getElementById('duration_months').value);
+        let days;
+
+        if (months === 12) {
+            days = 365;
+        } else if (months === 6) {
+            days = 180;
+        } else {
+            days = months * 30;
         }
+
+        document.getElementById('duration_days').value = days;
+        calculatePrice();
+    }
+
+    // Update retention in days based on months selected
+    function updateRetentionDays() {
+        const months = parseInt(document.getElementById('retention_months').value);
+        let days;
+
+        if (months === 12) {
+            days = 365;
+        } else if (months === 6) {
+            days = 180;
+        } else {
+            days = months * 30;
+        }
+
+        document.getElementById('retention_days').value = days;
+        calculatePrice(); // Recalcular precio cuando cambia la retención
+    }
+
+    // Calculate retention price (1 month is included, additional months have cost)
+    function calculateRetentionPrice(retentionMonths) {
+        if (retentionMonths === 1) {
+            return 0; // Incluido en el precio base
+        } else if (retentionMonths === 2) {
+            return 20;
+        } else if (retentionMonths === 3) {
+            return 30;
+        } else if (retentionMonths === 6) {
+            return 50;
+        } else if (retentionMonths === 12) {
+            return 80;
+        }
+        return 0;
+    }
+
+    // Calculate chat price with volume discount
+    function calculateChatPrice(months) {
+        if (months === 1) {
+            return 50;
+        } else if (months === 2) {
+            return 80; // $40/mes (20% descuento)
+        } else if (months === 3) {
+            return 105; // $35/mes (30% descuento)
+        } else if (months === 6) {
+            return 180; // $30/mes (40% descuento)
+        } else if (months === 12) {
+            return 300; // $25/mes (50% descuento)
+        }
+        return months * CHAT_PRICE_PER_MONTH;
+    }
+
+    // Calculate re-alerts base price based on frequency
+    function calculateRealertsBasePrice(intervalMinutes) {
+        if (intervalMinutes >= 1440) { // 1 día o más
+            return 10; // $10 por mes
+        } else if (intervalMinutes >= 60) { // 1 hora o más
+            return 20; // $20 por mes
+        } else if (intervalMinutes >= 30) { // 30 minutos o más
+            return 30; // $30 por mes
+        } else if (intervalMinutes >= 15) { // 15 minutos o más
+            return 40; // $40 por mes
+        } else if (intervalMinutes >= 5) { // 5-14 minutos
+            return 50; // $50 por mes
+        } else { // Menos de 5 minutos
+            return 70; // $70 por mes (muy frecuente)
+        }
+    }
+
+    // Calculate re-alerts price with volume discount
+    function calculateRealertsPrice(intervalMinutes, months) {
+        const basePrice = calculateRealertsBasePrice(intervalMinutes);
+
+        if (months === 1) {
+            return basePrice;
+        } else if (months === 2) {
+            return Math.round(basePrice * 1.6); // 20% descuento
+        } else if (months === 3) {
+            return Math.round(basePrice * 2.1); // 30% descuento
+        } else if (months === 6) {
+            return Math.round(basePrice * 3.6); // 40% descuento
+        } else if (months === 12) {
+            return Math.round(basePrice * 6); // 50% descuento
+        }
+        return basePrice * months;
     }
 
     // Update interval from days, hours, minutes
@@ -253,28 +356,51 @@
 
     // Calculate total price
     function calculatePrice() {
-        let total = BASE_PRICE;
-        const breakdown = ['Base: $' + BASE_PRICE];
+        const months = parseInt(document.getElementById('duration_months').value);
+        const retentionMonths = parseInt(document.getElementById('retention_months').value);
 
-        // Add chat module
-        const hasChatChecked = document.getElementById('has_chat_module').checked;
-        if (hasChatChecked) {
-            total += CHAT_PRICE;
-            breakdown.push('Chat: $' + CHAT_PRICE);
-        } else {
-            breakdown.push('Chat: $0');
+        // Calculate base price (price per month * months)
+        const basePrice = BASE_PRICE_PER_MONTH * months;
+        let total = basePrice;
+        const breakdown = ['Base: $' + basePrice];
+
+        // Add retention cost (if more than 1 month)
+        const retentionPrice = calculateRetentionPrice(retentionMonths);
+        if (retentionPrice > 0) {
+            total += retentionPrice;
+            breakdown.push('Retención extra: $' + retentionPrice);
         }
 
-        // Add re-alerts
+        // Add chat module with discount
+        const hasChatChecked = document.getElementById('has_chat_module').checked;
+        let chatPrice = 0;
+        if (hasChatChecked) {
+            chatPrice = calculateChatPrice(months);
+            total += chatPrice;
+            breakdown.push('Chat: $' + chatPrice);
+
+            // Update chat badge and detail
+            const chatPerMonth = (chatPrice / months).toFixed(2);
+            document.getElementById('chat-price-badge').textContent = '+$' + chatPrice;
+            document.getElementById('chat-price-detail').textContent = '$' + chatPerMonth + '/mes × ' + months + ' ' + (months === 1 ? 'mes' : 'meses') + ' = $' + chatPrice;
+        } else {
+            breakdown.push('Chat: $0');
+            document.getElementById('chat-price-badge').textContent = '+$50';
+            document.getElementById('chat-price-detail').textContent = '$50 por 1 mes';
+        }
+
+        // Add re-alerts with discount
         const hasRealertsChecked = document.getElementById('has_realerts').checked;
+        let realertsPrice = 0;
         if (hasRealertsChecked) {
             const intervalMinutes = parseInt(document.getElementById('realert_interval_minutes').value) || 15;
-            const realertsPrice = calculateRealertsPrice(intervalMinutes);
+            realertsPrice = calculateRealertsPrice(intervalMinutes, months);
             total += realertsPrice;
             breakdown.push('Re-alertas: $' + realertsPrice);
 
             // Update badge
-            document.getElementById('realerts-price-badge').textContent = '+$' + realertsPrice + '/mes';
+            const realertsPerMonth = (realertsPrice / months).toFixed(2);
+            document.getElementById('realerts-price-badge').textContent = '+$' + realertsPrice;
             document.getElementById('realerts-price-badge').className = 'text-warning fw-bold';
         } else {
             breakdown.push('Re-alertas: $0');
@@ -283,9 +409,11 @@
         }
 
         // Update display
+        const pricePerMonth = (total / months).toFixed(2);
         document.getElementById('price').value = total.toFixed(2);
         document.getElementById('total-price-display').textContent = '$' + total.toFixed(0);
         document.getElementById('price-breakdown').textContent = breakdown.join(' + ');
+        document.getElementById('price-per-month').textContent = '$' + pricePerMonth + '/mes por ' + months + ' ' + (months === 1 ? 'mes' : 'meses');
     }
 
     // Initialize on page load

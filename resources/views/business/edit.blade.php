@@ -29,6 +29,22 @@
         </div>
     </div>
 
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <x-icon name="success" class="me-2" />
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <x-icon name="error" class="me-2" />
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    @endif
+
     <div class="row">
         <div class="col-12 col-lg-8 mx-auto">
             <div class="card border-0 shadow">
@@ -51,6 +67,21 @@
                                            value="{{ old('business_name', $business->business_name) }}"
                                            required>
                                     @error('business_name')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email"
+                                           class="form-control @error('email') is-invalid @enderror"
+                                           id="email"
+                                           name="email"
+                                           value="{{ old('email', $business->email) }}"
+                                           required>
+                                    @error('email')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -109,32 +140,15 @@
                             <!-- Google Maps Location Selector -->
                             <div class="col-12">
                                 <div class="mb-3">
-                                    <div class="d-flex justify-content-between align-items-center mb-2">
-                                        <label class="form-label mb-0">Ubicación del Negocio</label>
-                                        <div class="btn-group btn-group-sm" role="group">
-                                            <button type="button" id="searchBtn" class="btn btn-outline-primary">
-                                                <x-icon name="search" class="me-1" />
-                                                Buscar
-                                            </button>
-                                            <button type="button" id="getLocationBtn" class="btn btn-primary">
-                                                <x-icon name="mapPin" class="me-1" />
-                                                Mi Ubicación
-                                            </button>
-                                        </div>
-                                    </div>
+                                    <label class="form-label mb-2">Ubicación del Negocio</label>
 
                                     <!-- Search Box -->
-                                    <div id="searchBox" class="mb-2" style="display: none;">
-                                        <div class="input-group">
-                                            <input type="text"
-                                                   id="searchInput"
-                                                   class="form-control"
-                                                   placeholder="Busca tu negocio (ej. Cafetería Central, Av. Juárez 123...)">
-                                            <button type="button" class="btn btn-outline-secondary" onclick="document.getElementById('searchBox').style.display='none'">
-                                                <x-icon name="close" />
-                                            </button>
-                                        </div>
-                                        <small class="text-muted">Escribe tu dirección o el nombre de tu negocio y selecciona de las sugerencias</small>
+                                    <div class="mb-2">
+                                        <input type="text"
+                                               id="searchInput"
+                                               class="form-control"
+                                               placeholder="Busca tu negocio o dirección (ej. Cafetería Central, Av. Juárez 123...)">
+                                        <small class="text-muted">Escribe tu dirección y selecciona de las sugerencias, o haz clic directamente en el mapa</small>
                                     </div>
 
                                     <!-- Selected Address Display -->
@@ -154,24 +168,53 @@
                                     <!-- Hidden inputs for coordinates -->
                                     <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude', $business->latitude) }}">
                                     <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude', $business->longitude) }}">
+                                </div>
+                            </div>
 
-                                    <!-- Location Description -->
-                                    <label for="location_description" class="form-label mt-2">Referencias Adicionales</label>
-                                    <input type="text"
-                                           class="form-control @error('location_description') is-invalid @enderror"
-                                           id="location_description"
-                                           name="location_description"
-                                           value="{{ old('location_description', $business->location_description) }}"
-                                           placeholder="Referencias adicionales (ej. Frente a la farmacia, esquina con...)">
-                                    @error('location_description')
+                            <!-- Password Section -->
+                            <div class="col-12">
+                                <h6 class="fw-bold mb-2 mt-3">Cambiar Contraseña (Opcional)</h6>
+                                <p class="text-muted small mb-3">Deja los campos en blanco si no deseas cambiar tu contraseña</p>
+                            </div>
+
+                            <!-- Password Fields -->
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="current_password" class="form-label">Contraseña Actual</label>
+                                    <input type="password"
+                                           class="form-control @error('current_password') is-invalid @enderror"
+                                           id="current_password"
+                                           name="current_password"
+                                           placeholder="Ingresa tu contraseña actual">
+                                    @error('current_password')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-muted">
-                                        <strong>Instrucciones:</strong>
-                                        1) Haz clic en "Buscar" y escribe tu dirección, o
-                                        2) Haz clic directamente en el mapa donde está tu negocio, o
-                                        3) Arrastra el marcador rojo a la ubicación exacta
-                                    </small>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="password" class="form-label">Nueva Contraseña</label>
+                                    <input type="password"
+                                           class="form-control @error('password') is-invalid @enderror"
+                                           id="password"
+                                           name="password"
+                                           placeholder="Ingresa tu nueva contraseña">
+                                    @error('password')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="text-muted">La contraseña debe tener al menos 8 caracteres</small>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="mb-3">
+                                    <label for="password_confirmation" class="form-label">Confirmar Nueva Contraseña</label>
+                                    <input type="password"
+                                           class="form-control"
+                                           id="password_confirmation"
+                                           name="password_confirmation"
+                                           placeholder="Confirma tu nueva contraseña">
                                 </div>
                             </div>
                         </div>
@@ -225,6 +268,33 @@
         }
     }
 
+    // Helper function to show error messages
+    function showErrorMessage(title, message, helpHtml) {
+        const errorDiv = document.createElement('div');
+        errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+        errorDiv.innerHTML = `
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <h6 class="alert-heading mb-2"><i class="fas fa-exclamation-triangle me-2"></i>${title}</h6>
+            <p class="mb-2">${message}</p>
+            <hr>
+            <div class="mb-0 small">${helpHtml}</div>
+        `;
+
+        // Remove any existing error messages
+        const existingErrors = document.querySelectorAll('.alert-danger');
+        existingErrors.forEach(el => el.remove());
+
+        // Insert after the map
+        document.getElementById('map').parentElement.appendChild(errorDiv);
+
+        // Auto-remove after 15 seconds
+        setTimeout(() => {
+            if (errorDiv.parentElement) {
+                errorDiv.remove();
+            }
+        }, 15000);
+    }
+
     // Google Maps Initialization
     let map;
     let marker;
@@ -233,9 +303,29 @@
 
     function initMap() {
         // Get existing coordinates or use default (Mexico City)
-        const existingLat = parseFloat(document.getElementById('latitude').value) || 19.4326;
-        const existingLng = parseFloat(document.getElementById('longitude').value) || -99.1332;
-        const hasExistingLocation = document.getElementById('latitude').value && document.getElementById('longitude').value;
+        const latInput = document.getElementById('latitude').value;
+        const lngInput = document.getElementById('longitude').value;
+
+        console.log('=== CARGA INICIAL DEL MAPA ===');
+        console.log('Valor del input latitude:', latInput);
+        console.log('Valor del input longitude:', lngInput);
+
+        // Parse coordinates
+        const latValue = parseFloat(latInput);
+        const lngValue = parseFloat(lngInput);
+
+        // Check if coordinates are valid (not 0, not NaN, not empty)
+        const hasValidCoordinates = latInput && lngInput &&
+                                   !isNaN(latValue) && !isNaN(lngValue) &&
+                                   latValue !== 0 && lngValue !== 0;
+
+        // Use saved coordinates or default to Mexico City
+        const existingLat = hasValidCoordinates ? latValue : 19.4326;
+        const existingLng = hasValidCoordinates ? lngValue : -99.1332;
+        const hasExistingLocation = hasValidCoordinates;
+
+        console.log('Coordenadas a usar:', { lat: existingLat, lng: existingLng });
+        console.log('¿Tiene ubicación guardada?', hasExistingLocation);
 
         // Initialize geocoder
         geocoder = new google.maps.Geocoder();
@@ -247,7 +337,23 @@
             zoom: hasExistingLocation ? 15 : 12,
             mapTypeControl: true,
             streetViewControl: true,
-            fullscreenControl: true
+            fullscreenControl: true,
+            styles: [
+                {
+                    featureType: 'poi',
+                    elementType: 'labels',
+                    stylers: [{ visibility: 'off' }]
+                },
+                {
+                    featureType: 'poi.business',
+                    stylers: [{ visibility: 'off' }]
+                },
+                {
+                    featureType: 'transit',
+                    elementType: 'labels.icon',
+                    stylers: [{ visibility: 'off' }]
+                }
+            ]
         });
 
         // Initialize Places Autocomplete
@@ -332,6 +438,11 @@
         document.getElementById('latitude').value = lat.toFixed(7);
         document.getElementById('longitude').value = lng.toFixed(7);
 
+        console.log('Coordenadas actualizadas:', {
+            latitude: lat.toFixed(7),
+            longitude: lng.toFixed(7)
+        });
+
         // Get address from coordinates (Reverse Geocoding)
         getAddressFromCoordinates(lat, lng);
     }
@@ -354,122 +465,34 @@
         });
     }
 
-    // Toggle search box
-    document.getElementById('searchBtn').addEventListener('click', function() {
-        const searchBox = document.getElementById('searchBox');
-        searchBox.style.display = searchBox.style.display === 'none' ? 'block' : 'none';
-        if (searchBox.style.display === 'block') {
-            document.getElementById('searchInput').focus();
-        }
-    });
-
-    // Get user's current location using Geolocation API
-    document.getElementById('getLocationBtn').addEventListener('click', function() {
-        const button = this;
-        const originalText = button.innerHTML;
-
-        // Check if geolocation is available
-        if (!navigator.geolocation) {
-            alert('Tu navegador no soporta geolocalización.');
-            return;
-        }
-
-        // Check if site is secure (HTTPS or localhost)
-        const isSecure = window.location.protocol === 'https:' ||
-                        window.location.hostname === 'localhost' ||
-                        window.location.hostname === '127.0.0.1';
-
-        if (!isSecure) {
-            if (confirm('⚠️ La geolocalización requiere una conexión segura (HTTPS).\n\n' +
-                       'Como alternativa, puedes:\n' +
-                       '1. Hacer clic directamente en el mapa donde está tu negocio\n' +
-                       '2. Buscar tu negocio en Google Maps y copiar las coordenadas\n\n' +
-                       '¿Quieres intentar obtener tu ubicación de todas formas?')) {
-                // Intentar de todas formas
-                attemptGeolocation();
-            }
-            return;
-        }
-
-        attemptGeolocation();
-
-        function attemptGeolocation() {
-            // Show loading state
-            button.disabled = true;
-            button.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span> Obteniendo ubicación...';
-
-            navigator.geolocation.getCurrentPosition(
-                function(position) {
-                    const lat = position.coords.latitude;
-                    const lng = position.coords.longitude;
-                    const location = { lat: lat, lng: lng };
-
-                    // Center map on user's location
-                    map.setCenter(location);
-                    map.setZoom(17);
-
-                    // Place marker at user's location
-                    placeMarker(location);
-                    updateCoordinates(lat, lng);
-
-                    // Restore button
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-
-                    // Show success message
-                    const successMsg = document.createElement('div');
-                    successMsg.className = 'alert alert-success alert-dismissible fade show mt-2';
-                    successMsg.innerHTML = '✓ Ubicación obtenida correctamente. La dirección se ha actualizado automáticamente.';
-                    document.getElementById('map').parentElement.appendChild(successMsg);
-                    setTimeout(() => successMsg.remove(), 5000);
-                },
-                function(error) {
-                    // Handle error
-                    button.disabled = false;
-                    button.innerHTML = originalText;
-
-                    let errorMessage = '❌ No se pudo obtener tu ubicación.\n\n';
-                    let helpText = '';
-
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            errorMessage += 'Has bloqueado el acceso a tu ubicación.\n\n';
-                            helpText = 'Para permitir el acceso:\n' +
-                                     '• Chrome: Haz clic en el icono 🔒 o ⓘ en la barra de direcciones\n' +
-                                     '• Firefox: Haz clic en el candado y administra permisos\n' +
-                                     '• Edge: Configuración del sitio → Ubicación → Permitir\n\n' +
-                                     'Alternativamente, puedes hacer clic directamente en el mapa.';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            errorMessage += 'No se pudo determinar tu ubicación.\n\n';
-                            helpText = 'Intenta:\n' +
-                                     '• Activar el GPS en tu dispositivo\n' +
-                                     '• Verificar tu conexión a internet\n' +
-                                     '• O haz clic directamente en el mapa';
-                            break;
-                        case error.TIMEOUT:
-                            errorMessage += 'Se agotó el tiempo de espera.\n\n';
-                            helpText = 'Intenta de nuevo o haz clic directamente en el mapa.';
-                            break;
-                        default:
-                            errorMessage += 'Error desconocido.\n\n';
-                            helpText = 'Haz clic directamente en el mapa para seleccionar tu ubicación.';
-                    }
-
-                    alert(errorMessage + helpText);
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 15000,
-                    maximumAge: 0
-                }
-            );
-        }
-    });
-
     // Initialize map when page loads
     document.addEventListener('DOMContentLoaded', function() {
         initMap();
+
+        // Debug: Verify form data before submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const lat = document.getElementById('latitude').value;
+            const lng = document.getElementById('longitude').value;
+            const addr = document.getElementById('address').value;
+
+            console.log('=== ENVIANDO FORMULARIO ===');
+            console.log('Latitude:', lat);
+            console.log('Longitude:', lng);
+            console.log('Address:', addr);
+
+            // Verificar que no estén vacíos o sean 0 (convertir a número para verificar)
+            const latNum = parseFloat(lat);
+            const lngNum = parseFloat(lng);
+
+            if (!lat || !lng || latNum === 0 || lngNum === 0 || isNaN(latNum) || isNaN(lngNum)) {
+                e.preventDefault();
+                alert('⚠️ ERROR: Las coordenadas no están configuradas correctamente.\n\n' +
+                      'Latitude: ' + lat + ' (' + latNum + ')\n' +
+                      'Longitude: ' + lng + ' (' + lngNum + ')\n\n' +
+                      'Por favor, selecciona una ubicación en el mapa antes de guardar.');
+                return false;
+            }
+        });
     });
 </script>
 @endpush

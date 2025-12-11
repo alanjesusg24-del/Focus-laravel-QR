@@ -24,19 +24,6 @@
                         <h1 class="mb-0 h3">Crear Cuenta</h1>
                     </div>
 
-                    @if(session()->has('error'))
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <strong>Error:</strong> {{ session('error') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
-
-                    @if(session()->has('success'))
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            {{ session('success') }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    @endif
 
                     {{-- PASO 1: DATOS DEL NEGOCIO --}}
                     @if($currentStep === 1)
@@ -107,6 +94,37 @@
                             {{-- Agregado text-center --}}
                             <h4 class="mb-4 text-center">Finalizar Registro</h4>
 
+                            @if($hasActivePlans)
+                                {{-- Selección de plan cuando hay planes disponibles --}}
+                                <div class="mb-4">
+                                    <label class="form-label fw-bold">Selecciona tu Plan <span class="text-danger">*</span></label>
+                                    <div class="row g-3">
+                                        @foreach($plans as $plan)
+                                            <div class="col-12">
+                                                <div class="card {{ $plan_id == $plan->plan_id ? 'border-primary' : '' }}"
+                                                     style="cursor: pointer;"
+                                                     wire:click="selectPlan({{ $plan->plan_id }})">
+                                                    <div class="card-body">
+                                                        <div class="d-flex justify-content-between align-items-start">
+                                                            <div>
+                                                                <h6 class="mb-1">{{ $plan->name }}</h6>
+                                                                <p class="text-muted small mb-2">{{ $plan->description }}</p>
+                                                                <div class="text-primary fw-bold">${{ number_format($plan->price, 2) }} MXN</div>
+                                                            </div>
+                                                            @if($plan_id == $plan->plan_id)
+                                                                <svg class="icon icon-sm text-primary" fill="currentColor" viewBox="0 0 20 20">
+                                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                                                                </svg>
+                                                            @endif
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endif
+
                             <div class="form-check mb-4">
                                 <input wire:model="terms" class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" id="termsCheck">
                                 <label class="form-check-label" for="termsCheck">
@@ -132,9 +150,18 @@
                                 Siguiente <x-icon name="nav.forward" class="ms-2"/>
                             </button>
                         @else
-                            {{-- Botón Registrar: Primario --}}
-                            <button wire:click="submit" class="btn btn-primary px-4" wire:loading.attr="disabled">
-                                <span wire:loading.remove>Registrar</span>
+                            {{-- Botón Registrar: Primario (deshabilitado si no hay planes) --}}
+                            <button wire:click="submit"
+                                    class="btn btn-primary px-4"
+                                    wire:loading.attr="disabled"
+                                    @if(!$hasActivePlans) disabled @endif>
+                                <span wire:loading.remove>
+                                    @if(!$hasActivePlans)
+                                        No disponible
+                                    @else
+                                        Registrar
+                                    @endif
+                                </span>
                                 <span wire:loading>Procesando...</span>
                             </button>
                         @endif

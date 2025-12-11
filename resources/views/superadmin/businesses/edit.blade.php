@@ -92,12 +92,6 @@
                     <div class="mb-4">
                         <label class="form-label fw-bold">Ubicación en el Mapa</label>
                         <div id="map" class="border rounded" style="height: 400px; width: 100%;"></div>
-                        <small class="form-text text-muted d-block mt-2">
-                            <svg class="icon icon-xxs text-info me-1" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
-                            </svg>
-                            Arrastra el marcador para ajustar la ubicación exacta
-                        </small>
                     </div>
 
                     <!-- Campos ocultos para coordenadas -->
@@ -206,7 +200,23 @@ function initMap() {
         zoom: 15,
         mapTypeControl: true,
         streetViewControl: true,
-        fullscreenControl: true
+        fullscreenControl: true,
+        styles: [
+            {
+                featureType: 'poi',
+                elementType: 'labels',
+                stylers: [{ visibility: 'off' }]
+            },
+            {
+                featureType: 'poi.business',
+                stylers: [{ visibility: 'off' }]
+            },
+            {
+                featureType: 'transit',
+                elementType: 'labels.icon',
+                stylers: [{ visibility: 'off' }]
+            }
+        ]
     });
 
     // Inicializar geocoder

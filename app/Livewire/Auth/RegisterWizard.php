@@ -31,8 +31,25 @@ class RegisterWizard extends Component
     public $password_confirmation;
 
     // Paso 3: Plan
-    public $plan_id = 1; // Plan por defecto (primer plan activo)
+    public $plan_id; // Plan por defecto (se asigna en mount)
     public $terms = false;
+    public $hasActivePlans = true; // Flag para verificar si hay planes activos
+
+    public function mount()
+    {
+        // Verificar si hay planes activos disponibles
+        $activePlansCount = Plan::where('is_active', true)->count();
+
+        if ($activePlansCount === 0) {
+            $this->hasActivePlans = false;
+            session()->flash('error', 'Actualmente no hay planes disponibles para registro. Por favor contacta al administrador del sistema para que active planes de suscripción.');
+            return redirect()->route('business.login');
+        }
+
+        // Obtener el primer plan activo disponible
+        $firstPlan = Plan::where('is_active', true)->orderBy('plan_id')->first();
+        $this->plan_id = $firstPlan->plan_id;
+    }
 
     protected function rules()
     {
@@ -90,6 +107,12 @@ class RegisterWizard extends Component
 
     public function submit()
     {
+        // Verificar si hay planes activos antes de proceder
+        if (!$this->hasActivePlans) {
+            session()->flash('error', 'No se puede completar el registro porque no hay planes disponibles. Por favor contacta al administrador del sistema.');
+            return;
+        }
+
         $this->validate($this->rules()[3]);
 
         DB::beginTransaction();
@@ -135,6 +158,8 @@ class RegisterWizard extends Component
                     session()->flash('error', 'El RFC ingresado ya está registrado en el sistema.');
                 } elseif (str_contains($e->getMessage(), 'email')) {
                     session()->flash('error', 'El correo electrónico ya está registrado en el sistema.');
+                } elseif (str_contains($e->getMessage(), 'plan_id') || str_contains($e->getMessage(), 'businesses_plan_id_foreign')) {
+                    session()->flash('error', 'El plan seleccionado no es válido. Por favor recarga la página e intenta nuevamente.');
                 } else {
                     session()->flash('error', 'Ya existe un registro con estos datos.');
                 }

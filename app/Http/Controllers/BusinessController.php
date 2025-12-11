@@ -88,8 +88,7 @@ class BusinessController extends Controller
      */
     public function profile()
     {
-        $businessId = Auth::id();
-        $business = Business::with('plan')->findOrFail($businessId);
+        $business = Auth::user()->load('plan');
 
         return view('business.profile', compact('business'));
     }
@@ -99,8 +98,7 @@ class BusinessController extends Controller
      */
     public function edit()
     {
-        $businessId = Auth::id();
-        $business = Business::findOrFail($businessId);
+        $business = Auth::user();
 
         return view('business.edit', compact('business'));
     }
@@ -113,7 +111,14 @@ class BusinessController extends Controller
         $businessId = Auth::id();
         $business = Business::findOrFail($businessId);
 
-        $validated = $request->validate([
+        // DEBUG: Log what we're receiving
+        \Log::info('=== UPDATE BUSINESS DEBUG ===');
+        \Log::info('Latitude recibida: ' . $request->input('latitude'));
+        \Log::info('Longitude recibida: ' . $request->input('longitude'));
+        \Log::info('Address recibida: ' . $request->input('address'));
+
+        try {
+            $validated = $request->validate([
             'business_name' => 'required|string|max:255',
             'email' => [
                 'required',
@@ -124,10 +129,31 @@ class BusinessController extends Controller
             'address' => 'nullable|string',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
-            'location_description' => 'nullable|string|max:500',
             'logo_url' => 'nullable|image|max:2048|mimes:jpg,jpeg,png',
             'photo' => 'nullable|image|max:5120|mimes:jpg,jpeg,png',
+            // Password fields (optional)
+            'current_password' => 'nullable|string',
+            'password' => 'nullable|string|min:8|confirmed',
         ]);
+
+        // Handle password update if provided
+        if ($request->filled('current_password') || $request->filled('password')) {
+            // If any password field is filled, validate all are required
+            $request->validate([
+                'current_password' => 'required|string',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
+            // Verify current password
+            if (!Hash::check($request->current_password, $business->password)) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['current_password' => 'La contraseña actual es incorrecta']);
+            }
+
+            // Update password
+            $business->password = Hash::make($request->password);
+        }
 
         // Handle logo upload
         if ($request->hasFile('logo_url')) {
@@ -147,21 +173,51 @@ class BusinessController extends Controller
         if ($request->hasFile('photo')) {
             // Delete old photo
             if ($business->photo) {
-                $oldPath = str_replace('/storage/', '', $business->photo);
-                Storage::disk('public')->delete($oldPath);
+                Storage::disk('public')->delete($business->photo);
             }
 
             $file = $request->file('photo');
             $fileName = 'business_photo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('business_photos', $fileName, 'public');
-            $validated['photo'] = Storage::url($path);
+            $validated['photo'] = $path;
         }
 
-        $business->update($validated);
+        // Prepare data for update (similar to superadmin approach)
+        $data = $request->except(['current_password', 'password', 'password_confirmation', '_token', '_method', 'logo_url', 'photo']);
+
+        // Add validated photo and logo_url if they were uploaded
+        if (isset($validated['logo_url'])) {
+            $data['logo_url'] = $validated['logo_url'];
+        }
+        if (isset($validated['photo'])) {
+            $data['photo'] = $validated['photo'];
+        }
+
+        // DEBUG: Log what we're about to save
+        \Log::info('Valores a guardar:');
+        \Log::info('Latitude: ' . ($data['latitude'] ?? 'NULL'));
+        \Log::info('Longitude: ' . ($data['longitude'] ?? 'NULL'));
+        \Log::info('Address: ' . ($data['address'] ?? 'NULL'));
+
+        $business->update($data);
+
+        // DEBUG: Log what was actually saved
+        \Log::info('Valores guardados en BD:');
+        \Log::info('Latitude: ' . $business->latitude);
+        \Log::info('Longitude: ' . $business->longitude);
 
         return redirect()
             ->route('business.profile.index')
             ->with('success', 'Perfil actualizado exitosamente');
+
+        } catch (\Exception $e) {
+            \Log::error('ERROR al actualizar business: ' . $e->getMessage());
+            \Log::error('Stack trace: ' . $e->getTraceAsString());
+
+            return back()
+                ->withInput()
+                ->with('error', 'Error al actualizar: ' . $e->getMessage());
+        }
     }
 
     /**
