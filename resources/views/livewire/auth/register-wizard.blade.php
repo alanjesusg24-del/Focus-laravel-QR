@@ -94,41 +94,19 @@
                             {{-- Agregado text-center --}}
                             <h4 class="mb-4 text-center">Finalizar Registro</h4>
 
-                            @if($hasActivePlans)
-                                {{-- Selección de plan cuando hay planes disponibles --}}
-                                <div class="mb-4">
-                                    <label class="form-label fw-bold">Selecciona tu Plan <span class="text-danger">*</span></label>
-                                    <div class="row g-3">
-                                        @foreach($plans as $plan)
-                                            <div class="col-12">
-                                                <div class="card {{ $plan_id == $plan->plan_id ? 'border-primary' : '' }}"
-                                                     style="cursor: pointer;"
-                                                     wire:click="selectPlan({{ $plan->plan_id }})">
-                                                    <div class="card-body">
-                                                        <div class="d-flex justify-content-between align-items-start">
-                                                            <div>
-                                                                <h6 class="mb-1">{{ $plan->name }}</h6>
-                                                                <p class="text-muted small mb-2">{{ $plan->description }}</p>
-                                                                <div class="text-primary fw-bold">${{ number_format($plan->price, 2) }} MXN</div>
-                                                            </div>
-                                                            @if($plan_id == $plan->plan_id)
-                                                                <svg class="icon icon-sm text-primary" fill="currentColor" viewBox="0 0 20 20">
-                                                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
-                                                                </svg>
-                                                            @endif
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-                                </div>
-                            @endif
-
                             <div class="form-check mb-4">
                                 <input wire:model="terms" class="form-check-input @error('terms') is-invalid @enderror" type="checkbox" id="termsCheck">
                                 <label class="form-check-label" for="termsCheck">
-                                    Acepto los <a href="#" class="text-primary fw-bold">Términos y Condiciones</a>
+                                    Acepto los 
+                                    <a href="#" class="text-info fw-bold text-decoration-none" 
+                                       data-bs-toggle="modal" data-bs-target="#termsModal">
+                                        Términos de Uso
+                                    </a> 
+                                    y 
+                                    <a href="#" class="text-info fw-bold text-decoration-none" 
+                                       data-bs-toggle="modal" data-bs-target="#privacyModal">
+                                        Aviso de Privacidad
+                                    </a>
                                 </label>
                                 @error('terms') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
                             </div>
@@ -150,27 +128,20 @@
                                 Siguiente <x-icon name="nav.forward" class="ms-2"/>
                             </button>
                         @else
-                            {{-- Botón Registrar: Primario (deshabilitado si no hay planes) --}}
                             <button wire:click="submit"
                                     class="btn btn-primary px-4"
-                                    wire:loading.attr="disabled"
-                                    @if(!$hasActivePlans) disabled @endif>
-                                <span wire:loading.remove>
-                                    @if(!$hasActivePlans)
-                                        No disponible
-                                    @else
-                                        Registrar
-                                    @endif
+                                    wire:loading.attr="disabled">
+                                <span wire:loading.remove">
+                                    Registrar
                                 </span>
-                                <span wire:loading>Procesando...</span>
                             </button>
                         @endif
                     </div>
 
                     <div class="d-flex justify-content-center align-items-center mt-4">
-                        <span class="fw-normal small">
+                        <span class="fw-normal">
                             ¿Ya tienes cuenta?
-                            <a href="{{ route('business.login') }}" class="fw-bold text-info ms-1">Inicia Sesión</a>
+                            <a href="{{ route('business.login') }}" class="text-info ">Inicia Sesión</a>
                         </span>
                     </div>
 

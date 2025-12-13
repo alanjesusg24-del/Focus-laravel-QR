@@ -4,14 +4,36 @@
     File: partials/footer.blade.php
     Description: Footer global limpio y centrado.
 --}}
-<div class="mt-2 text-center small text-gray-500">
-    <div class="mb-2">
-        {{-- Enlaces en color INFO (Azul claro) --}}
-        <a href="#" class="text-info text-decoration-none me-3">Términos de uso</a>
-        <a href="#" class="text-info text-decoration-none">Aviso de privacidad</a>
+<footer class="py-3 w-100">
+    <div class="container">
+        <div class="row justify-content-center mb-2">
+            <div class="col-12 text-center">
+                <ul class="list-inline mb-0">
+                    <li class="list-inline-item mx-2">
+                        <a href="#" class="text-info text-decoration-none"
+                           data-bs-toggle="modal" data-bs-target="#termsModal">
+                            Términos de uso
+                        </a>
+                    </li>
+                    <li class="list-inline-item mx-2">
+                        <a href="#" class="text-info text-decoration-none"
+                           data-bs-toggle="modal" data-bs-target="#privacyModal">
+                            Aviso de Privacidad
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 text-center">
+                <p class="mb-0  text-primary">
+                    © <span class="current-year">{{ date('Y') }}</span>
+                    Focus - Sistema de Gestión de avisos
+                </p>
+            </div>
+        </div>
     </div>
-    <p class="mb-0 small text-muted">
-        © {{ date('Y') }}
-        <span class="fw-bold text-primary">Focus - Sistema de Gestión de avisos</span>
-    </p>
-</div>
+</footer>
+
+{{-- Incluir modales legales --}}
+@include('components.legal-modals')

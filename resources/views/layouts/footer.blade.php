@@ -11,15 +11,24 @@
             <ul class="list-inline list-group-flush list-group-borderless text-md-end mb-0">
                 
                 <li class="list-inline-item px-0 px-sm-2">
-                    <a href="#">Términos de uso</a>
+                    <a href="#" class="text-decoration-none"
+                       data-bs-toggle="modal" data-bs-target="#termsModal">
+                        Términos de uso
+                    </a>
                 </li>
                 <li class="list-inline-item px-0 px-sm-2">
-                    <a href="#">Aviso de privacidad</a>
+                    <a href="#" class="text-decoration-none"
+                       data-bs-toggle="modal" data-bs-target="#privacyModal">
+                        Aviso de privacidad
+                    </a>
                 </li>
             </ul>
         </div>
     </div>
 </footer>
+
+{{-- Incluir modales legales --}}
+@include('components.legal-modals')
 
 <script>
     

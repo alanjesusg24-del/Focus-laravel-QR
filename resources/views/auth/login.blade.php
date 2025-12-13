@@ -19,7 +19,7 @@
                         <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500 mb-4">
                             
                             <div class="text-center text-md-center mb-4 mt-md-0">
-                                <h1 class="mb-0 h3">Inicio de Sesión</h1>
+                                <h1 class="mb-3 h3 fw-bold text-primary">Inicia sesión en Focus</h1>
                             </div>
 
                             {{-- Flash Messages manejados por SweetAlert en el layout base --}}
@@ -55,7 +55,7 @@
                                             <x-icon name="access.lock" class="text-gray-600" />
                                         </span>
                                         <input type="password"
-                                               placeholder="••••••••"
+                                               placeholder="Contraseña"
                                                class="form-control @error('password') is-invalid @enderror"
                                                id="password"
                                                name="password">
@@ -76,9 +76,9 @@
                             </form>
                             
                             <div class="d-flex justify-content-center align-items-center mt-4">
-                                <span class="fw-normal">
+                                <span class="fw-normal text-primary">
                                     ¿No estás registrado?
-                                    <a href="{{ route('business.register') }}" class="fw-bold text-info ms-1">Crear Cuenta</a>
+                                    <a href="{{ route('business.register') }}" class="text-info">Crear Cuenta</a>
                                 </span>
                             </div>
 
