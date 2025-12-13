@@ -89,8 +89,7 @@ class PlanManagementController extends Controller
 
         Plan::create($validated);
 
-        return redirect()->route('superadmin.plans.index')
-            ->with('success', 'Plan creado correctamente.');
+        return redirect()->route('superadmin.plans.index');
     }
 
     /**

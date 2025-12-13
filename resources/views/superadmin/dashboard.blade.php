@@ -8,10 +8,10 @@
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
             <li class="breadcrumb-item">
                 <a href="#">
-                    <x-icon name="home" />
+                    <x-icon name="nav.home" />
                 </a>
             </li>
-            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+            <li class="breadcrumb-item active" aria-current="page">Inicio</li>
         </ol>
     </nav>
     <div class="d-flex justify-content-between w-100 flex-wrap">
@@ -22,28 +22,7 @@
     </div>
 </div>
 
-<!-- Flash Messages -->
-@if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <x-icon name="success" class="me-2" />
-        {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-
-@if(session('error'))
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <x-icon name="error" class="me-2" />
-        {{ session('error') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-
-{{-- Statistics Cards removidas para estilo minimalista --}}
-
-<!-- Charts Row -->
 <div class="row">
-    <!-- Revenue Chart -->
     <div class="col-12 mb-4">
         <div class="card border-0 shadow">
             <div class="card-header border-bottom d-flex align-items-center justify-content-between">
@@ -57,47 +36,66 @@
     </div>
 </div>
 
-<!-- Top Businesses by Orders -->
 <div class="row">
     <div class="col-12 mb-4">
-        <div class="card border-0 shadow">
+        <div class="card border-0 shadow" style="overflow: visible;">
             <div class="card-header border-bottom">
                 <h2 class="fs-5 fw-bold mb-0">Top Negocios por Órdenes</h2>
             </div>
-            <div class="table-responsive">
-                <table class="table align-items-center table-flush">
-                    <thead class="thead-light">
-                        <tr>
-                            <th class="border-bottom" scope="col">#</th>
-                            <th class="border-bottom" scope="col">Negocio</th>
-                            <th class="border-bottom" scope="col">Órdenes</th>
-                            <th class="border-bottom" scope="col">Estado</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($topBusinessesByOrders as $index => $business)
+            <div class="card-body" style="overflow: visible; padding: 20px 24px;">
+                <div class="table-responsive" style="overflow: visible;">
+                    <table class="table align-items-center table-flush table-hover">
+                        <thead class="thead-light rounded">
                             <tr>
-                                <td class="text-gray-500">{{ $index + 1 }}</td>
-                                <td class="fw-bolder text-gray-500">{{ Str::limit($business->business_name, 25) }}</td>
-                                <td class="fw-bold text-primary">{{ number_format($business->orders_count) }}</td>
-                                <td>
-                                    @if($business->is_active)
-                                        <span class="fw-bold text-success">Activo</span>
-                                    @else
-                                        <span class="fw-bold text-danger">Inactivo</span>
-                                    @endif
-                                </td>
+                                <th class="border-bottom" scope="col">#</th>
+                                <th class="border-bottom" scope="col">Negocio</th>
+                                <th class="border-bottom" scope="col">Órdenes</th>
+                                <th class="border-bottom" scope="col">Estado</th>
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="4" class="text-center py-5">
-                                    <p class="text-gray-600 mb-0">No hay datos disponibles</p>
-                                </td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @forelse($topBusinessesByOrders as $index => $business)
+                                <tr>
+                                    <td class="text-gray-500">
+                                        <small>#{{ $index + 1 }}</small>
+                                    </td>
+                                    <td class="text-gray-900">
+                                        <span class="fw-bold">{{ Str::limit($business->business_name, 25) }}</span>
+                                    </td>
+                                    <td>
+                                        <span class="fw-bold text-primary">{{ number_format($business->orders_count) }}</span>
+                                    </td>
+                                    <td>
+                                        @if($business->is_active)
+                                            <span class="fw-bold text-success">Activo</span>
+                                        @else
+                                            <span class="fw-bold text-danger">Inactivo</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="4" class="text-center py-5">
+                                        <div class="d-flex flex-column align-items-center justify-content-center" style="font-size: 3rem;">
+                                            <x-icon name="state.info" class="text-gray-300 mb-3"/>
+                                            <h6 class="text-gray-500 fw-bold mb-1">No hay datos disponibles</h6>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
             </div>
+            @if(isset($topBusinessesByOrders) && $topBusinessesByOrders->count() > 0)
+            <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-end">
+                <div class="fw-normal small">
+                    Mostrando
+                    <span class="fw-bold">{{ $topBusinessesByOrders->count() }}</span>
+                    {{ $topBusinessesByOrders->count() == 1 ? 'negocio' : 'negocios' }}
+                </div>
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -105,46 +103,64 @@
 {{-- Tabla de órdenes por estado removida para estilo minimalista --}}
 
 <!-- Recent Businesses -->
-<div class="card border-0 shadow mb-4">
-    <div class="card-header">
+<div class="card border-0 shadow mb-4" style="overflow: visible;">
+    <div class="card-header border-bottom">
         <h2 class="fs-5 fw-bold mb-0">Negocios Registrados Recientemente</h2>
     </div>
-    <div class="table-responsive">
-        <table class="table align-items-center table-flush">
-            <thead class="thead-light">
-                <tr>
-                    <th class="border-bottom" scope="col">Negocio</th>
-                    <th class="border-bottom" scope="col">Email</th>
-                    <th class="border-bottom" scope="col">Plan</th>
-                    <th class="border-bottom" scope="col">Fecha Registro</th>
-                    <th class="border-bottom" scope="col">Estado</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($recentBusinesses as $business)
+    <div class="card-body" style="overflow: visible; padding: 20px 24px;">
+        <div class="table-responsive" style="overflow: visible;">
+            <table class="table align-items-center table-flush table-hover">
+                <thead class="thead-light rounded">
                     <tr>
-                        <td class="fw-bolder text-gray-500">{{ $business->business_name }}</td>
-                        <td class="text-gray-900">{{ $business->email }}</td>
-                        <td class="fw-bold text-secondary">{{ $business->plan->name ?? 'Sin plan' }}</td>
-                        <td class="text-gray-500">{{ $business->registration_date?->format('d/m/Y') ?? 'N/A' }}</td>
-                        <td>
-                            @if($business->is_active)
-                                <span class="fw-bold text-success">Activo</span>
-                            @else
-                                <span class="fw-bold text-danger">Inactivo</span>
-                            @endif
-                        </td>
+                        <th class="border-bottom" scope="col">Negocio</th>
+                        <th class="border-bottom" scope="col">Email</th>
+                        <th class="border-bottom" scope="col">Plan</th>
+                        <th class="border-bottom" scope="col">Fecha Registro</th>
+                        <th class="border-bottom" scope="col">Estado</th>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <p class="text-gray-600 mb-0">No hay negocios registrados</p>
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @forelse($recentBusinesses as $business)
+                        <tr>
+                            <td class="text-gray-900">
+                                <span class="fw-bold">{{ $business->business_name }}</span>
+                            </td>
+                            <td class="text-gray-500">{{ $business->email }}</td>
+                            <td>
+                                <span class="fw-bold text-secondary">{{ $business->plan->name ?? 'Sin plan' }}</span>
+                            </td>
+                            <td class="text-gray-500">{{ $business->registration_date?->format('d/m/Y') ?? 'N/A' }}</td>
+                            <td>
+                                @if($business->is_active)
+                                    <span class="fw-bold text-success">Activo</span>
+                                @else
+                                    <span class="fw-bold text-danger">Inactivo</span>
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <div class="d-flex flex-column align-items-center justify-content-center" style="font-size: 3rem;">
+                                    <x-icon name="state.info" class="text-gray-300 mb-3"/>
+                                    <h6 class="text-gray-500 fw-bold mb-1">No hay negocios registrados</h6>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
     </div>
+    @if(isset($recentBusinesses) && $recentBusinesses->count() > 0)
+    <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-end">
+        <div class="fw-normal small">
+            Mostrando
+            <span class="fw-bold">{{ $recentBusinesses->count() }}</span>
+            {{ $recentBusinesses->count() == 1 ? 'negocio' : 'negocios' }}
+        </div>
+    </div>
+    @endif
 </div>
 
 {{-- DESACTIVADO: Recent Support Tickets --}}
@@ -215,7 +231,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 toolbar: { show: false },
                 zoom: { enabled: false }
             },
-            colors: ['#1F2937'],
+            colors: ['#4f46e5'],
             dataLabels: { enabled: false },
             stroke: {
                 curve: 'smooth',

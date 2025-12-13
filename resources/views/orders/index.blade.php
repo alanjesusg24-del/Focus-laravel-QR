@@ -144,7 +144,7 @@
                             <td class="text-center position-static">
                                 <div class="dropdown position-static">
                                     <button class="btn btn-link text-dark m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <x-icon name="action.more" class="icon-xs text-dark" />
+                                        <x-icon name="nav.menu" class="icon-xs text-dark" />
                                     </button>
                                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
 
@@ -154,21 +154,18 @@
                                                 <x-icon name="action.edit" class="text-primary me-2"/> Entregar Orden
                                             </a>
                                         @else
-                                            {{-- Editar solo si está pendiente y NO ligada --}}
+                                            
                                             @if($order->status === 'pending' && !$order->mobile_user_id)
                                                 <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.edit', $order) }}">
                                                     <x-icon name="action.edit" class="text-gray-400 me-2"/> Editar Orden
                                                 </a>
                                             @endif
-
-                                            {{-- Ver detalles solo para órdenes entregadas o canceladas --}}
                                             @if(in_array($order->status, ['delivered', 'cancelled']))
                                                 <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
                                                     <x-icon name="action.view" class="text-gray-400 me-2"/> Ver detalles
                                                 </a>
                                             @endif
 
-                                            {{-- Marcar como Listo si está pendiente y ligada --}}
                                             @if($order->status === 'pending' && $order->mobile_user_id)
                                                 <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
                                                     <x-icon name="state.success" class="text-success me-2"/> Marcar Listo
@@ -178,7 +175,6 @@
                                                 </form>
                                             @endif
 
-                                            {{-- Cancelar solo si está pendiente (ligada o no) --}}
                                             @if($order->status === 'pending')
                                                 <div role="separator" class="dropdown-divider my-1"></div>
                                                 <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">

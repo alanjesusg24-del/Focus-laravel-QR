@@ -22,14 +22,7 @@
                                 <h1 class="mb-0 h3">Inicio de Sesión</h1>
                             </div>
 
-                            @if(session('success'))
-                                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                                    <x-icon name="state.success" class="me-2" />
-                                    <strong>¡Éxito!</strong> {{ session('success') }}
-                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                                </div>
-                            @endif
-
+                            {{-- Flash Messages manejados por SweetAlert en el layout base --}}
 
                             <form method="POST" action="{{ route('business.login') }}" class="mt-4">
                                 @csrf

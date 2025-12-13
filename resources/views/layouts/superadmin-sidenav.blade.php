@@ -47,9 +47,9 @@
       <li class="nav-item {{ request()->routeIs('superadmin.dashboard') ? 'active' : '' }}">
         <a href="{{ route('superadmin.dashboard') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
-            <x-icon name="nav.dashboard" class="me-0" />
+            <x-icon name="nav.home" class="me-0" />
           </span>
-          <span class="sidebar-text">Dashboard</span>
+          <span class="sidebar-text">Inicio</span>
         </a>
       </li>
 

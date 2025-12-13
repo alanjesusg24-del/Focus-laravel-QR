@@ -9,9 +9,7 @@
 
             <div class="d-inline-block position-relative">
 
-                <svg class="icon icon-sm" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"></path>
-                </svg>
+                <x-icon name="notif.bell" class="fs-5 text-primary-600" />
 
                 <span class="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
                   <span class="visually-hidden">unread messages</span>
@@ -66,14 +64,14 @@
           </a>
           <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
             <a class="dropdown-item d-flex align-items-center" href="{{ route('superadmin.profile.index') }}">
-              <x-icon name="user" class="text-gray-400 me-2" />
+              <x-icon name="user.profile" class="dropdown-icon text-gray-400 me-2" />
               Mi Perfil
             </a>
             <div role="separator" class="dropdown-divider my-1"></div>
             <form action="{{ route('superadmin.logout') }}" method="POST">
               @csrf
               <button type="submit" class="dropdown-item d-flex align-items-center">
-                <x-icon name="arrowRight" class="me-2" style="color: #EF4444;" />
+                <x-icon name="auth.logout" class="dropdown-icon text-danger me-2" />
                 Cerrar Sesión
               </button>
             </form>

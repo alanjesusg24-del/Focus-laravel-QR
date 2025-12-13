@@ -39,7 +39,7 @@ return [
     'action.sort' => 'fa-solid fa-sort',
     'action.sort_up' => 'fa-solid fa-sort-up',
     'action.sort_down' => 'fa-solid fa-sort-down',
-    'action.more' => 'fa-solid fa-ellipsis', 
+    'action.more' => 'fa-solid fa-ellipsis',
     'action.refresh' => 'fa-solid fa-arrows-rotate',
     'action.scan' => 'fa-solid fa-qrcode',
 
