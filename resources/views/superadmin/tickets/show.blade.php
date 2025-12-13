@@ -1,10 +1,18 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: show.blade.php
+  Created on: 19/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Ticket #' . $ticket->support_ticket_id)
 
 @section('page')
 <div class="py-4">
-    <!-- Breadcrumb -->
+    {{-- Breadcrumb --}}
     <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
             <li class="breadcrumb-item">
@@ -21,7 +29,7 @@
         </ol>
     </nav>
 
-    <!-- Page Header -->
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <h1 class="h4">Ticket #{{ $ticket->support_ticket_id }}</h1>
@@ -38,7 +46,7 @@
     </div>
 </div>
 
-<!-- Flash Messages -->
+{{-- Flash Messages --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -61,7 +69,7 @@
 
 <div class="row">
     <div class="col-12 col-xl-8">
-        <!-- Ticket Details Card -->
+        {{-- Ticket Details Card --}}
         <div class="card border-0 shadow mb-4">
             <div class="card-header border-bottom">
                 <div class="row align-items-center">
@@ -83,7 +91,7 @@
                 </div>
             </div>
             <div class="card-body">
-                <!-- Info Row -->
+                {{-- Info Row --}}
                 <div class="row mb-4">
                     <div class="col-md-3 mb-3 mb-md-0">
                         <div class="d-flex flex-column">
@@ -126,7 +134,7 @@
                     @endif
                 </div>
 
-                <!-- Description -->
+                {{-- Description --}}
                 <div class="mb-4">
                     <h6 class="fw-bold mb-3">Descripcion del Problema</h6>
                     <div class="bg-light rounded p-3">
@@ -134,7 +142,7 @@
                     </div>
                 </div>
 
-                <!-- Client Attachment -->
+                {{-- Client Attachment --}}
                 @if($ticket->attachment_url)
                 <div class="mb-4">
                     <h6 class="fw-bold mb-3">Archivo Adjunto del Cliente</h6>
@@ -147,7 +155,7 @@
                 </div>
                 @endif
 
-                <!-- Admin Response -->
+                {{-- Admin Response --}}
                 @if($ticket->response)
                 <div class="border-top pt-4">
                     <h6 class="fw-bold mb-3">Tu Respuesta</h6>
@@ -167,7 +175,7 @@
                                 </small>
                                 @endif
 
-                                <!-- Response Attachment -->
+                                {{-- Response Attachment --}}
                                 @if($ticket->response_attachment_url)
                                 <div class="mt-3">
                                     <a href="{{ $ticket->response_attachment_url }}" target="_blank" class="btn btn-primary btn-sm">
@@ -188,7 +196,7 @@
     </div>
 
     <div class="col-12 col-xl-4">
-        <!-- Business Info Card -->
+        {{-- Business Info Card --}}
         <div class="card border-0 shadow mb-4">
             <div class="card-header">
                 <h5 class="mb-0">Informacion del Negocio</h5>
@@ -223,14 +231,14 @@
             </div>
         </div>
 
-        <!-- Actions Card -->
+        {{-- Actions Card --}}
         <div class="card border-0 shadow mb-4">
             <div class="card-header">
                 <h5 class="mb-0">Acciones</h5>
             </div>
             <div class="card-body">
                 @if(!$ticket->response)
-                    <!-- Respond Button -->
+                    {{-- Respond Button --}}
                     <a href="{{ route('superadmin.tickets.respond', $ticket->support_ticket_id) }}" class="btn btn-primary w-100 mb-2">
                         <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
@@ -240,7 +248,7 @@
                     </a>
                 @endif
 
-                <!-- Change Status -->
+                {{-- Change Status --}}
                 @if($ticket->status !== 'in_progress')
                 <form method="POST" action="{{ route('superadmin.tickets.updateStatus', $ticket->support_ticket_id) }}" class="mb-2">
                     @csrf

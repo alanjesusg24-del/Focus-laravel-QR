@@ -1,17 +1,30 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 26/09/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+
+  Changelog:
+  - ID: 1 | Date: 13/10/2025 | 
+    Modified by: Dafne Vanessa Castillo Moreno | 
+    Description: Delete of style inline and moved to CSS section
+--}}
+
 @extends('layouts.base')
 
 @section('title', 'Registrar Negocio - Order QR System')
 
 @section('content')
 <style>
-    /* CETAM Institutional Colors */
     :root {
-        --cetam-primary: #1F2937;      /* Gris oscuro slate */
-        --cetam-secondary: #FF8832 ;    /* Naranja rojizo vibrante */
-        --cetam-tertiary: #31316A;     /* Azul índigo oscuro */
-        --cetam-success: #10B981;      /* Verde */
-        --cetam-warning: #FBA918;      /* Ámbar */
-        --cetam-info: #1E90FF;         /* Azul claro */
+        --cetam-primary: #1F2937;      
+        --cetam-secondary: #FF8832 ;    
+        --cetam-tertiary: #31316A;     
+        --cetam-success: #10B981;      
+        --cetam-warning: #FBA918;     
+        --cetam-info: #1E90FF;         
     }
     .bg-cetam-primary { background-color: var(--cetam-primary) !important; }
     .text-cetam-primary { color: var(--cetam-primary) !important; }

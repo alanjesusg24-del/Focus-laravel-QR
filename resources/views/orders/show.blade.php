@@ -1,3 +1,11 @@
+{{--
+    Company: CETAM
+    Project: FQR
+    File: show.blade.php
+    Created on: 25/11/2025
+    Created by: Alan Jesus Garcia Nava
+    Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Orden ' . $order->folio_number)
@@ -45,9 +53,9 @@
     @endif
 
     <div class="row">
-        <!-- Contenido Principal -->
+        {{-- Main Content --}}
         <div class="col-12 col-xl-8 mb-4">
-            <!-- Tarjeta de Encabezado de Orden -->
+            {{-- Order Header Card --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-body">
                     <div class="row align-items-center">
@@ -86,7 +94,7 @@
                 </div>
             </div>
 
-            <!-- Tarjeta de Descripción -->
+            {{-- Description Card --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Descripción</h5>
@@ -96,14 +104,14 @@
                 </div>
             </div>
 
-            <!-- Tarjeta de Línea de Tiempo de Estados -->
+            {{-- Status Timeline Card --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Historial de Estados</h5>
                 </div>
                 <div class="card-body">
                     <div class="timeline timeline-one-side">
-                        <!-- Creada -->
+                        {{-- Created --}}
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-success">
                                 <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -118,7 +126,7 @@
                             </div>
                         </div>
 
-                        <!-- Lista -->
+                        {{-- Ready --}}
                         @if($order->ready_at)
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-success">
@@ -135,7 +143,7 @@
                         </div>
                         @endif
 
-                        <!-- Entregada -->
+                        {{-- Delivered --}}
                         @if($order->delivered_at)
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-info">
@@ -153,7 +161,7 @@
                         </div>
                         @endif
 
-                        <!-- Cancelada -->
+                        {{-- Cancelled --}}
                         @if($order->cancelled_at)
                         <div class="timeline-block mb-3">
                             <span class="timeline-step badge-danger">
@@ -177,7 +185,7 @@
             </div>
         </div>
 
-        <!-- Barra Lateral -->
+        {{-- Sidebar --}}
         <div class="col-12 col-xl-4">
             @if($order->qr_code_url && !$order->mobile_user_id)
             <div class="card border-0 shadow mb-4">
@@ -196,13 +204,13 @@
             <div class="card border-0 shadow mb-4 border-success">
                 <div class="card-header bg-success text-white">
                     <h5 class="mb-0 d-flex align-items-center">
-                        {{-- Icono de enlace/cadena --}}
+                        {{-- Link/chain icon --}}
                         <x-icon name="link" class="me-2 text-white" /> 
                         Orden Ligada
                     </h5>
                 </div>
                 <div class="card-body text-center py-4">
-                    {{-- Icono Grande de Éxito --}}
+                    {{-- Large Success Icon --}}
                     <x-icon name="success" class="text-success mb-3 display-1" style="font-size: 3rem;" />
                     <p class="text-muted mb-0 fw-bold">
                         Esta orden está ligada a la app móvil del cliente
@@ -212,7 +220,7 @@
             @endif
 
 
-            <!-- Tarjeta de Acciones -->
+            {{-- Actions Card --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header">
                     <h5 class="mb-0">Acciones</h5>
@@ -239,7 +247,7 @@
                         </button>
                     </form>
                     @endif
-                    {{-- ACCIONES COMUNES (Cancelar y Editar) --}}
+                    {{-- Common actions --}}
                     @if(in_array($order->status, ['pending', 'ready']))
                     <button type="button" class="btn btn-danger w-100 mb-2 d-inline-flex align-items-center justify-content-center" data-bs-toggle="modal" data-bs-target="#cancelModal">
                         <x-icon name="action.cancel" class="me-2"/> Cancelar Orden
@@ -254,7 +262,7 @@
     </div>
 </div>
 
-<!-- Modal: Cancelar Orden -->
+<!-- Cancel Order -->
 <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">

@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: success.blade.php
+  Created on: 18/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Pago Exitoso - Sistema de Órdenes QR')

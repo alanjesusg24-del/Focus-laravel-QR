@@ -1,8 +1,10 @@
 {{--
   Company: CETAM
-  Project: Focus QR System
-  File: orders/associate-error.blade.php
-  Description: Vista de error cuando una orden no puede ser asociada vía QR web
+  Project: FQR
+  File: associate-error.blade.php
+  Created on: 28/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 <!DOCTYPE html>
 <html lang="es">
@@ -12,11 +14,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Error - Sistema de Órdenes QR</title>
 
-    <!-- Volt CSS -->
     <link type="text/css" href="{{ asset('css/volt.css') }}" rel="stylesheet">
     <link type="text/css" href="{{ asset('css/cetam-colors.css') }}" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -86,23 +85,19 @@
         <div class="card border-0 shadow-lg">
             <div class="card-body text-center py-5 px-4">
 
-                <!-- Error Icon -->
                 <div class="error-icon">
                     <i class="fas fa-exclamation-triangle"></i>
                 </div>
 
-                <!-- Error Title -->
                 <h2 class="h3 fw-bold text-cetam-danger mb-3">
                     No se pudo procesar la orden
                 </h2>
 
-                <!-- Error Message -->
                 <div class="alert alert-danger bg-cetam-danger text-white border-0 mb-4">
                     <i class="fas fa-info-circle me-2"></i>
                     {{ $message }}
                 </div>
 
-                <!-- Instructions -->
                 <div class="bg-light rounded p-3 mb-4">
                     <p class="text-muted mb-2 small">
                         <i class="fas fa-lightbulb text-warning me-1"></i>
@@ -116,7 +111,6 @@
                     </ul>
                 </div>
 
-                <!-- Actions -->
                 <div class="d-grid gap-2">
                     <button onclick="window.history.back()" class="btn btn-cetam-secondary">
                         <i class="fas fa-arrow-left me-2"></i>
@@ -128,7 +122,6 @@
                     </button>
                 </div>
 
-                <!-- Support Info -->
                 <div class="mt-4">
                     <p class="text-muted small mb-0">
                         ¿Necesitas ayuda?
@@ -141,7 +134,6 @@
             </div>
         </div>
 
-        <!-- CETAM Branding -->
         <div class="text-center mt-4">
             <p class="text-white opacity-75 small mb-0">
                 <i class="fas fa-qrcode me-1"></i>
@@ -150,7 +142,6 @@
         </div>
     </div>
 
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

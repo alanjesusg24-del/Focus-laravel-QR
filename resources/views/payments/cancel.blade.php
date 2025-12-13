@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: footer.blade.php
+  Created on: 14/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Pago Cancelado - Sistema de Órdenes QR')

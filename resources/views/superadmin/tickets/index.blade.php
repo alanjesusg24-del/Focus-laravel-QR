@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 19/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Tickets de Soporte')
@@ -24,7 +32,7 @@
     </div>
 </div>
 
-<!-- Flash Messages -->
+{{-- Flash Messages --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +43,7 @@
     </div>
 @endif
 
-<!-- Filters Card -->
+{{-- Filters Card --}}
 <div class="card card-body border-0 shadow mb-4">
     <form method="GET" action="{{ route('superadmin.tickets.index') }}" id="filterForm">
         <div class="row align-items-end">
@@ -94,7 +102,7 @@
     </form>
 </div>
 
-<!-- Tickets Table -->
+{{-- Tickets Table --}}
 <div class="card border-0 shadow">
     <div class="card-header">
         <div class="row align-items-center">
@@ -222,14 +230,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const tbody = document.querySelector('tbody');
 
-    // Auto-submit para selectores
+    // Auto-submit for selectors
     document.querySelectorAll('.auto-submit').forEach(function(element) {
         element.addEventListener('change', function() {
             filterForm.submit();
         });
     });
 
-    // Búsqueda en tiempo real del lado del cliente
+    // Real-time client-side search
     if (searchInput && tbody) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase().trim();
@@ -238,7 +246,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let noResultsRow = document.getElementById('no-results-row');
 
             rows.forEach(row => {
-                // Ignorar filas vacías o mensajes
+                // Ignore empty rows or messages
                 if (row.querySelector('td[colspan]')) {
                     if (row.id !== 'no-results-row') {
                         row.style.display = 'none';
@@ -246,7 +254,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Buscar en ID, asunto y negocio
+                // Search in ID, subject, and business
                 const ticketId = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
                 const subject = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                 const business = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
@@ -260,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (matches) visibleCount++;
             });
 
-            // Mostrar mensaje de "sin resultados"
+            // Show "no results" message
             if (searchTerm && visibleCount === 0) {
                 if (!noResultsRow) {
                     noResultsRow = document.createElement('tr');
@@ -281,7 +289,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
 
-        // Submit al presionar Enter (búsqueda del servidor)
+        // Submit form on Enter key
         searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 e.preventDefault();

@@ -1,3 +1,12 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 06/10/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
+
 @extends('layouts.business-app')
 
 @section('title', 'Chat de Órdenes')

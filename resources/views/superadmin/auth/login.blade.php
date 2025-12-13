@@ -1,3 +1,12 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: login.blade.php
+  Created on: 12/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
+
 @extends('layouts.base')
 
 @section('title', 'Super Admin Login - Order QR System')
@@ -40,7 +49,6 @@
                 <div class="row justify-content-center form-bg-image">
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="signin-inner my-3 my-lg-0 bg-white shadow-soft border rounded border-gray-300 p-4 p-lg-5 w-100 fmxw-500">
-                            <!-- Logo y Header -->
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <div class="d-flex justify-content-center mb-3">
                                     <div class="bg-superadmin-purple rounded-circle d-flex align-items-center justify-center" style="width: 64px; height: 64px;">
@@ -53,7 +61,7 @@
                                 <p class="text-gray">Acceso restringido - Solo administradores</p>
                             </div>
 
-                            <!-- Success Message -->
+                            {{-- Success Message --}}
                             @if(session('success'))
                                 <div class="alert alert-success alert-dismissible fade show" role="alert">
                                     <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -64,7 +72,7 @@
                                 </div>
                             @endif
 
-                            <!-- Error Messages -->
+                            {{-- Error Messages --}}
                             @if($errors->any())
                                 <div class="alert alert-danger alert-dismissible fade show" role="alert">
                                     <span class="fas fa-bullhorn me-1"></span>
@@ -73,11 +81,11 @@
                                 </div>
                             @endif
 
-                            <!-- Login Form -->
+                            {{-- Login Form --}}
                             <form method="POST" action="{{ route('superadmin.login') }}" class="mt-4">
                                 @csrf
 
-                                <!-- Email -->
+                                {{-- Email --}}
                                 <div class="mb-4">
                                     <label for="email" class="form-label">Correo Electronico</label>
                                     <div class="input-group">
@@ -100,7 +108,7 @@
                                     </div>
                                 </div>
 
-                                <!-- Password -->
+                                {{-- Password --}}
                                 <div class="mb-4">
                                     <label for="password" class="form-label">Contrasena</label>
                                     <div class="input-group">
@@ -114,13 +122,13 @@
                                             class="form-control @error('password') is-invalid @enderror"
                                             id="password"
                                             name="password"
-                                            placeholder=""""""""""
+                                            placeholder=""
                                             required
                                         >
                                     </div>
                                 </div>
 
-                                <!-- Remember Me -->
+                                {{-- Remember Me --}}
                                 <div class="d-flex justify-content-between align-items-center mb-4">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="remember" id="remember">
@@ -130,13 +138,13 @@
                                     </div>
                                 </div>
 
-                                <!-- Submit Button -->
+                                {{-- Submit Button --}}
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-superadmin-purple">Iniciar Sesion</button>
                                 </div>
                             </form>
 
-                            <!-- Credenciales de Prueba -->
+                            {{-- Credenciales de Prueba --}}
                             <div class="alert alert-warning mt-4 mb-0" role="alert">
                                 <div class="d-flex align-items-start">
                                     <svg class="icon icon-xs me-2 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

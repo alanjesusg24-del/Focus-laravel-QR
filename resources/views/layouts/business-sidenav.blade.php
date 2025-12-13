@@ -1,7 +1,14 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: business-sidenav.blade.php
+  Created on: 15/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
+
 <nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
     <div class="sidebar-inner px-2 pt-3">
-
-        {{-- Header Móvil (Sin cambios) --}}
         <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-3">
             <div class="d-flex align-items-center">
                 <div class="avatar-lg me-3">
@@ -28,10 +35,9 @@
             </div>
         </div>
 
-        {{-- Menú Principal --}}
+        {{-- Principal menu --}}
         <ul class="nav flex-column nav-compact pt-3 pt-md-0">
-            
-            {{-- 1. Logo / Marca del Sistema --}}
+            {{-- 1. Logo and Title --}}
             <li class="nav-item mb-2">
                 <a href="{{ route('business.dashboard.index') }}" class="d-flex align-items-center px-2 py-2 text-decoration-none text-white">
                     <img src="{{ asset('assets/img/focus-icon.svg') }}"
@@ -53,7 +59,7 @@
                 </a>
             </li>
 
-            {{-- 3. Órdenes --}}
+            {{-- 3. Orders --}}
             <li class="nav-item {{ request()->routeIs('business.orders.*') ? 'active' : '' }}">
                 <a href="{{ route('business.orders.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
                     <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
@@ -63,7 +69,7 @@
                 </a>
             </li>
 
-            {{-- 4. Suscripción --}}
+            {{-- 4. Suscription --}}
             <li class="nav-item {{ request()->routeIs('business.payments.*') ? 'active' : '' }}">
                 <a href="{{ route('business.payments.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
                     <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
@@ -73,7 +79,7 @@
                 </a>
             </li>
 
-            {{-- 5. Perfil --}}
+            {{-- 5. Profile --}}
             <li class="nav-item {{ request()->routeIs('business.profile.*') ? 'active' : '' }}">
                 <a href="{{ route('business.profile.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
                     <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">

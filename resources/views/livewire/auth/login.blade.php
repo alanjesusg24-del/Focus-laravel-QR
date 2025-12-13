@@ -1,11 +1,6 @@
- 
-{{-- Nota Livewire: esta vista debe tener UN único elemento raíz --}}
-{{-- El layout se aplica desde el componente con ->layout('layouts.app') --}}
-
 <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
     <div class="container">
-            {{-- <p class="text-center"><a href="{{ route('dashboard') }}" class="text-gray-700"><i
-                class="fas fa-angle-left me-2"></i> Back to homepage</a></p> --}}
+
         <div wire:ignore.self class="row justify-content-center form-bg-image"
             data-background-lg="/assets/img/illustrations/signin.svg">
             <div class="col-12 d-flex align-items-center justify-content-center">
@@ -20,7 +15,6 @@
                             </p>
                         </div>
                         <form wire:submit.prevent="login" action="#" class="mt-4" method="POST">
-                            <!-- Form -->
                             <div class="form-group mb-4">
                                 <label for="email">Your Email</label>
                                 <div class="input-group">
@@ -38,9 +32,7 @@
                                 @error('email') <div wire:key="form" class="invalid-feedback"> {{$message}} </div>
                                 @enderror
                             </div>
-                            <!-- End of Form -->
                             <div class="form-group">
-                                <!-- Form -->
                                 <div class="form-group mb-4">
                                     <label for="password">Your Password</label>
                                     <div class="input-group">
@@ -56,7 +48,6 @@
                                     </div>
                                     @error('password') <div class="invalid-feedback"> {{ $message }} </div> @enderror
                                 </div>
-                                <!-- End of Form -->
                                 <div class="d-flex justify-content-between align-items-top mb-4">
                                     <div class="form-check">
                                         <input wire:model="remember_me" class="form-check-input" type="checkbox"

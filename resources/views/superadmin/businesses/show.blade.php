@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: show.blade.php
+  Created on: 12/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Detalles del Negocio - ' . $business->business_name)
@@ -40,7 +48,6 @@
     </div>
 @endif
 
-<!-- Statistics -->
 <div class="row">
     <div class="col-12 col-sm-6 col-xl-3 mb-4">
         <div class="card border-0 shadow">
@@ -126,7 +133,6 @@
 </div>
 
 <div class="row">
-    <!-- Business Information -->
     <div class="col-12 col-lg-6 mb-4">
         <div class="card border-0 shadow h-100">
             <div class="card-header">
@@ -203,7 +209,6 @@
         </div>
     </div>
 
-    <!-- Plan Information -->
     <div class="col-12 col-lg-6 mb-4">
         <div class="card border-0 shadow h-100">
             <div class="card-header">
@@ -258,7 +263,6 @@
     </div>
 </div>
 
-<!-- Recent Orders -->
 <div class="card border-0 shadow mb-4">
     <div class="card-header">
         <h2 class="fs-5 fw-bold mb-0">Órdenes Recientes</h2>
@@ -305,7 +309,6 @@
     </div>
 </div>
 
-<!-- Recent Payments -->
 <div class="card border-0 shadow">
     <div class="card-header">
         <h2 class="fs-5 fw-bold mb-0">Pagos Recientes</h2>

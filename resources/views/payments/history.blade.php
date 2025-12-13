@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: history.blade.php
+  Created on: 15/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Historial de Pagos - Sistema de Órdenes QR')

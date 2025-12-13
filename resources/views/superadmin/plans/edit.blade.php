@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: edit.blade.php
+  Created on: 15/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Editar Plan - ' . $plan->name)
@@ -46,13 +54,13 @@
     <div class="row justify-content-center">
         <div class="col-12 col-lg-10 col-xl-8">
 
-            <!-- Información Básica -->
+             {{-- Basic Information --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom">
                     <h2 class="fs-5 fw-bold mb-0">Información Básica</h2>
                 </div>
                 <div class="card-body">
-                    <!-- Nombre del Plan -->
+                    {{-- Plan Name --}}
                     <div class="mb-4">
                         <label for="name" class="form-label fw-bold">Nombre del Plan <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name', $plan->name) }}" required>
@@ -61,7 +69,7 @@
                         @enderror
                     </div>
 
-                    <!-- Duración -->
+                     {{-- Duration --}}
                     <div class="mb-4">
                         <label for="duration_months" class="form-label fw-bold">Duración (meses) <span class="text-danger">*</span></label>
                         <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_months" onchange="updateDurationDays()">
@@ -77,7 +85,7 @@
                         @enderror
                     </div>
 
-                    <!-- Descripción -->
+                    {{-- Description --}}
                     <div class="mb-4">
                         <label for="description" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
                         <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" required>{{ old('description', $plan->description) }}</textarea>
@@ -86,7 +94,7 @@
                         @enderror
                     </div>
 
-                    <!-- Retención de datos -->
+                    {{-- Data Retention --}}
                     <div class="mb-4">
                         <label for="retention_months" class="form-label fw-bold">Retención de datos (meses) <span class="text-danger">*</span></label>
                         <select class="form-select @error('retention_days') is-invalid @enderror" id="retention_months" onchange="updateRetentionDays()">
@@ -103,7 +111,7 @@
                         @enderror
                     </div>
 
-                    <!-- Estado del Plan -->
+                    {{-- Plan Status --}}
                     <div class="mb-4">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $plan->is_active) ? 'checked' : '' }}>
@@ -114,7 +122,7 @@
                 </div>
             </div>
 
-            <!-- Módulo de Chat -->
+            {{-- Chat Module --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom d-flex align-items-center justify-content-between">
                     <h2 class="fs-5 fw-bold mb-0">Módulo de Chat</h2>
@@ -129,7 +137,7 @@
                 </div>
             </div>
 
-            <!-- Sistema de Re-Alertas -->
+            {{-- Alert System --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom d-flex align-items-center justify-content-between">
                     <h2 class="fs-5 fw-bold mb-0">Sistema de Re-Alertas</h2>
@@ -143,25 +151,25 @@
 
                     <div id="realert-fields" style="display: {{ old('has_realerts', $plan->has_realerts) ? 'block' : 'none' }};" class="mt-4">
 
-                        <!-- Días -->
+                        {{-- Days --}}
                         <div class="mb-4">
                             <label for="realert_days" class="form-label fw-bold">Días</label>
                             <input type="number" class="form-control" id="realert_days" name="realert_days" value="{{ old('realert_days', $plan->realert_days ?? 0) }}" min="0" max="30" onchange="updateIntervalMinutes()">
                         </div>
 
-                        <!-- Horas -->
+                        {{-- Hours --}}
                         <div class="mb-4">
                             <label for="realert_hours" class="form-label fw-bold">Horas</label>
                             <input type="number" class="form-control" id="realert_hours" name="realert_hours" value="{{ old('realert_hours', $plan->realert_hours ?? 0) }}" min="0" max="23" onchange="updateIntervalMinutes()">
                         </div>
 
-                        <!-- Minutos -->
+                        {{-- Minutes --}}
                         <div class="mb-4">
                             <label for="realert_minutes" class="form-label fw-bold">Minutos</label>
                             <input type="number" class="form-control" id="realert_minutes" name="realert_minutes" value="{{ old('realert_minutes', $plan->realert_minutes ?? 15) }}" min="1" max="59" onchange="updateIntervalMinutes()">
                         </div>
 
-                        <!-- Máximo de alertas -->
+                        {{-- Maximum Alerts --}}
                         <div class="mb-4">
                             <label for="realert_max_count" class="form-label fw-bold">Máximo de alertas</label>
                             <input type="number" class="form-control" id="realert_max_count" name="realert_max_count" value="{{ old('realert_max_count', $plan->realert_max_count ?? 4) }}" min="1" max="20">
@@ -177,7 +185,7 @@
                 </div>
             </div>
 
-            <!-- Resumen de Precio -->
+            {{-- Price Summary --}}
             <div class="card border-0 shadow mb-4 bg-primary">
                 <div class="card-body text-white">
                     <div class="row align-items-center">
@@ -197,11 +205,8 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Campo oculto para el precio calculado -->
             <input type="hidden" id="price" name="price" value="{{ old('price', $plan->price) }}">
 
-            <!-- Botones de Acción -->
             <div class="card border-0 shadow">
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -252,7 +257,7 @@
         }
 
         document.getElementById('retention_days').value = days;
-        calculatePrice(); // Recalcular precio cuando cambia la retención
+        calculatePrice(); 
     }
 
     // Calculate retention price (1 month is included, additional months have cost)
@@ -276,31 +281,31 @@
         if (months === 1) {
             return 50;
         } else if (months === 2) {
-            return 80; // $40/mes (20% descuento)
+            return 80; 
         } else if (months === 3) {
-            return 105; // $35/mes (30% descuento)
+            return 105; 
         } else if (months === 6) {
-            return 180; // $30/mes (40% descuento)
+            return 180; 
         } else if (months === 12) {
-            return 300; // $25/mes (50% descuento)
+            return 300; 
         }
         return months * CHAT_PRICE_PER_MONTH;
     }
 
     // Calculate re-alerts base price based on frequency
     function calculateRealertsBasePrice(intervalMinutes) {
-        if (intervalMinutes >= 1440) { // 1 día o más
-            return 10; // $10 por mes
-        } else if (intervalMinutes >= 60) { // 1 hora o más
-            return 20; // $20 por mes
-        } else if (intervalMinutes >= 30) { // 30 minutos o más
-            return 30; // $30 por mes
-        } else if (intervalMinutes >= 15) { // 15 minutos o más
-            return 40; // $40 por mes
-        } else if (intervalMinutes >= 5) { // 5-14 minutos
-            return 50; // $50 por mes
-        } else { // Menos de 5 minutos
-            return 70; // $70 por mes (muy frecuente)
+        if (intervalMinutes >= 1440) { 
+            return 10; 
+        } else if (intervalMinutes >= 60) { 
+            return 20; 
+        } else if (intervalMinutes >= 30) { 
+            return 30; 
+        } else if (intervalMinutes >= 15) { 
+            return 40; 
+        } else if (intervalMinutes >= 5) { 
+            return 50; 
+        } else { 
+            return 70; 
         }
     }
 
@@ -311,13 +316,13 @@
         if (months === 1) {
             return basePrice;
         } else if (months === 2) {
-            return Math.round(basePrice * 1.6); // 20% descuento
+            return Math.round(basePrice * 1.6); 
         } else if (months === 3) {
-            return Math.round(basePrice * 2.1); // 30% descuento
+            return Math.round(basePrice * 2.1); 
         } else if (months === 6) {
-            return Math.round(basePrice * 3.6); // 40% descuento
+            return Math.round(basePrice * 3.6); 
         } else if (months === 12) {
-            return Math.round(basePrice * 6); // 50% descuento
+            return Math.round(basePrice * 6); 
         }
         return basePrice * months;
     }

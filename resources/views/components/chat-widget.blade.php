@@ -199,7 +199,7 @@
     </div>
 </div>
 
-{{-- Toggle Button (cuando está cerrado) --}}
+{{-- Toggle Button--}}
 <button id="chat-toggle-btn"
         class="fixed top-24 bg-blue-600 hover:bg-blue-700 text-white rounded-r-lg px-3 py-4 shadow-lg transition-all duration-200 z-40"
         style="left: 256px;"
@@ -284,9 +284,6 @@
         document.getElementById('chat-order-number').textContent = orderNumber;
         document.getElementById('chat-customer-name').textContent = customerName;
         switchTab('chat');
-
-        // TODO: Cargar mensajes reales de la orden desde API
-        // fetchOrderMessages(orderNumber);
     }
 
     function sendMessage(event) {
@@ -302,9 +299,6 @@
 
         // Clear input
         input.value = '';
-
-        // TODO: Enviar mensaje a API
-        // sendMessageToAPI(orderNumber, message);
     }
 
     function addMessageToChat(message, sender) {
@@ -356,12 +350,5 @@
             badge.classList.remove('hidden');
         }
     });
-
-    // TODO: Integration points
-    // - fetchActiveOrders() - Cargar órdenes activas desde API
-    // - fetchOrderMessages(orderNumber) - Cargar mensajes de una orden
-    // - sendMessageToAPI(orderNumber, message) - Enviar mensaje a cliente
-    // - WebSocket listener for new messages
-    // - Update order status when changed
 </script>
 @endif

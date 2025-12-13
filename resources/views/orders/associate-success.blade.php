@@ -1,9 +1,12 @@
 {{--
   Company: CETAM
-  Project: Focus QR System
-  File: orders/associate-success.blade.php
-  Description: Vista de confirmación cuando una orden es asociada exitosamente vía QR web
+  Project: FQR
+  File: associate-success.blade.php
+  Created on: 28/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -12,11 +15,8 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Orden Tomada - Sistema de Órdenes QR</title>
 
-    <!-- Volt CSS -->
     <link type="text/css" href="{{ asset('css/volt.css') }}" rel="stylesheet">
     <link type="text/css" href="{{ asset('css/cetam-colors.css') }}" rel="stylesheet">
-
-    <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
@@ -95,19 +95,16 @@
         <div class="card border-0 shadow-lg">
             <div class="card-body text-center py-5 px-4">
 
-                <!-- Success Icon -->
                 <div class="success-icon">
                     <svg class="checkmark" viewBox="0 0 52 52">
                         <path d="M14 27l8 8 16-16"/>
                     </svg>
                 </div>
 
-                <!-- Success Title -->
                 <h2 class="h3 fw-bold text-cetam-primary mb-3">
                     {{ $message }}
                 </h2>
 
-                <!-- Order Details -->
                 <div class="alert alert-success bg-cetam-success text-white border-0 mb-4">
                     <div class="d-flex align-items-center justify-content-center">
                         <i class="fas fa-barcode me-2 fs-4"></i>
@@ -124,7 +121,6 @@
                     </div>
                 </div>
 
-                <!-- Description if available -->
                 @if($order->description)
                 <div class="mb-4">
                     <p class="text-muted mb-1"><small>Descripción:</small></p>
@@ -132,7 +128,6 @@
                 </div>
                 @endif
 
-                <!-- Instructions -->
                 <div class="bg-light rounded p-3 mb-4">
                     <p class="text-muted mb-2 small">
                         <i class="fas fa-info-circle text-cetam-info me-1"></i>
@@ -141,22 +136,19 @@
                     <p class="text-gray-700 mb-0 small">
                         La orden ha sido asociada correctamente. Recibirás una notificación cuando esté lista para recoger.
                     </p>
-                </div>
+                </div> 
 
-                <!-- Action -->
                 <button onclick="window.close()" class="btn btn-cetam-primary btn-lg w-100">
                     <i class="fas fa-check me-2"></i>
                     Cerrar
                 </button>
 
-                <!-- Footer Info -->
                 <p class="text-muted mt-4 mb-0 small">
                     Asociada el {{ $order->associated_at->format('d/m/Y H:i') }}
                 </p>
             </div>
         </div>
 
-        <!-- CETAM Branding -->
         <div class="text-center mt-4">
             <p class="text-white opacity-75 small mb-0">
                 <i class="fas fa-qrcode me-1"></i>
@@ -165,10 +157,8 @@
         </div>
     </div>
 
-    <!-- Bootstrap Bundle JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Auto-close after 10 seconds (optional) -->
     <script>
         // Uncomment to enable auto-close
         // setTimeout(() => {

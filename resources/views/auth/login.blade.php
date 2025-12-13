@@ -1,9 +1,10 @@
 {{--
-    Company: CETAM
-    Project: FQR
-    File: auth/login.blade.php
-    Description: Login page matching user's original design (Clean & Centered).
-    Standard: Section 7.1 & 8.2
+  Company: CETAM
+  Project: FQR
+  File: login.blade.php
+  Created on: 08/10/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 @extends('layouts.base')
 
@@ -21,8 +22,6 @@
                             <div class="text-center text-md-center mb-4 mt-md-0">
                                 <h1 class="mb-3 h3 fw-bold text-primary">Inicia sesión en Focus</h1>
                             </div>
-
-                            {{-- Flash Messages manejados por SweetAlert en el layout base --}}
 
                             <form method="POST" action="{{ route('business.login') }}" class="mt-4">
                                 @csrf

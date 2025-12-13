@@ -1,9 +1,10 @@
 {{--
-    Company: CETAM
-    Project: SuperAdmin System
-    File: profile/index.blade.php
-    Created on: 11/12/2025
-    Description: Vista de perfil del super administrador.
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 18/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 @extends('layouts.superadmin-app')
 

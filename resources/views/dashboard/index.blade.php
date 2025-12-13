@@ -1,10 +1,18 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 05/08/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Reportes - Sistema de Órdenes QR')
 
 @section('page')
 <div class="py-4">
-    <!-- Page Header -->
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
@@ -20,7 +28,7 @@
         </div>
     </div>
 
-    <!-- Filtro de Rango de Fechas -->
+    {{-- Date Range Filter --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body">
             <form method="GET" action="{{ route('business.dashboard.index') }}" class="row align-items-end g-3">
@@ -51,9 +59,9 @@
         </div>
     </div>
 
-    <!-- Métricas Principales -->
+    {{-- Main Metrics --}}
     <div class="row">
-        <!-- Total de Órdenes -->
+        {{-- Total Orders --}}
         <div class="col-12 col-sm-6 col-xl-3 mb-4">
             <div class="card border-0 shadow">
                 <div class="card-body">
@@ -69,7 +77,7 @@
             </div>
         </div>
 
-        <!-- Órdenes Completadas -->
+        {{-- Completed Orders --}}
         <div class="col-12 col-sm-6 col-xl-3 mb-4">
             <div class="card border-0 shadow">
                 <div class="card-body">
@@ -85,7 +93,7 @@
             </div>
         </div>
 
-        <!-- Órdenes Canceladas -->
+        {{-- Cancelled Orders --}}
         <div class="col-12 col-sm-6 col-xl-3 mb-4">
             <div class="card border-0 shadow">
                 <div class="card-body">
@@ -101,7 +109,7 @@
             </div>
         </div>
 
-        <!-- Tiempo Promedio -->
+        {{-- Average Time --}}
         <div class="col-12 col-sm-6 col-xl-3 mb-4">
             <div class="card border-0 shadow">
                 <div class="card-body">
@@ -118,9 +126,9 @@
         </div>
     </div>
 
-    <!-- Gráficas de Análisis -->
+    {{-- Analysis Charts --}}
     <div class="row">
-        <!-- Órdenes por Día -->
+        {{-- Orders per Day --}}
         <div class="col-12 mb-4">
             <div class="card border-0 shadow h-100">
                 <div class="card-header">
@@ -133,9 +141,9 @@
         </div>
     </div>
 
-    <!-- Estadísticas Adicionales -->
+    {{-- Additional Statistics --}}
     <div class="row">
-        <!-- Órdenes por Hora del Día -->
+        {{-- Orders per Hour of the Day --}}
         <div class="col-12 col-lg-6 mb-4">
             <div class="card border-0 shadow h-100">
                 <div class="card-header">
@@ -178,7 +186,7 @@
             </div>
         </div>
 
-        <!-- Órdenes por Día de la Semana -->
+        {{-- Orders per Day of the Week --}}
         <div class="col-12 col-lg-6 mb-4">
             <div class="card border-0 shadow h-100">
                 <div class="card-header">
@@ -218,7 +226,7 @@
         </div>
     </div>
 
-    <!-- Métricas de Adopción Móvil -->
+    {{-- Mobile Adoption Metrics --}}
     <div class="row">
         <div class="col-12 mb-4">
             <div class="card border-0 shadow">
@@ -261,7 +269,6 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Orders per day data:', ordersPerDayData);
     console.log('Orders per day categories:', ordersPerDayCategories);
 
-    // Gráfica de Órdenes por Día
     const ordersChartElement = document.querySelector("#ordersPerDayChart");
     if (ordersChartElement && ordersPerDayData.length > 0 && ordersPerDayData.some(val => val > 0)) {
         const ordersPerDayOptions = {

@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: edit.blade.php
+  Created on: 08/10/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Editar Perfil')
@@ -359,7 +367,7 @@
         // Initialize Places Autocomplete
         const searchInput = document.getElementById('searchInput');
         autocomplete = new google.maps.places.Autocomplete(searchInput, {
-            componentRestrictions: { country: 'mx' }, // Restringir a México
+            componentRestrictions: { country: 'mx' }, 
             fields: ['formatted_address', 'geometry', 'name']
         });
 
@@ -480,7 +488,6 @@
             console.log('Longitude:', lng);
             console.log('Address:', addr);
 
-            // Verificar que no estén vacíos o sean 0 (convertir a número para verificar)
             const latNum = parseFloat(lat);
             const lngNum = parseFloat(lng);
 

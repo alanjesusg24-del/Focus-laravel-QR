@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: show.blade.php
+  Created on: 15/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Detalle del Plan')

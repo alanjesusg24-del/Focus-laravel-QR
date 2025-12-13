@@ -1,3 +1,12 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 24/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
+
 <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0" style="padding-top: 0 !important;">
   <div class="container-fluid px-0">
     <div class="d-flex justify-content-end w-100" id="navbarSupportedContent">

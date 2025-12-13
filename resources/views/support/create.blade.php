@@ -1,10 +1,17 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: create.blade.php
+  Created on: 01/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Crear Ticket de Soporte - Order QR System')
 
 @section('page')
 <div class="py-4">
-    <!-- Page Header -->
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
@@ -27,7 +34,7 @@
         </div>
     </div>
 
-    <!-- Validation Errors -->
+    {{-- Display Validation Errors --}}
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -43,7 +50,7 @@
         </div>
     @endif
 
-    <!-- Create Ticket Form -->
+    {{-- Create Ticket Form --}}
     <div class="row">
         <div class="col-12 col-xl-8 mx-auto">
             <div class="card border-0 shadow">
@@ -54,10 +61,10 @@
                     <form action="{{ route('business.support.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
-                        <!-- Hidden Priority (always medium) -->
+                        {{-- Hidden Priority (always medium) --}}
                         <input type="hidden" name="priority" value="medium">
 
-                        <!-- Subject -->
+                        {{-- Subject --}}
                         <div class="mb-4">
                             <label for="subject" class="form-label">Asunto <span class="text-danger">*</span></label>
                             <input type="text"
@@ -74,7 +81,7 @@
                             <small class="form-text text-muted">Maximo 255 caracteres</small>
                         </div>
 
-                        <!-- Description -->
+                        {{-- Description --}}
                         <div class="mb-4">
                             <label for="description" class="form-label">Descripcion del Problema <span class="text-danger">*</span></label>
                             <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}"
@@ -92,7 +99,7 @@
                             </small>
                         </div>
 
-                        <!-- Attachment -->
+                        {{-- Attachment --}}
                         <div class="mb-4">
                             <label for="attachment" class="form-label">Adjuntar Archivo (Opcional)</label>
                             <input type="file"
@@ -110,7 +117,7 @@
                                 Formatos permitidos: JPG, PNG, PDF. Tamano maximo: 5MB
                             </small>
 
-                            <!-- Preview -->
+                            {{-- Preview --}}
                             <div id="filePreview" class="mt-3 d-none">
                                 <div class="card bg-light">
                                     <div class="card-body p-3">
@@ -133,7 +140,7 @@
                             </div>
                         </div>
 
-                        <!-- Help Text -->
+                        {{-- Help Text --}}
                         <div class="alert alert-info d-flex align-items-center" role="alert">
                             <svg class="icon icon-sm me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -149,7 +156,7 @@
                             </div>
                         </div>
 
-                        <!-- Action Buttons -->
+                        {{-- Action Buttons --}}
                         <div class="d-flex justify-content-between align-items-center mt-4">
                             <a href="{{ route('business.support.index') }}" class="btn btn-light">
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -196,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
     fileInput.addEventListener('change', function(e) {
         if (this.files && this.files[0]) {
             const file = this.files[0];
-            const size = (file.size / 1024 / 1024).toFixed(2); // Convert to MB
+            const size = (file.size / 1024 / 1024).toFixed(2);
 
             fileName.textContent = file.name;
             fileSize.textContent = size + ' MB';

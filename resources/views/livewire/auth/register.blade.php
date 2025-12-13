@@ -1,10 +1,6 @@
  
-{{-- Nota Livewire: esta vista debe tener UN único elemento raíz --}}
-{{-- El layout se aplica desde el componente con ->layout('layouts.app') --}}
-
 <section class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
     <div class="container">
-                {{-- <p class="text-center"><a href="{{ route('dashboard') }}" class="text-gray-700"><i class="fas fa-angle-left me-2"></i> Back to homepage</a></p> --}}
         <div wire:ignore.self class="row justify-content-center form-bg-image" data-background-lg="/assets/img/illustrations/signin.svg">
             <div class="col-12 d-flex align-items-center justify-content-center">
                 <div class="bg-white shadow border-0 rounded border-light p-4 p-lg-5 w-100 fmxw-500">
@@ -12,7 +8,6 @@
                                 <h1 class="mb-0 h3">Create Account</h1>
                             </div>
                             <form wire:submit.prevent="register" action="#" method="POST">
-                                <!-- Form -->
                                 <div class="form-group mt-4 mb-4">
                                     <label for="email">Your Email</label>
                                     <div class="input-group">
@@ -21,9 +16,7 @@
                                     </div>
                                     @error('email') <div class="invalid-feedback"> {{ $message }} </div> @enderror 
                                 </div>
-                                <!-- End of Form -->
                                 <div class="form-group">
-                                    <!-- Form -->
                                     <div class="form-group mb-4">
                                         <label for="password">Your Password</label>
                                         <div class="input-group">
@@ -32,8 +25,6 @@
                                         </div>  
                                         @error('password') <div class="invalid-feedback"> {{ $message }} </div> @enderror
                                     </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
                                     <div class="form-group mb-4">
                                         <label for="confirm_password">Confirm Password</label>
                                         <div class="input-group">
@@ -41,7 +32,6 @@
                                             <input wire:model.lazy="passwordConfirmation" type="password" placeholder="Confirm Password" class="form-control" id="confirm_password" required>
                                         </div>  
                                     </div>
-                                    <!-- End of Form -->
                                     <div class="form-check mb-4">
                                         <input class="form-check-input" type="checkbox" value="" id="terms" required>
                                         <label class="form-check-label fw-normal mb-0" for="terms">

@@ -1,9 +1,10 @@
 {{--
-    Company: CETAM
-    Project: SuperAdmin System
-    File: index.blade.php
-    Created on: 11/12/2025
-    Description: Vista principal para la gestión y listado de negocios registrados.
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 12/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 @extends('layouts.superadmin-app')
 
@@ -174,9 +175,9 @@
             @if($businesses->hasPages())
                 {{ $businesses->links('vendor.pagination.volt-custom') }}
             @else
-                {{-- Espacio vacío a la izquierda cuando no hay paginación --}}
+                {{-- Empty space on the left when there is no pagination --}}
                 <div></div>
-                {{-- Mensaje de conteo cuando no hay paginación --}}
+                {{-- Count message when there is no pagination --}}
                 @if($businesses->total() > 0)
                     <div class="fw-normal small">
                         Mostrando
@@ -200,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const tbody = document.querySelector('tbody');
 
-    // Búsqueda en tiempo real del lado del cliente
+    // Real-time client-side search
     if (searchInput && tbody) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase().trim();
@@ -216,7 +217,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Buscar en: ID, Nombre, RFC, Email, Teléfono
+                // Search in: ID, Name, RFC, Email, Phone
                 const id = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
                 const businessNameCell = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                 const email = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';

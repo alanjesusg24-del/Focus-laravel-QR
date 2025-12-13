@@ -1,3 +1,11 @@
+{{--
+    Company: CETAM
+    Project: FQR
+    File: edit.blade.php
+    Created on: 25/11/2025
+    Created by: Dafne Vanessa Castillo Moreno
+    Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Editar Orden ' . $order->folio_number)
@@ -5,7 +13,6 @@
 @section('page')
 <div class="py-4">
     <div class="row">
-        {{-- CAMBIO: Usamos col-12 para estandarizar con la vista 'Crear' --}}
         <div class="col-12">
             
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center mb-4">
@@ -41,7 +48,6 @@
                         <div class="col">
                             <h3 class="h5 mb-2">{{ $order->folio_number }}</h3>
                             <p class="text-gray-600 mb-0 d-flex align-items-center">
-                                {{-- Si tienes un x-icon para reloj/calendario úsalo aquí, si no, dejé el SVG original para no romper el diseño --}}
                                 <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path></svg>
                                 Creada el {{ $order->created_at->format('d/m/Y \a \l\a\s H:i') }}
                             </p>

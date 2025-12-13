@@ -1,8 +1,10 @@
 {{--
-    Company: CETAM
-    Project: SuperAdmin System
-    File: payments/index.blade.php
-    Description: Vista principal para la gestión de pagos y suscripciones.
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 10/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 @extends('layouts.superadmin-app')
 
@@ -34,7 +36,7 @@
 
             <div class="col-12 d-flex align-items-center flex-wrap gap-3">
 
-                {{-- 1. Buscador --}}
+                {{-- 1. Search --}}
                 <div class="input-group" style="max-width: 350px;">
                     <span class="input-group-text bg-white border-end-0">
                         <x-icon name="action.search" class="text-gray-500" />
@@ -154,9 +156,9 @@
             @if($payments->hasPages())
                 {{ $payments->links('vendor.pagination.volt-custom') }}
             @else
-                {{-- Espacio vacío a la izquierda cuando no hay paginación --}}
+                {{-- Empty space on the left when there is no pagination --}}
                 <div></div>
-                {{-- Mensaje de conteo cuando no hay paginación --}}
+                {{-- Count message when there is no pagination --}}
                 @if($payments->total() > 0)
                     <div class="fw-normal small">
                         Mostrando
@@ -180,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const tbody = document.querySelector('tbody');
 
-    // Búsqueda en tiempo real del lado del cliente
+    // Search in real-time
     if (searchInput && tbody) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase().trim();
@@ -196,7 +198,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Buscar en: ID, Negocio, Plan, Monto, Fecha
+                // Search in: ID, Business, Plan, Amount, Date
                 const id = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
                 const businessName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                 const planName = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';

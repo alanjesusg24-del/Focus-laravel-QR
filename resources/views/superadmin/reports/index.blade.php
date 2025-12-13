@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 19/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Reportes y Estadísticas')
@@ -24,7 +32,7 @@
     </div>
 </div>
 
-<!-- Stats Cards Row 1 -->
+{{-- Stats Cards Row 1 --}}
 <div class="row">
     <div class="col-12 col-sm-6 col-xl-4 mb-4">
         <div class="card border-0 shadow">
@@ -105,9 +113,9 @@
     </div>
 </div>
 
-<!-- Charts Row -->
+{{-- Charts Row --}}
 <div class="row">
-    <!-- Orders by Status -->
+    {{-- Orders by Status --}}
     <div class="col-12 col-lg-6 mb-4">
         <div class="card border-0 shadow">
             <div class="card-header">
@@ -176,7 +184,7 @@
         </div>
     </div>
 
-    <!-- Support Tickets -->
+    {{-- Support Tickets --}}
     <div class="col-12 col-lg-6 mb-4">
         <div class="card border-0 shadow">
             <div class="card-header">
@@ -218,7 +226,7 @@
     </div>
 </div>
 
-<!-- Revenue by Month -->
+{{-- Revenue by Month --}}
 <div class="row">
     <div class="col-12 mb-4">
         <div class="card border-0 shadow">
@@ -249,7 +257,7 @@
     </div>
 </div>
 
-<!-- Top Businesses -->
+{{-- Top Businesses --}}
 <div class="row">
     <div class="col-12 mb-4">
         <div class="card border-0 shadow">

@@ -1,17 +1,10 @@
 {{--
-============================================
-CETAM - SuperAdmin Application Layout
-============================================
-
-@project     Centro de Servicios (CS)
-@file        superadmin-app.blade.php
-@description Layout principal para panel de super administrador
-@author      CETAM Dev Team
-@created     2025-11-21
-@version     1.0.0
-@copyright   CETAM © 2025
-
-============================================
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 21/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 
 @extends('layouts.base')
@@ -51,10 +44,10 @@ CETAM - SuperAdmin Application Layout
         @else
             {{ $slot ?? '' }}
         @endif
-        {{-- Footer alternativo --}}
+        {{-- Alternate Footer --}}
         @include('layouts.footer2')
     @else
-        {{-- Fallback: contenido plano --}}
+        {{-- Fallback: plain content --}}
         @hasSection('page')
             @yield('page')
         @else

@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 21/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 <nav class="navbar navbar-dark navbar-theme-danger px-4 col-12 d-lg-none">
   <a class="navbar-brand me-lg-5" href="{{ route('superadmin.dashboard') }}">
     <span class="text-white">Super Administrador - Order QR</span>

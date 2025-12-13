@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: dashboard.blade.php
+  Created on: 15/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Dashboard - Super Administrador')
@@ -100,9 +108,7 @@
     </div>
 </div>
 
-{{-- Tabla de órdenes por estado removida para estilo minimalista --}}
 
-<!-- Recent Businesses -->
 <div class="card border-0 shadow mb-4" style="overflow: visible;">
     <div class="card-header border-bottom">
         <h2 class="fs-5 fw-bold mb-0">Negocios Registrados Recientemente</h2>
@@ -206,7 +212,7 @@
     </div>
 </div> --}}
 
-<!-- ApexCharts Scripts -->
+
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {

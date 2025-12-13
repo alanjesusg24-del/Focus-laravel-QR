@@ -1,16 +1,15 @@
 {{--
   Company: CETAM
-  Project: Focus QR System
+  Project: FQR
   File: register-wizard.blade.php
   Created on: 03/12/2025
-  Created by: Vane
-  Approved by:
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 
   Changelog:
-  - ID: 1 | Date: 03/12/2025
-    Modified by: Vane
-    Description: Wizard de registro de 3 pasos. Ajuste de botones a color primario y limpieza de inputs.
-    Updated: Títulos centrados.
+  - ID: 1 | Date: 07/12/2025
+    Modified by: Dafne Vanessa Castillo Moreno
+    Description: 3-step registration wizard. Setting buttons to primary color and cleaning inputs.
 --}}
 
 <div class="vh-lg-100 mt-5 mt-lg-0 bg-soft d-flex align-items-center">
@@ -25,10 +24,9 @@
                     </div>
 
 
-                    {{-- PASO 1: DATOS DEL NEGOCIO --}}
+                    {{-- 1: Business data --}}
                     @if($currentStep === 1)
                         <div class="animate__animated animate__fadeIn">
-                            {{-- Agregado text-center --}}
                             <h4 class="mb-4 text-center">Datos del Negocio</h4>
 
                             <div class="mb-3">
@@ -57,10 +55,9 @@
                         </div>
                     @endif
 
-                    {{-- PASO 2: DATOS DE ACCESO --}}
+                    {{-- 2: Access data --}}
                     @if($currentStep === 2)
                         <div class="animate__animated animate__fadeIn">
-                            {{-- Agregado text-center --}}
                             <h4 class="mb-4 text-center">Datos de Acceso</h4>
 
                             <div class="mb-3">
@@ -88,10 +85,9 @@
                         </div>
                     @endif
 
-                    {{-- PASO 3: FINALIZAR --}}
+                    {{-- 3: Terms and Conditions --}}
                     @if($currentStep === 3)
                         <div class="animate__animated animate__fadeIn">
-                            {{-- Agregado text-center --}}
                             <h4 class="mb-4 text-center">Finalizar Registro</h4>
 
                             <div class="form-check mb-4">
@@ -113,7 +109,7 @@
                         </div>
                     @endif
 
-                    {{-- BOTONES DE NAVEGACIÓN --}}
+                    {{-- Navigation buttons --}}
                     <div class="mt-5 d-flex align-items-center {{ $currentStep > 1 ? 'justify-content-between' : 'justify-content-end' }}">
 
                         @if($currentStep > 1)
@@ -123,7 +119,7 @@
                         @endif
 
                         @if($currentStep < 3)
-                            {{-- Botón Siguiente: Primario --}}
+                            {{-- Next Button --}}
                             <button wire:click="nextStep" class="btn btn-primary px-4">
                                 Siguiente <x-icon name="nav.forward" class="ms-2"/>
                             </button>

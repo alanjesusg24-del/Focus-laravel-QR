@@ -1,8 +1,10 @@
 {{--
-    Company: CETAM
-    Project: FQR
-    File: partials/footer.blade.php
-    Description: Footer global limpio y centrado.
+  Company: CETAM
+  Project: FQR
+  File: footer.blade.php
+  Created on: 19/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 <footer class="py-3 w-100">
     <div class="container">
@@ -35,5 +37,5 @@
     </div>
 </footer>
 
-{{-- Incluir modales legales --}}
+{{-- Include modal terms and privacy --}}
 @include('components.legal-modals')

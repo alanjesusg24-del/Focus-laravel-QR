@@ -1,17 +1,10 @@
 {{--
-============================================
-CETAM - Business Application Layout
-============================================
-
-@project     Centro de Servicios (CS)
-@file        business-app.blade.php
-@description Layout principal para panel de negocios
-@author      CETAM Dev Team
-@created     2025-11-21
-@version     1.0.0
-@copyright   CETAM © 2025
-
-============================================
+  Company: CETAM
+  Project: FQR
+  File: business-app.blade.php
+  Created on: 21/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 
 @extends('layouts.base')
@@ -51,10 +44,10 @@ CETAM - Business Application Layout
         @else
             {{ $slot ?? '' }}
         @endif
-        {{-- Footer alternativo --}}
+        {{-- Alternative Footer --}}
         @include('layouts.footer2')
     @else
-        {{-- Fallback: contenido plano --}}
+        {{-- Fallback: plane content --}}
         @hasSection('page')
             @yield('page')
         @else

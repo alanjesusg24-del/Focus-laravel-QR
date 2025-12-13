@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: edit.blade.php
+  Created on: 18/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Editar Perfil')
@@ -35,7 +43,7 @@
     </div>
 </div>
 
-<!-- Flash Messages -->
+{{-- Flash Messages --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -60,7 +68,7 @@
     </div>
 @endif
 
-<!-- Edit Profile Form -->
+{{-- Edit Profile Form --}}
 <div class="row justify-content-center">
     <div class="col-12 col-xl-8">
         <div class="card border-0 shadow">

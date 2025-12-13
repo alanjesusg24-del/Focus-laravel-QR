@@ -1,7 +1,15 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 07/09/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 <nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
   <div class="sidebar-inner px-3 pt-3">
 
-    {{-- LOGO / HEADER --}}
+    {{-- HEADER --}}
     <div class="d-flex align-items-center mb-4">
         <a href="{{ route('dashboard') }}" class="d-flex align-items-center text-white text-decoration-none">
             <div class="me-3 d-flex align-items-center justify-content-center rounded-circle fw-bold"
@@ -12,7 +20,7 @@
         </a>
     </div>
 
-    {{-- GRUPO CORE --}}
+    {{-- Core group --}}
     <div class="sidebar-heading text-uppercase text-gray-400 small px-3 mb-2">
         Core
     </div>
@@ -59,7 +67,7 @@
     {{-- DIVISOR --}}
     <hr class="my-3">
 
-    {{-- GRUPO ACCOUNT --}}
+    {{-- Account group --}}
     <div class="sidebar-heading text-uppercase text-gray-400 small px-3 mb-2">
         Account
     </div>

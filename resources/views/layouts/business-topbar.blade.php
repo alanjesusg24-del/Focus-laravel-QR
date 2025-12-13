@@ -1,7 +1,22 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 26/10/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+
+  Changelog:
+  - ID: 1 | Date: 17/11/2025 | 
+    Modified by: Alan Jesus Garcia Nava | 
+    Description: Changed notification bell color to primary and adjusted dropdown menu styles.
+--}}
+
+
+
 <nav class="navbar navbar-top navbar-expand navbar-dashboard navbar-dark ps-0 pe-2 pb-0">
   <div class="container-fluid px-0">
     <div class="d-flex justify-content-between align-items-center w-100" id="navbarSupportedContent">
-      {{-- Espacio vacío para balance --}}
       <div></div>
 
       <ul class="navbar-nav align-items-center">
@@ -80,7 +95,6 @@
             <form action="{{ route('business.logout') }}" method="POST">
               @csrf
               <button type="submit" class="dropdown-item d-flex align-items-center">
-                {{-- Se cambia 'arrowRight' por 'logout' manteniendo el color rojo (text-danger) --}}
                 <x-icon name="auth.logout" class="dropdown-icon text-danger me-2" />
                 Cerrar Sesión
               </button>

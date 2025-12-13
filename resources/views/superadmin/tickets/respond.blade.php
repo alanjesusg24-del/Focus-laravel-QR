@@ -1,10 +1,18 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: respond.blade.php
+  Created on: 19/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Responder Ticket #' . $ticket->support_ticket_id)
 
 @section('page')
 <div class="py-4">
-    <!-- Breadcrumb -->
+    {{-- Breadcrumb --}}
     <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
         <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
             <li class="breadcrumb-item">
@@ -24,7 +32,7 @@
         </ol>
     </nav>
 
-    <!-- Page Header -->
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <h1 class="h4">Responder Ticket #{{ $ticket->support_ticket_id }}</h1>
@@ -33,7 +41,7 @@
     </div>
 </div>
 
-<!-- Validation Errors -->
+{{-- Validation Errors --}}
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -50,7 +58,7 @@
 @endif
 
 <div class="row">
-    <!-- Original Ticket Info -->
+    {{-- Original Ticket Info --}}
     <div class="col-12 col-xl-4 mb-4">
         <div class="card border-0 shadow">
             <div class="card-header">
@@ -127,7 +135,7 @@
         </div>
     </div>
 
-    <!-- Response Form -->
+    {{-- Response Form --}}
     <div class="col-12 col-xl-8">
         <div class="card border-0 shadow">
             <div class="card-header">
@@ -137,7 +145,7 @@
                 <form action="{{ route('superadmin.tickets.storeResponse', $ticket->support_ticket_id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
-                    <!-- Response Message -->
+                    {{-- Response Message --}}
                     <div class="mb-4">
                         <label for="response" class="form-label">Solucion o Mensaje <span class="text-danger">*</span></label>
                         <textarea class="form-control {{ $errors->has('response') ? 'is-invalid' : '' }}"
@@ -155,7 +163,7 @@
                         </small>
                     </div>
 
-                    <!-- Attachment -->
+                    {{-- Attachment --}}
                     <div class="mb-4">
                         <label for="attachment" class="form-label">Adjuntar Archivo (Opcional)</label>
                         <input type="file"
@@ -173,7 +181,7 @@
                             Formatos permitidos: JPG, PNG, PDF. Tamano maximo: 5MB
                         </small>
 
-                        <!-- Preview -->
+                        {{-- Preview --}}
                         <div id="filePreview" class="mt-3 d-none">
                             <div class="card bg-light">
                                 <div class="card-body p-3">
@@ -196,7 +204,7 @@
                         </div>
                     </div>
 
-                    <!-- Help Text -->
+                    {{-- Help Text --}}
                     <div class="alert alert-info d-flex align-items-start" role="alert">
                         <svg class="icon icon-sm me-2 mt-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
@@ -212,7 +220,7 @@
                         </div>
                     </div>
 
-                    <!-- Action Buttons -->
+                    {{-- Action Buttons --}}
                     <div class="d-flex justify-content-between align-items-center mt-4">
                         <a href="{{ route('superadmin.tickets.show', $ticket->support_ticket_id) }}" class="btn btn-primary">
                             <svg class="icon icon-xs me-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

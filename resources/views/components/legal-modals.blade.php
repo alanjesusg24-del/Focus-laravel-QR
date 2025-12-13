@@ -1,20 +1,12 @@
 {{--
-============================================
-CETAM - Legal Modals Component
-============================================
-
-@project     Focus QR System (FQR)
-@file        legal-modals.blade.php
-@description Modales de términos y condiciones y aviso de privacidad
-@author      CETAM Dev Team
-@created     2025-12-13
-@version     1.0.0
-@copyright   CETAM © 2025
-
-============================================
+  Company: CETAM
+  Project: FQR
+  File: legal-modals.blade.php
+  Created on: 13/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 
-<!-- Modal Términos de Uso -->
 <div class="modal fade" id="termsModal" tabindex="-1" aria-labelledby="termsModalLabel" aria-hidden="true" wire:ignore.self>
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
@@ -36,7 +28,6 @@ CETAM - Legal Modals Component
     </div>
 </div>
 
-<!-- Modal Aviso de Privacidad -->
 <div class="modal fade" id="privacyModal" tabindex="-1" aria-labelledby="privacyModalLabel" aria-hidden="true" wire:ignore.self>
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">

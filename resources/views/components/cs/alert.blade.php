@@ -1,13 +1,10 @@
 {{--
-============================================
-CETAM - Alert Component View
-============================================
-
-@props type - Tipo de alerta (success, danger, warning, info)
-@props message - Mensaje a mostrar
-@props dismissible - Permite cerrar la alerta
-
-============================================
+  Company: CETAM
+  Project: FQR
+  File: footer2.blade.php
+  Created on: 02/10/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moren
 --}}
 
 <div class="alert {{ $alertClass }} {{ $dismissible ? 'alert-dismissible fade show' : '' }}" role="alert">

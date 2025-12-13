@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 10/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Órdenes Globales')
@@ -24,7 +32,7 @@
     </div>
 </div>
 
-<!-- Flash Messages -->
+{{-- Flash Messages --}}
 @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +43,7 @@
     </div>
 @endif
 
-<!-- Filters Card -->
+{{-- Filters Card --}}
 <div class="card card-body border-0 shadow mb-4">
     <form method="GET" action="{{ route('superadmin.orders.index') }}" id="filterForm">
         <div class="row align-items-end">
@@ -88,7 +96,7 @@
     </form>
 </div>
 
-<!-- Orders Table -->
+{{-- Orders Table --}}
 <div class="card border-0 shadow">
     <div class="card-header">
         <div class="row align-items-center">
@@ -195,14 +203,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     let searchTimeout;
 
-    // Auto-submit para selectores y fechas
+    // Auto-submit for selectors and dates
     document.querySelectorAll('.auto-submit').forEach(function(element) {
         element.addEventListener('change', function() {
             filterForm.submit();
         });
     });
 
-    // Auto-submit para búsqueda con debounce
+    // Auto-submit for search with debounce
     searchInput.addEventListener('input', function() {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(function() {
@@ -210,7 +218,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 500);
     });
 
-    // Submit inmediato al presionar Enter
+    // Submit immediately on Enter key press
     searchInput.addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             e.preventDefault();

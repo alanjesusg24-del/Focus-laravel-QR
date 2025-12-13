@@ -1,8 +1,10 @@
 {{--
-  Company: CETAM
-  Project: Focus QR System
-  File: orders/index.blade.php
-  Description: Listado de órdenes con barra de filtros estandarizada (Manual Figura 68).
+    Company: CETAM
+    Project: FQR
+    File: index.blade.php
+    Created on: 25/11/2025
+    Created by: Alan Jesus Garcia Nava
+    Approved by: Dafne Vanessa Castillo Moreno
 --}}
 @extends('layouts.business-app')
 
@@ -38,10 +40,10 @@
     <div class="table-settings mb-4">
         <div class="row align-items-center justify-content-between">
             
-            {{-- OCUPA TODO EL ANCHO (col-12) --}}
+            {{-- It takes up the entire width. --}}
             <div class="col-12 d-flex align-items-center flex-wrap gap-3">
 
-                {{-- 1. Buscador --}}
+                {{-- Search --}}
                 <div class="input-group" style="max-width: 350px;">
                     <span class="input-group-text bg-white border-end-0">
                         <x-icon name="action.search" class="text-gray-500" />
@@ -149,7 +151,7 @@
                                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
 
                                         @if($order->status === 'ready')
-                                            {{-- Solo mostrar Entregar Orden cuando esté lista --}}
+                                            {{-- Only show Deliver Order when it is ready --}}
                                             <a class="dropdown-item d-flex align-items-center text-primary" href="#" data-bs-toggle="modal" data-bs-target="#deliverModal{{ $order->order_id }}">
                                                 <x-icon name="action.edit" class="text-primary me-2"/> Entregar Orden
                                             </a>
@@ -187,7 +189,7 @@
                             </td>
                         </tr>
 
-                        {{-- MODALES --}}
+                        {{-- Modals --}}
                         @if($order->qr_code_url && !$order->mobile_user_id)
                         <div class="modal fade" id="qrModal{{ $order->order_id }}" tabindex="-1" aria-hidden="true" data-order-id="{{ $order->order_id }}">
                             <div class="modal-dialog modal-dialog-centered">
@@ -230,7 +232,7 @@
                             </div>
                         </div>
 
-                        {{-- Modal Entregar Orden --}}
+                        {{-- Deliver Order Modal --}}
                         @if($order->status === 'ready')
                         <div class="modal fade" id="deliverModal{{ $order->order_id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -295,9 +297,9 @@
             @if($orders->hasPages())
                 {{ $orders->links('vendor.pagination.volt-custom') }}
             @else
-                {{-- Espacio vacío a la izquierda cuando no hay paginación --}}
+                {{-- Empty space on the left when there is no pagination --}}
                 <div></div>
-                {{-- Mensaje de conteo cuando no hay paginación --}}
+                {{-- Count message when there is no pagination --}}
                 @if($orders->total() > 0)
                     <div class="fw-normal small">
                         Mostrando
@@ -314,7 +316,7 @@
     </div>
 </div>
 
-{{-- MODAL CREAR --}}
+{{-- Create Order Modal --}}
 <div class="modal fade" id="createOrderModal" tabindex="-1" aria-labelledby="createOrderModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -365,14 +367,13 @@
     </div>
 </div>
 
-{{-- SCRIPTS --}}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-orders');
         const tbody = document.querySelector('tbody');
 
         if (searchInput) {
-            // Búsqueda mejorada
+            // Enhanced search
             searchInput.addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase().trim();
                 const rows = document.querySelectorAll('tbody tr');
@@ -380,7 +381,7 @@
                 let noResultsRow = document.getElementById('no-results-row');
 
                 rows.forEach(row => {
-                    // Ignorar filas vacías o de "no hay órdenes"
+                    // Ignore empty rows or "no orders" rows
                     if (row.querySelector('td[colspan]')) {
                         if (row.id !== 'no-results-row') {
                             row.style.display = 'none';
@@ -388,19 +389,19 @@
                         return;
                     }
 
-                    // Buscar en ID, Folio y Descripción
+                    // Search in ID, Folio, and Description
                     const idCell = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
                     const folioCell = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                     const description = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
 
-                    // Busca en todas las columnas relevantes
+                    // Search in all relevant columns
                     const matches = idCell.includes(searchTerm) || folioCell.includes(searchTerm) || description.includes(searchTerm);
                     row.style.display = matches ? '' : 'none';
 
                     if (matches) visibleCount++;
                 });
 
-                // Mostrar mensaje de "sin resultados" si no hay coincidencias
+                // Show "no results" message if there are no matches
                 if (searchTerm && visibleCount === 0) {
                     if (!noResultsRow) {
                         noResultsRow = document.createElement('tr');

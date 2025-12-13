@@ -1,14 +1,14 @@
 {{--
     Company: CETAM
-    Project: FOCUS-LARAVEL-QR
+    Project: FQR
     File: create.blade.php
-    Created on: 28/11/2025
-    Created by: Vanessa
-    Approved by: Alan
+    Created on: 25/11/2025
+    Created by: Dafne Vanessa Castillo Moreno
+    Approved by: Dafne Vanessa Castillo Moreno
 
     Changelog:
     - ID: 1 | Date: 28/11/2025
-        Modified by: Vanessa
+        Modified by: Alan Jesus Garica Nava
         Description: Implementation of payment plans view following FoodFlow design and CETAM standards.
 --}}
 @extends('layouts.business-app')

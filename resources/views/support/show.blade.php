@@ -1,3 +1,16 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: show.blade.php
+  Created on: 05/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+
+  Changelog:
+  - ID: 1 | Date: 08/12/2025
+    Modified by: Alan Jesus Garcia Nava
+    Description: Changed the layout to business-app and updated the breadcrumb navigation.
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Ticket #' . $supportTicket->support_ticket_id . ' - Order QR System')
@@ -6,7 +19,7 @@
 <div class="py-4">
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
-            {{-- Breadcrumb Estandarizado --}}
+            {{-- Breadcrumb --}}
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
@@ -44,10 +57,9 @@
             @endif
         </div>
     </div>
-    <!-- Page Header -->
    
 
-    <!-- Alerts -->
+    {{-- Alerts --}}
     @if(session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
         <x-icon name="success" class="me-2" /> 
@@ -64,7 +76,7 @@
     </div>
     @endif
 
-    <!-- Ticket Details Card -->
+    {{-- Ticket Details Card --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-header border-bottom">
             <div class="row align-items-center">
@@ -85,7 +97,7 @@
             </div>
         </div>
         <div class="card-body">
-            <!-- Info Row -->
+            {{-- Info Row --}}
             <div class="row mb-4">
                 <div class="col-md-3 mb-3 mb-md-0">
                     <div class="d-flex flex-column">
@@ -128,7 +140,7 @@
                 @endif
             </div>
 
-            <!-- Description -->
+            {{-- Description --}}
             <div class="mb-4">
                 <h6 class="fw-bold mb-3">Descripcion del Problema</h6>
                 <div class="bg-light rounded p-3">
@@ -136,7 +148,7 @@
                 </div>
             </div>
 
-            <!-- Attachment -->
+            {{-- Attachment --}}
             @if($supportTicket->attachment_url)
             <div class="mb-4">
                 <h6 class="fw-bold mb-3">Archivo Adjunto</h6>
@@ -146,7 +158,7 @@
                 </div>
                 @endif
 
-            <!-- Admin Response -->
+            {{-- Admin Response --}}
             @if($supportTicket->response)
             <div class="border-top pt-4">
                 <h6 class="fw-bold mb-3">Respuesta del Administrador</h6>

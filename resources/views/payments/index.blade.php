@@ -1,15 +1,15 @@
 {{--
     Company: CETAM
-    Project: FOCUS-LARAVEL-QR
+    Project: FQR
     File: index.blade.php
-    Created on: 28/11/2025
-    Created by: Vanessa
-    Approved by: Alan
+    Created on: 18/11/2025
+    Created by: Dafne Vanessa Castillo Moreno
+    Approved by: Dafne Vanessa Castillo Moreno
 
     Changelog:
     - ID: 1 | Date: 28/11/2025
-        Modified by: Vanessa
-        Description: Implementation of payment plans view following FoodFlow design and CETAM standards.
+      Modified by: Dafne Vanessa Castillo Moreno
+      Description: Implementation of payment plans view following CETAM standards.
 --}}
 
 @extends('layouts.business-app')
@@ -40,7 +40,7 @@
                     $isExpired = false;
 
                     if ($hasPaid && $business->last_payment_date) {
-                        // Calcular fecha de vencimiento (30 días después del último pago)
+                        // Calculate expiration date (30 days after the last payment)
                         $nextPaymentDate = \Carbon\Carbon::parse($business->last_payment_date)->addDays(30);
                         $daysUntilExpiration = now()->diffInDays($nextPaymentDate, false);
                         $isExpired = $daysUntilExpiration < 0;

@@ -1,15 +1,15 @@
 {{--
   Company: CETAM
-  Project: Focus QR System
-  File: support/index.blade.php
-  Created on: 04/12/2025
-  Created by: Vanessa
-  Approved by: Alan
+  Project: FQR
+  File: index.blade.php
+  Created on: 03/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 
   Changelog:
   - ID: 1 | Date: 04/12/2025
-    Modified by: Vanessa
-    Description: Estandarización de vista de tickets (Diseño igual a Órdenes), corrección de buscador y filtros.
+    Modified by: Dafne Vanessa Castillo Moreno
+    Description: Standardization of ticket view (same design as Orders), search engine and filter corrections.
 --}}
 @extends('layouts.business-app')
 
@@ -18,14 +18,14 @@
 @section('page')
 <div class="py-4">
     
-    {{-- ALERTAS DE SISTEMA --}}
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <x-icon name="success" class="me-2"/> {{ session('success') }}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     @endif
-
+    
+    {{-- Error Alert --}}
     @if(session('error'))
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <x-icon name="error" class="me-2"/> {{ session('error') }}
@@ -33,13 +33,12 @@
         </div>
     @endif
 
-    {{-- ENCABEZADO (Título izquierda, Botón derecha) --}}
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
-                        {{-- Casita con color Primario --}}
                         <a href="{{ route('business.dashboard.index') }}" class="text-primary">
                             <x-icon name="home" />
                         </a>
@@ -51,7 +50,6 @@
             <p class="mb-0 text-muted">Administre sus solicitudes de ayuda y soporte técnico</p>
         </div>
         
-        {{-- Botón Nuevo Ticket alineado al título --}}
         <div class="btn-toolbar mb-2 mb-md-0">
             <a href="{{ route('business.support.create') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
                 <x-icon name="action.create" class="icon-xs me-2"/> Nuevo Ticket
@@ -59,19 +57,16 @@
         </div>
     </div>
 
-    {{-- BARRA DE HERRAMIENTAS (Buscador + Filtros) --}}
+    {{-- Table Settings: Search and Filter --}}
     <div class="table-settings mb-4">
         <div class="row align-items-center justify-content-between">
             
-            {{-- ZONA IZQUIERDA --}}
             <div class="col-12 d-flex align-items-center flex-wrap gap-3">
                 
-                {{-- 1. Buscador (Input limpio) --}}
                 <div class="fmxw-300">
                     <input type="text" id="search-tickets" class="form-control" placeholder="Buscar ticket...">
                 </div>
 
-                {{-- 2. Filtro con Etiqueta --}}
                 <div class="d-flex align-items-center">
                     <span class="small fw-bold text-gray-600 me-2">Filtrar por estado:</span>
                     <form method="GET" action="{{ route('business.support.index') }}">
@@ -87,7 +82,7 @@
         </div>
     </div>
 
-    {{-- TABLA DE DATOS --}}
+    {{-- Tickets Table --}}
     <div class="card border-0 shadow mb-4">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -104,10 +99,9 @@
                     </thead>
                     <tbody>
                         @forelse($tickets as $ticket)
-                        {{-- Clase 'ticket-row' para el script de búsqueda --}}
                         <tr class="ticket-row">
                             
-                            {{-- 1. ID Secuencial --}}
+                            {{-- 1. Sequential ID --}}
                             <td class="fw-bolder text-gray-500">
                                 {{ ($tickets->currentPage() - 1) * $tickets->perPage() + $loop->iteration }}
                             </td>
@@ -118,7 +112,7 @@
                                 </a>
                             </td>
                             
-                            {{-- 2. Estado (Texto coloreado) --}}
+                            {{-- 2. Status (Colored Text) --}}
                             <td>
                                 @php
                                     $statusClasses = [
@@ -137,7 +131,7 @@
                                 <span class="fw-bold {{ $class }}">{{ $label }}</span>
                             </td>
 
-                            {{-- 3. Respuesta --}}
+                            {{-- 3. Response --}}
                             <td>
                                 @if($ticket->response)
                                     <div class="d-flex align-items-center">
@@ -156,7 +150,7 @@
 
                             <td class="text-gray-500">{{ $ticket->created_at->format('d/m/Y') }}</td>
                             
-                            {{-- 4. Acciones (3 puntos centrados) --}}
+                            {{-- 4. Actions (Centered 3 dots) --}}
                             <td class="text-center">
                                 <div class="dropdown">
                                     <button class="btn btn-link text-dark dropdown-toggle m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -183,7 +177,7 @@
                         </tr>
                         @endforelse
                         
-                        {{-- Fila oculta para búsqueda sin resultados --}}
+                        {{-- Hidden row for no search results --}}
                         <tr id="no-results-row" style="display: none;">
                             <td colspan="6" class="text-center py-4 text-muted">
                                 No se encontraron tickets con ese criterio.
@@ -194,7 +188,7 @@
             </div>
         </div>
         
-        {{-- Paginación --}}
+        {{-- Pagination --}}
         @if($tickets->hasPages())
         <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
             {{ $tickets->links('vendor.pagination.volt-custom') }}
@@ -203,7 +197,7 @@
     </div>
 </div>
 
-{{-- SCRIPT --}}
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const searchInput = document.getElementById('search-tickets');

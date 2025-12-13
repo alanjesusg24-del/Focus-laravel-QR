@@ -1,10 +1,18 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: edit.blade.php
+  Created on: 01/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Editar Ticket #' . $supportTicket->support_ticket_id . ' - Order QR System')
 
 @section('page')
 <div class="py-4">
-    <!-- Page Header -->
+    {{-- Page Header --}}
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
         <div class="d-block mb-4 mb-md-0">
             <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
@@ -36,7 +44,7 @@
         </div>
     </div>
 
-    <!-- Validation Errors -->
+    {{-- Validation Errors --}}
     @if($errors->any())
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
@@ -52,7 +60,7 @@
         </div>
     @endif
 
-    <!-- Edit Form -->
+    {{-- Edit Form --}}
     <div class="row">
         <div class="col-12 col-xl-8 mx-auto">
             <div class="card border-0 shadow">
@@ -64,7 +72,7 @@
                         @csrf
                         @method('PUT')
 
-                        <!-- Subject (Read-only) -->
+                        {{-- Subject (Read-only) --}}
                         <div class="mb-4">
                             <label for="subject" class="form-label">Asunto</label>
                             <input type="text"
@@ -79,7 +87,7 @@
                             </small>
                         </div>
 
-                        <!-- Description -->
+                        {{-- Description --}}
                         <div class="mb-4">
                             <label for="description" class="form-label">Descripcion del Problema <span class="text-danger">*</span></label>
                             <textarea class="form-control {{ $errors->has('description') ? 'is-invalid' : '' }}"
@@ -97,7 +105,7 @@
                             </small>
                         </div>
 
-                        <!-- Info Alert -->
+                        {{-- Info Alert --}}
                     <div class="alert alert-info d-flex align-items-start" role="alert">
                         <x-icon name="info" class="me-2 mt-1 flex-shrink-0" />
                         <div>
@@ -105,7 +113,7 @@
                         </div>
                     </div>
 
-                        <!-- Action Buttons -->
+                        {{-- Action Buttons --}}
                         <div class="d-flex justify-content-start align-items-center mt-4 gap-3">
                             <a href="{{ route('business.support.show', $supportTicket->support_ticket_id) }}" class="btn btn-secondary">
                                 <x-icon name="action.cancel" class="me-2"/>

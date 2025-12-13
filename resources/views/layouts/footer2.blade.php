@@ -1,4 +1,11 @@
- 
+ {{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 07/09/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 <div class="theme-settings card bg-gray-800 pt-2 collapse" id="theme-settings">
     <div class="card-body bg-gray-800 text-white pt-4">
         <button type="button" class="btn-close theme-settings-close" aria-label="Close" data-bs-toggle="collapse"
@@ -28,7 +35,6 @@
     <div class="container">
         <div class="col-12 d-flex align-items-center justify-content-center">
             <div class="col-12 col-md-4 mb-4 mb-md-0 text-lg-center">
-                <!-- List -->
                 <ul class="list-inline list-group-flush list-group-borderless">
                     <li class="list-inline-item px-0 px-sm-2">
                         <a href="https://themesberg.com/about">About</a>

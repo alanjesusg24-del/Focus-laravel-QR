@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: profile.blade.php
+  Created on: 05/11/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.business-app')
 
 @section('title', 'Mi Perfil')
@@ -40,7 +48,6 @@
 </div>
 @endif
 
-<!-- Información del Negocio -->
 <div class="row">
     <div class="col-12 mb-4">
         <div class="card border-0 shadow">
@@ -84,7 +91,6 @@
     </div>
 </div>
 
-<!-- Información del Plan -->
 <div class="row">
     <div class="col-12 mb-4">
         <div class="card border-0 shadow">
@@ -125,7 +131,6 @@
     </div>
 </div>
 
-<!-- Ubicación del Negocio -->
 @if($business->latitude && $business->longitude)
 <div class="row">
     <div class="col-12 mb-4">

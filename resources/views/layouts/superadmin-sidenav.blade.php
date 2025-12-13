@@ -1,7 +1,16 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: register.blade.php
+  Created on: 25/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
+
 <nav id="sidebarMenu" class="sidebar d-lg-block bg-gray-800 text-white collapse" data-simplebar>
   <div class="sidebar-inner px-2 pt-3">
 
-    {{-- Header Móvil --}}
+    {{-- Header --}}
     <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-3">
       <div class="d-flex align-items-center">
         <div class="avatar-lg me-3">
@@ -28,10 +37,10 @@
       </div>
     </div>
 
-    {{-- Menú Principal --}}
+    {{-- Main Menu --}}
     <ul class="nav flex-column nav-compact pt-3 pt-md-0">
 
-      {{-- 1. Logo / Marca del Sistema --}}
+      {{-- 1. Logo / System Brand --}}
       <li class="nav-item mb-2">
         <a href="{{ route('superadmin.dashboard') }}" class="d-flex align-items-center px-2 py-2 text-decoration-none text-white">
           <img src="{{ asset('assets/img/focus-icon.svg') }}"
@@ -53,7 +62,7 @@
         </a>
       </li>
 
-      {{-- 3. Negocios --}}
+      {{-- 3. Businesses --}}
       <li class="nav-item {{ request()->routeIs('superadmin.businesses.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.businesses.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
@@ -63,7 +72,7 @@
         </a>
       </li>
 
-      {{-- 4. Planes --}}
+      {{-- 4. Plans --}}
       <li class="nav-item {{ request()->routeIs('superadmin.plans.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.plans.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
@@ -73,7 +82,7 @@
         </a>
       </li>
 
-      {{-- 5. Pagos y Suscripciones --}}
+      {{-- 5. Payments and Subscriptions --}}
       <li class="nav-item {{ request()->routeIs('superadmin.payments.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.payments.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
@@ -83,7 +92,7 @@
         </a>
       </li>
 
-      {{-- 6. Perfil --}}
+      {{-- 6. Profile --}}
       <li class="nav-item {{ request()->routeIs('superadmin.profile.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.profile.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">

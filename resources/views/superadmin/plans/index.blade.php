@@ -1,8 +1,10 @@
 {{--
-    Company: CETAM
-    Project: SuperAdmin System
-    File: plans/index.blade.php
-    Description: Vista principal para la gestión y listado de planes de suscripción.
+  Company: CETAM
+  Project: FQR
+  File: index.blade.php
+  Created on: 15/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
 @extends('layouts.superadmin-app')
 
@@ -40,7 +42,7 @@
 
             <div class="col-12 d-flex align-items-center flex-wrap gap-3">
 
-                {{-- 1. Buscador --}}
+                {{-- 1. Search --}}
                 <div class="input-group" style="max-width: 350px;">
                     <span class="input-group-text bg-white border-end-0">
                         <x-icon name="action.search" class="text-gray-500" />
@@ -52,7 +54,7 @@
                            autocomplete="off">
                 </div>
 
-                {{-- 2. Filtro por estado --}}
+                {{-- 2. Filter by Status --}}
                 <div class="d-flex align-items-center">
                     <span class="small fw-bold text-gray-600 me-2">Filtrar por estado:</span>
                     <form method="GET" action="{{ route('superadmin.plans.index') }}">
@@ -160,9 +162,9 @@
             @if($plans->hasPages())
                 {{ $plans->links('vendor.pagination.volt-custom') }}
             @else
-                {{-- Espacio vacío a la izquierda cuando no hay paginación --}}
+                {{-- Empty space on the left when there is no pagination --}}
                 <div></div>
-                {{-- Mensaje de conteo cuando no hay paginación --}}
+                {{-- Count message when there is no pagination --}}
                 @if($plans->total() > 0)
                     <div class="fw-normal small">
                         Mostrando
@@ -186,7 +188,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const searchInput = document.getElementById('search');
     const tbody = document.querySelector('tbody');
 
-    // Búsqueda en tiempo real del lado del cliente
+    // Real-time client-side search
     if (searchInput && tbody) {
         searchInput.addEventListener('input', function(e) {
             const searchTerm = e.target.value.toLowerCase().trim();
@@ -202,7 +204,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Buscar en: ID, Nombre del plan, Descripción, Precio, Duración
+                // Search in: ID, Plan Name, Description, Price, Duration
                 const id = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
                 const planName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
                 const description = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';

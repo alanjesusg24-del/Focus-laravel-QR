@@ -1,3 +1,11 @@
+{{--
+  Company: CETAM
+  Project: FQR
+  File: edit.blade.php
+  Created on: 11/12/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
+--}}
 @extends('layouts.superadmin-app')
 
 @section('title', 'Editar Negocio - ' . $business->business_name)
@@ -35,7 +43,7 @@
     @csrf
     @method('PUT')
 
-    <!-- Formulario en una sola columna (formato pila) -->
+    {{-- Form in a single column (stacked format) --}}
     <div class="row justify-content-center">
         <div class="col-12 col-xl-8">
             <div class="card border-0 shadow mb-4">
@@ -43,7 +51,7 @@
                     <h2 class="fs-5 fw-bold mb-0">Información del Negocio</h2>
                 </div>
                 <div class="card-body">
-                    <!-- Nombre del Negocio -->
+                    {{-- Business Name --}}
                     <div class="mb-4">
                         <label for="business_name" class="form-label fw-bold">Nombre del Negocio <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('business_name') is-invalid @enderror" id="business_name" name="business_name" value="{{ old('business_name', $business->business_name) }}" required>
@@ -70,7 +78,7 @@
                         @enderror
                     </div>
 
-                    <!-- Teléfono -->
+                    {{-- Phone --}}
                     <div class="mb-4">
                         <label for="phone" class="form-label fw-bold">Teléfono <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $business->phone) }}" required>
@@ -79,7 +87,7 @@
                         @enderror
                     </div>
 
-                    <!-- Dirección -->
+                    {{-- Address --}}
                     <div class="mb-4">
                         <label for="address" class="form-label fw-bold">Dirección</label>
                         <input type="text" class="form-control @error('address') is-invalid @enderror" id="address" name="address" value="{{ old('address', $business->address) }}" placeholder="Buscar dirección...">
@@ -88,17 +96,15 @@
                         @enderror
                     </div>
 
-                    <!-- Mapa de Google Maps -->
+                    {{-- Google Maps --}}
                     <div class="mb-4">
                         <label class="form-label fw-bold">Ubicación en el Mapa</label>
                         <div id="map" class="border rounded" style="height: 400px; width: 100%;"></div>
                     </div>
-
-                    <!-- Campos ocultos para coordenadas -->
                     <input type="hidden" id="latitude" name="latitude" value="{{ old('latitude', $business->latitude) }}">
                     <input type="hidden" id="longitude" name="longitude" value="{{ old('longitude', $business->longitude) }}">
 
-                    <!-- Plan -->
+                    {{-- Plan --}}
                     <div class="mb-4">
                         <label for="plan_id" class="form-label fw-bold">Plan <span class="text-danger">*</span></label>
                         <select class="form-select @error('plan_id') is-invalid @enderror" id="plan_id" name="plan_id" required>
@@ -117,7 +123,7 @@
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror
 
-                        <!-- Info del plan seleccionado -->
+                        {{-- Selected Plan Info --}}
                         <div id="plan-info" class="alert alert-light border mt-3" style="display: none;">
                             <small class="d-block mb-1"><strong>Precio:</strong> <span id="plan-price">-</span></small>
                             <small class="d-block mb-1"><strong>Chat:</strong> <span id="plan-chat">-</span></small>
@@ -125,7 +131,7 @@
                         </div>
                     </div>
 
-                    <!-- Nueva Contraseña -->
+                    {{-- New Password --}}
                     <div class="mb-4">
                         <label for="password" class="form-label fw-bold">Nueva Contraseña</label>
                         <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Dejar en blanco para mantener la actual">
@@ -135,7 +141,7 @@
                         @enderror
                     </div>
 
-                    <!-- Foto del Negocio -->
+                    {{-- Business Photo --}}
                     <div class="mb-4">
                         <label for="photo" class="form-label fw-bold">Foto del Negocio</label>
                         @if($business->photo)
@@ -150,7 +156,7 @@
                         @enderror
                     </div>
 
-                    <!-- Estado del Negocio -->
+                    {{-- Business Status --}}
                     <div class="mb-4">
                         <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="is_active" name="is_active" value="1" {{ old('is_active', $business->is_active) ? 'checked' : '' }}>
@@ -161,7 +167,7 @@
                 </div>
             </div>
 
-            <!-- Botones de acción -->
+            {{-- Action Buttons --}}
             <div class="card border-0 shadow">
                 <div class="card-body">
                     <div class="d-grid gap-2">
@@ -188,13 +194,13 @@
 let map, marker, geocoder, autocomplete;
 
 function initMap() {
-    // Obtener coordenadas iniciales (default: México City si no hay coordenadas)
+    // Get initial coordinates (default: MMexico City if no coordinates)
     const initialLat = parseFloat(document.getElementById('latitude').value) || 19.432608;
     const initialLng = parseFloat(document.getElementById('longitude').value) || -99.133209;
 
     const initialPosition = { lat: initialLat, lng: initialLng };
 
-    // Inicializar el mapa
+    // Initialize the map
     map = new google.maps.Map(document.getElementById('map'), {
         center: initialPosition,
         zoom: 15,
@@ -219,10 +225,10 @@ function initMap() {
         ]
     });
 
-    // Inicializar geocoder
+    // Initialize geocoder
     geocoder = new google.maps.Geocoder();
 
-    // Crear marcador arrastrable
+    // Create draggable marker
     marker = new google.maps.Marker({
         position: initialPosition,
         map: map,
@@ -231,14 +237,14 @@ function initMap() {
         title: 'Ubicación del negocio'
     });
 
-    // Autocomplete para el campo de dirección
+    // Autocomplete for the address field
     const addressInput = document.getElementById('address');
     autocomplete = new google.maps.places.Autocomplete(addressInput, {
         componentRestrictions: { country: 'mx' },
         fields: ['address_components', 'geometry', 'formatted_address', 'name']
     });
 
-    // Evento cuando se selecciona una dirección del autocomplete
+    // Event when an address is selected from the autocomplete
     autocomplete.addListener('place_changed', function() {
         const place = autocomplete.getPlace();
 
@@ -249,44 +255,44 @@ function initMap() {
 
         const location = place.geometry.location;
 
-        // Actualizar mapa y marcador
+        // Refresh map and marker
         map.setCenter(location);
         map.setZoom(17);
         marker.setPosition(location);
 
-        // Actualizar campos ocultos
+        // Refresh coordinates
         updateCoordinates(location.lat(), location.lng());
 
-        // Actualizar dirección formateada
+        // Refresh address field
         if (place.formatted_address) {
             addressInput.value = place.formatted_address;
         }
     });
 
-    // Evento cuando se arrastra el marcador
+    // Event when the marker is dragged
     marker.addListener('dragend', function(event) {
         const newLat = event.latLng.lat();
         const newLng = event.latLng.lng();
 
-        // Actualizar coordenadas
+        // Refresh coordinates
         updateCoordinates(newLat, newLng);
 
-        // Hacer geocoding inverso para actualizar la dirección
+        // Perform reverse geocoding to update the address
         reverseGeocode(newLat, newLng);
     });
 
-    // Evento click en el mapa
+    // Event when the map is clicked
     map.addListener('click', function(event) {
         const clickedLat = event.latLng.lat();
         const clickedLng = event.latLng.lng();
 
-        // Mover marcador a la nueva posición
+        // Move marker to the new position
         marker.setPosition(event.latLng);
 
-        // Actualizar coordenadas
+        // Refresh coordinates
         updateCoordinates(clickedLat, clickedLng);
 
-        // Hacer geocoding inverso
+        // Perform reverse geocoding to update the address
         reverseGeocode(clickedLat, clickedLng);
     });
 }
@@ -300,7 +306,7 @@ function reverseGeocode(lat, lng) {
     const latlng = { lat: lat, lng: lng };
     const addressInput = document.getElementById('address');
 
-    // Mostrar indicador de carga
+    // Show loading indicator
     addressInput.value = 'Obteniendo dirección...';
     addressInput.disabled = true;
 
@@ -313,14 +319,14 @@ function reverseGeocode(lat, lng) {
             }
         } else {
             console.error('Geocoding falló: ' + status);
-            // Si falla el geocoding, usar las coordenadas como dirección
+            // If geocoding fails, use the coordinates as the address.
             addressInput.value = `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`;
         }
         addressInput.disabled = false;
     });
 }
 
-// Script para mostrar info del plan seleccionado
+// Script to display information about the selected plan
 document.addEventListener('DOMContentLoaded', function() {
     const planSelect = document.getElementById('plan_id');
     const planInfo = document.getElementById('plan-info');
@@ -346,10 +352,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Mostrar info del plan actual al cargar
+    // Show current plan info on load
     updatePlanInfo();
 
-    // Actualizar cuando cambie el plan
+    // Update when the plan changes
     planSelect.addEventListener('change', updatePlanInfo);
 });
 </script>

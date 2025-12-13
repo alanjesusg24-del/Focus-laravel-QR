@@ -1,12 +1,14 @@
 {{--
-============================================
-CETAM - Terms of Service Content
-============================================
+  Company: CETAM
+  Project: FQR
+  File: terms.blade.php
+  Created on: 08/12/2025
+  Created by: Dafne Vanessa Castillo Moreno
+  Approved by: Dafne Vanessa Castillo Moreno
 --}}
-
 <div class="text-justify text-primary">
     <h6 class="h5 mt-4 mb-3 fw-bold text-primary">1. Aceptación de los Términos</h6>
-    <p>Al acceder y utilizar Focus QR System (en adelante "el Sistema"), usted acepta estar sujeto a estos términos y condiciones de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro servicio.</p>
+    <p>Al acceder y utilizar Focus QR System, usted acepta estar sujeto a estos términos y condiciones de uso. Si no está de acuerdo con alguna parte de estos términos, no debe utilizar nuestro servicio.</p>
 
     <h6 class="h5 mt-4 mb-3 fw-bold text-primary">2. Descripción del Servicio</h6>
     <p>Focus QR System es una plataforma de gestión de órdenes mediante códigos QR diseñada para negocios. El sistema permite:</p>
@@ -66,11 +68,7 @@ CETAM - Terms of Service Content
     <p>Estos términos se rigen por las leyes de México. Cualquier disputa se resolverá en los tribunales competentes de la Ciudad de México.</p>
     
     <p><strong>Contacto Legal:</strong></p>
-    <ul>
-        <li><strong>Email:</strong> legal@cetam.mx</li>
-        <li><strong>Teléfono:</strong> +52 (55) 1234-5678</li>
-        <li><strong>Sitio web:</strong> www.cetam.mx</li>
-    </ul>
+    <p>Para preguntas sobre estos términos, contacte a: <strong>legal@focus.com.mx</strong></p>
 
     <div class="text-center mt-4">
         <small class="text-muted">Última actualización: {{ date('d/m/Y') }}</small>

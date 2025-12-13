@@ -1,17 +1,15 @@
 {{--
-============================================
-CETAM - Base Layout
-============================================
+  Company: CETAM
+  Project: FQR
+  File: base.blade.php
+  Created on: 21/11/2025
+  Created by: Alan Jesus Garcia Nava
+  Approved by: Dafne Vanessa Castillo Moreno
 
-@project     Centro de Servicios (CS)
-@file        base.blade.php
-@description Layout base con estructura HTML y assets
-@author      CETAM Dev Team
-@created     2025-11-21
-@version     1.0.0
-@copyright   CETAM © 2025
-
-============================================
+  Changelog:
+  - ID: 1 | Date: 24/11/2025 | 
+    Modified by: Dafne Vanessa Castillo Moreno | 
+    Description: Change base layout to include QR scanner global listener
 --}}
 
 <!DOCTYPE html>
@@ -41,7 +39,7 @@ CETAM - Base Layout
         <meta  property="og:site_name" content="Themesberg"></meta>
     @endif
 
-    <!-- Favicons -->
+    {{-- Favicons --}}
     <link rel="apple-touch-icon" href="{{ asset('assets/img/favicon/apple-touch-icon.png') }}" sizes="180x180">
     <link rel="icon" href="{{ asset('assets/img/favicon/favicon-32x32.png') }}" sizes="32x32" type="image/png">
     <link rel="icon" href="{{ asset('assets/img/favicon/favicon-16x16.png') }}" sizes="16x16" type="image/png">
@@ -53,63 +51,63 @@ CETAM - Base Layout
     <meta name="viewport" content="width=device-width,initial-scale=1,shrink-to-fit=no">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <!-- Apex Charts -->
+    {{-- Apex Charts --}}
     <link type="text/css" href="{{ asset('vendor/apexcharts/apexcharts.css') }}" rel="stylesheet">
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Datepicker -->
+    {{-- Datepicker --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/css/datepicker.min.css">
 
-    <!-- Fontawesome 6 -->
+    {{-- Fontawesome 6 --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-    <!-- Sweet Alert -->
+    {{-- Sweet Alert 2 --}}
     <link type="text/css" href="{{ asset('vendor/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet">
 
-    <!-- Notyf -->
+    {{-- Notyf --}}
     <link type="text/css" href="{{ asset('vendor/notyf/notyf.min.css') }}" rel="stylesheet">
 
-    <!-- Volt CSS -->
+    {{-- Volt CSS --}}
     <link type="text/css" href="{{ asset('css/volt.css') }}?v={{ filemtime(public_path('css/volt.css')) }}" rel="stylesheet">
 
-    <!-- CETAM Institutional Colors -->
+    {{-- CETAM Institutional Colors --}}
     <link type="text/css" href="{{ asset('css/cetam-colors.css') }}?v={{ filemtime(public_path('css/cetam-colors.css')) }}" rel="stylesheet">
 
-    <!-- CETAM Sidebar Styles -->
+    {{-- CETAM Sidebar Styles --}}
     <link type="text/css" href="{{ asset('css/cetam-sidebar.css') }}" rel="stylesheet">
 
     @livewireStyles
     @livewireScripts
 
-    <!-- Core -->
+    {{-- Core --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Vendor JS -->
+    {{-- Vendor JS --}}
     <script src="{{ asset('assets/js/on-screen.umd.min.js') }}"></script>
 
-    <!-- Slider -->
+    {{-- Slider --}}
     <script src="{{ asset('assets/js/nouislider.min.js') }}"></script>
 
-    <!-- Smooth scroll -->
+    {{-- Smooth scroll --}}
     <script src="{{ asset('assets/js/smooth-scroll.polyfills.min.js') }}"></script>
 
-    <!-- Apex Charts -->
+    {{-- Apex Charts --}}
     <script src="{{ asset('vendor/apexcharts/apexcharts.min.js') }}"></script>
 
-    <!-- Charts -->
+    {{-- Charts --}}
     <script src="{{ asset('assets/js/chartist.min.js') }}"></script>
     <script src="{{ asset('assets/js/chartist-plugin-tooltip.min.js') }}"></script>
 
-    <!-- Datepicker -->
+    {{-- Datepicker --}}
     <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.1.4/dist/js/datepicker.min.js"></script>
 
-    <!-- Sweet Alerts 2 -->
+    {{-- Sweet Alerts 2 --}}
     <script src="{{ asset('assets/js/sweetalert2.all.min.js') }}"></script>
 
-    <!-- Session Messages Handler -->
+    {{-- Session Messages Handler --}}
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Obtener el color primario del sistema
+            // Obtain primary color from CSS variable
             const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#262B40';
 
             @if(session('success'))
@@ -148,23 +146,23 @@ CETAM - Base Layout
         });
     </script>
 
-    <!-- Moment JS -->
+    {{-- Moment JS --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
 
-    <!-- Notyf -->
+    {{-- Notyf --}}
     <script src="{{ asset('vendor/notyf/notyf.min.js') }}"></script>
 
-    <!-- Simplebar -->
+    {{-- Simplebar --}}
     <script src="{{ asset('assets/js/simplebar.min.js') }}"></script>
 
-    <!-- Github buttons -->
+    {{-- Github buttons --}}
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 
-    <!-- Volt JS -->
+    {{-- Volt JS --}}
     <script src="{{ asset('assets/js/volt.js') }}"></script>
 
     @if(env('IS_DEMO'))
-        <!-- Global site tag (gtag.js) - Google Analytics -->
+        {{-- Global site tag (gtag.js) - Google Analytics --}}
         <script async src="https://www.googletagmanager.com/gtag/js?id=UA-141734189-6"></script>
         <script>
         window.dataLayer = window.dataLayer || [];
@@ -172,7 +170,7 @@ CETAM - Base Layout
         gtag('js', new Date());
         gtag('config', 'UA-141734189-6');
         </script>
-        <!-- Google Tag Manager -->
+        {{-- Google Tag Manager --}}
         <script>(function (w, d, s, l, i) {
             w[l] = w[l] || []; w[l].push({
             'gtm.start':
@@ -181,23 +179,16 @@ CETAM - Base Layout
             j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
                 'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
         })(window, document, 'script', 'dataLayer', 'GTM-THQTXJ7');</script>
-        <!-- End Google Tag Manager -->
+        {{-- End Google Tag Manager --}}
     @endif
 
 </head>
 
 <body>
     @if(env('IS_DEMO')) 
-        <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-THQTXJ7" height="0" width="0"
             style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google Tag Manager (noscript) -->
     @endif
-    {{--
-        Nota: Este layout soporta tanto slots de componentes Blade como secciones.
-        Para migración progresiva: si existe la sección 'content', se usa; de lo contrario, se usa $slot.
-        Opcional prefijo de componentes Blade: <x-proj-layouts.base> (sustituir 'proj' por el código real del proyecto).
-    --}}
 
     @hasSection('content')
         @yield('content')
@@ -208,16 +199,16 @@ CETAM - Base Layout
     @yield('scripts')
     @stack('scripts')
 
-    <!-- QR Scanner Global Listener -->
+    {{-- QR Scanner Global Listener --}}
     <script>
         (function() {
-            // Variables para detectar el escaneo
+            // Variables to manage scan state
             let scanBuffer = '';
             let scanTimeout = null;
-            const SCAN_TIMEOUT = 100; // ms entre caracteres del scanner
-            const MIN_TOKEN_LENGTH = 10; // longitud mínima del token
+            const SCAN_TIMEOUT = 100; 
+            const MIN_TOKEN_LENGTH = 10; 
 
-            // Inicializar Notyf para notificaciones
+            // Initialize Notyf for notifications
             const notyf = new Notyf({
                 duration: 5000,
                 position: {
@@ -226,35 +217,35 @@ CETAM - Base Layout
                 }
             });
 
-            // Listener global de teclado - usando keydown para compatibilidad con más escáneres
+            // Global keyboard listener - using keydown for compatibility with more scanners
             document.addEventListener('keydown', function(e) {
                 console.log('[QR Scanner] KeyDown detected:', e.key, 'Code:', e.code, 'Target:', e.target.tagName);
 
-                // Ignorar si está en un input/textarea
+                // Ignore if inside an input/textarea
                 if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
                     console.log('[QR Scanner] Ignored - Inside input/textarea');
                     return;
                 }
 
-                // Ignorar teclas especiales (excepto Enter)
+                // Ignore special keys (except Enter)
                 if (e.key.length > 1 && e.key !== 'Enter') {
                     console.log('[QR Scanner] Ignored - Special key');
                     return;
                 }
 
-                // Acumular caracteres
+                // Accumulate characters
                 if (e.key !== 'Enter') {
                     scanBuffer += e.key;
                     console.log('[QR Scanner] Buffer:', scanBuffer, 'Length:', scanBuffer.length);
                 }
 
-                // Resetear timeout
+                // Reset timeout
                 clearTimeout(scanTimeout);
 
-                // Detectar fin de escaneo (Enter o timeout)
+                // Detect end of scan (Enter or timeout)
                 if (e.key === 'Enter') {
                     console.log('[QR Scanner] Enter detected - Processing scan');
-                    e.preventDefault(); // Prevenir submit de forms
+                    e.preventDefault(); // Prevent form submit
                     if (scanBuffer.length > 0) {
                         processScan(scanBuffer);
                     }
@@ -270,7 +261,7 @@ CETAM - Base Layout
                 }
             });
 
-            // Procesar el código escaneado
+            // Process scanned data
             function processScan(scannedData) {
                 console.log('[QR Scanner] Processing scan:', scannedData);
                 const trimmedData = scannedData.trim();
@@ -280,7 +271,7 @@ CETAM - Base Layout
                     return;
                 }
 
-                // Extraer el token del dato escaneado
+                // Extract token from scanned data
                 let pickupToken = extractToken(trimmedData);
                 console.log('[QR Scanner] Extracted token:', pickupToken);
 
@@ -289,27 +280,27 @@ CETAM - Base Layout
                     return;
                 }
 
-                // Mostrar notificación de procesando
+                // Show processing notification
                 notyf.success('Procesando código QR...');
 
-                // Enviar al servidor
+                // Sending to server for validation
                 validateDelivery(pickupToken);
             }
 
-            // Extraer token del dato escaneado (puede ser URL o token directo)
+            // Extract token from scanned data (can be URL or direct token)
             function extractToken(data) {
-                // Si es una URL que contiene /storage/qr_codes/
+                // If it's a URL containing /storage/qr_codes/
                 if (data.includes('/storage/qr_codes/')) {
-                    // Extraer el token del nombre del archivo
-                    // Formato: /storage/qr_codes/{business_id}/order_{order_id}_{TOKEN}.svg
+                    // Extract the token from the file name
+                    // Format: /storage/qr_codes/{business_id}/order_{order_id}_{TOKEN}.svg
                     const match = data.match(/order_\d+_([a-zA-Z0-9\-_]+)\.(svg|png)/);
                     if (match && match[1]) {
-                        return match[1]; // Este es el qr_token, no el pickup_token
+                        return match[1];
                     }
                     return null;
                 }
 
-                // Si contiene "pickup/" o similar
+                // If it contains "pickup/" or similar
                 if (data.includes('/pickup/')) {
                     const match = data.match(/\/pickup\/([a-zA-Z0-9\-_]+)/);
                     if (match && match[1]) {
@@ -317,7 +308,7 @@ CETAM - Base Layout
                     }
                 }
 
-                // Validar formato básico del token directo (letras, números, guiones)
+                // Validate basic format of direct token (letters, numbers, dashes)
                 if (/^[a-zA-Z0-9\-_]+$/.test(data)) {
                     return data;
                 }
@@ -325,7 +316,7 @@ CETAM - Base Layout
                 return null;
             }
 
-            // Validar entrega en el servidor
+            // Validate delivery on the server
             function validateDelivery(pickupToken) {
                 fetch('{{ url("/api/v1/scanner/validate-delivery") }}', {
                     method: 'POST',
@@ -341,20 +332,20 @@ CETAM - Base Layout
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        // Notificación de éxito
+                        // Success notification
                         notyf.success('Orden ' + data.data.folio_number + ' entregada exitosamente');
 
-                        // Reproducir sonido de éxito (opcional)
+                        // Play success sound
                         playSuccessSound();
 
-                        // Recargar la página si estamos en la vista de órdenes
+                        // Reload the page if we are on the orders view
                         if (window.location.href.includes('/orders')) {
                             setTimeout(() => {
                                 window.location.reload();
                             }, 1500);
                         }
                     } else {
-                        // Notificación de error
+                        // Error notification
                         notyf.error(data.message);
                         playErrorSound();
                     }
@@ -366,16 +357,16 @@ CETAM - Base Layout
                 });
             }
 
-            // Reproducir sonido de éxito
+            // Play success sound
             function playSuccessSound() {
                 const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBi2F0fPHcSYELITO89qINwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAo=');
-                audio.play().catch(() => {}); // Ignorar errores de audio
+                audio.play().catch(() => {}); 
             }
 
-            // Reproducir sonido de error
+            // Play error sound
             function playErrorSound() {
                 const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICA=');
-                audio.play().catch(() => {}); // Ignorar errores de audio
+                audio.play().catch(() => {}); 
             }
 
             console.log('✓ QR Scanner listener initialized - Ready to scan');
