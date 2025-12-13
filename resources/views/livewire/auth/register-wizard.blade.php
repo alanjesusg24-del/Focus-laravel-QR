@@ -31,26 +31,37 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Nombre del Negocio <span class="text-danger">*</span></label>
-                                <input type="text" wire:model="business_name"
+                                <input type="text" wire:model.blur="business_name"
                                        class="form-control @error('business_name') is-invalid @enderror"
-                                       placeholder="Ej. Cafetería Central">
-                                @error('business_name') <span class="text-danger small">{{ $message }}</span> @enderror
+                                       placeholder="Nombre del negocio">
+                                @error('business_name') 
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">RFC <span class="text-danger">*</span></label>
-                                <input type="text" wire:model="rfc"
+                                <input type="text" wire:model.blur="rfc"
                                        class="form-control @error('rfc') is-invalid @enderror"
-                                       placeholder="ABC123456XYZ">
-                                @error('rfc') <span class="text-danger small">{{ $message }}</span> @enderror
+                                       placeholder="XAXX010101000" maxlength="13"
+                                       style="text-transform: uppercase;">
+                                @error('rfc') 
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">
+                                </div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Teléfono <span class="text-danger">*</span></label>
-                                <input type="tel" wire:model="phone"
+                                <input type="tel" wire:model.blur="phone"
                                        class="form-control @error('phone') is-invalid @enderror"
-                                       placeholder="5512345678">
-                                @error('phone') <span class="text-danger small">{{ $message }}</span> @enderror
+                                       placeholder="10 Digitos" maxlength="10"
+                                       pattern="[0-9]*"
+                                       oninput="this.value = this.value.replace(/[^0-9]/g, '')">
+                                @error('phone') 
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     @endif
@@ -62,25 +73,35 @@
 
                             <div class="mb-3">
                                 <label class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
-                                <input type="email" wire:model="email"
+                                <input type="email" wire:model.blur="email"
                                        class="form-control @error('email') is-invalid @enderror"
-                                       placeholder="correo@ejemplo.com">
-                                @error('email') <span class="text-danger small">{{ $message }}</span> @enderror
+                                       placeholder="ejemplo@institucion.com">
+                                @error('email') 
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Contraseña <span class="text-danger">*</span></label>
-                                <input type="password" wire:model="password"
+                                <input type="password" wire:model.blur="password"
                                        class="form-control @error('password') is-invalid @enderror"
                                        placeholder="Mínimo 8 caracteres">
-                                @error('password') <span class="text-danger small">{{ $message }}</span> @enderror
+                                @error('password') 
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                                <div class="form-text">
+                                    <small class="text-muted">Mínimo 8 caracteres.</small>
+                                </div>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
-                                <input type="password" wire:model="password_confirmation"
-                                       class="form-control"
-                                       placeholder="Repite tu contraseña">
+                                <input type="password" wire:model.blur="password_confirmation"
+                                       class="form-control @error('password_confirmation') is-invalid @enderror"
+                                       placeholder="Confirmar contraseña">
+                                @error('password_confirmation') 
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
                     @endif

@@ -56,12 +56,13 @@ class RegisterWizard extends Component
         return [
             1 => [
                 'business_name' => 'required|string|max:255',
-                'rfc' => 'required|string|max:13|unique:businesses,rfc',
-                'phone' => 'required|numeric|digits:10',
+                'rfc' => 'required|string|min:12|max:13|unique:businesses,rfc',
+                'phone' => 'required|string|regex:/^[0-9]{10}$/',
             ],
             2 => [
-                'email' => 'required|email|unique:businesses,email',
-                'password' => 'required|min:8|confirmed',
+                'email' => 'required|email|max:255|unique:businesses,email',
+                'password' => 'required|string|min:8',
+                'password_confirmation' => 'required|same:password',
             ],
             3 => [
                 'plan_id' => 'required',
@@ -73,21 +74,47 @@ class RegisterWizard extends Component
     // Mensajes en Español
     protected $messages = [
         'business_name.required' => 'El campo nombre del negocio es obligatorio.',
-        'business_name.max' => 'El nombre del negocio no puede tener más de 255 caracteres.',
+        'business_name.max' => 'El campo nombre del negocio es muy largo.',
         'rfc.required' => 'El campo RFC es obligatorio.',
-        'rfc.max' => 'El RFC no puede tener más de 13 caracteres.',
-        'rfc.unique' => 'Este RFC ya está registrado. Por favor verifica tus datos.',
+        'rfc.min' => 'El campo RFC debe tener al menos 12 caracteres.',
+        'rfc.max' => 'El campo RFC debe tener máximo 13 caracteres.',
+        'rfc.unique' => 'Este RFC ya está registrado.',
         'phone.required' => 'El campo teléfono es obligatorio.',
-        'phone.numeric' => 'El teléfono debe contener solo números.',
-        'phone.digits' => 'El teléfono debe tener 10 dígitos.',
+        'phone.regex' => 'El campo teléfono debe tener exactamente 10 dígitos.',
         'email.required' => 'El campo correo electrónico es obligatorio.',
-        'email.email' => 'El correo electrónico debe ser una dirección válida.',
+        'email.email' => 'El campo correo electrónico debe ser válido.',
         'email.unique' => 'Este correo electrónico ya está registrado.',
         'password.required' => 'El campo contraseña es obligatorio.',
-        'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+        'password.min' => 'El campo contraseña debe tener al menos 8 caracteres.',
         'password.confirmed' => 'Las contraseñas no coinciden.',
-        'terms.accepted' => 'Debes aceptar los términos y condiciones.',
+        'password_confirmation.required' => 'El campo confirmación de contraseña es obligatorio.',
+        'password_confirmation.same' => 'Las contraseñas no coinciden.',
+        'terms.accepted' => 'Debe aceptar los términos y aviso de privacidad.',
     ];
+
+    public function updated($propertyName)
+    {
+        // Validar en tiempo real solo el campo que cambió
+        if ($propertyName === 'rfc') {
+            $this->rfc = strtoupper($this->rfc);
+        }
+        
+        if ($propertyName === 'phone') {
+            $this->phone = preg_replace('/[^0-9]/', '', $this->phone);
+            $this->phone = substr($this->phone, 0, 10); // Limitar a 10 dígitos
+        }
+        
+        // Validar el campo específico según el paso actual
+        if ($this->currentStep === 1 && in_array($propertyName, ['business_name', 'rfc', 'phone'])) {
+            $this->validateOnly($propertyName, $this->rules()[1]);
+        } elseif ($this->currentStep === 2 && in_array($propertyName, ['email', 'password', 'password_confirmation'])) {
+            if ($propertyName === 'password_confirmation') {
+                $this->validateOnly($propertyName, ['password_confirmation' => 'required|same:password']);
+            } else {
+                $this->validateOnly($propertyName, $this->rules()[2]);
+            }
+        }
+    }
 
     public function nextStep()
     {
