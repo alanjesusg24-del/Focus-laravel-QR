@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: QrCodeService.php
+ * Created on: 20/11/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 20/11/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Refactored QR code generation and management |
+ */
+
 namespace App\Services;
 
 use App\Models\Order;
@@ -12,24 +26,13 @@ class QrCodeService
 {
     /**
      * Generate QR code for an order
-     *
-     * @param Order $order
-     * @return string QR code URL
      */
     public function generateQrCodeForOrder(Order $order): string
     {
         try {
-            // Generate unique QR token if not exists
-            if (empty($order->qr_token)) {
-                $order->qr_token = Str::random(32);
-            }
+            // 5.5: Extract token generation to private method
+            $this->ensureTokensExist($order);
 
-            // Generate unique pickup token if not exists
-            if (empty($order->pickup_token)) {
-                $order->pickup_token = Str::random(16);
-            }
-
-            // Create QR code data URL - Web URL for browser scanning
             $appUrl = config('app.url', env('APP_URL', 'http://localhost'));
             $qrData = "{$appUrl}/orders/associate/{$order->qr_token}";
 
@@ -38,27 +41,16 @@ class QrCodeService
                 'qr_data' => $qrData,
             ]);
 
-            // Generate QR code image using SimpleSoftwareIO (SVG format - no imagick required)
-            // SVG format works without imagick extension
             $qrCodeImage = QrCode::format('svg')
                 ->size(300)
                 ->errorCorrection('H')
                 ->generate($qrData);
 
-            // Create directory if not exists
-            $directory = "qr_codes/{$order->business_id}";
-            if (!Storage::disk('public')->exists($directory)) {
-                Storage::disk('public')->makeDirectory($directory);
-            }
+            // 5.5: Extract file storage to private method
+            $fileName = $this->saveQrCodeToStorage($order, $qrCodeImage);
 
-            // Save QR code to storage (SVG format)
-            $fileName = "{$directory}/order_{$order->order_id}_{$order->qr_token}.svg";
-            Storage::disk('public')->put($fileName, $qrCodeImage);
-
-            // Generate public URL
             $qrCodeUrl = Storage::url($fileName);
 
-            // Update order with QR code URL
             $order->qr_code_url = $qrCodeUrl;
             $order->save();
 
@@ -82,18 +74,13 @@ class QrCodeService
 
     /**
      * Regenerate QR code for an order
-     *
-     * @param Order $order
-     * @return string New QR code URL
      */
     public function regenerateQrCodeForOrder(Order $order): string
     {
-        // Delete old QR code if exists
         if ($order->qr_code_url) {
             $this->deleteQrCode($order);
         }
 
-        // Generate new tokens
         $order->qr_token = Str::random(32);
         $order->pickup_token = Str::random(16);
         $order->save();
@@ -103,30 +90,26 @@ class QrCodeService
 
     /**
      * Delete QR code from storage
-     *
-     * @param Order $order
-     * @return bool
      */
     public function deleteQrCode(Order $order): bool
     {
+        // 5.4.1: Early Return - No QR code
         if (!$order->qr_code_url) {
             return false;
         }
 
         $fileName = str_replace('/storage/', '', $order->qr_code_url);
 
-        if (Storage::disk('public')->exists($fileName)) {
-            return Storage::disk('public')->delete($fileName);
+        // 5.4.1: Early Return - File not found
+        if (!Storage::disk('public')->exists($fileName)) {
+            return false;
         }
 
-        return false;
+        return Storage::disk('public')->delete($fileName);
     }
 
     /**
      * Validate QR token
-     *
-     * @param string $token
-     * @return Order|null
      */
     public function validateQrToken(string $token): ?Order
     {
@@ -137,9 +120,6 @@ class QrCodeService
 
     /**
      * Validate pickup token
-     *
-     * @param string $token
-     * @return Order|null
      */
     public function validatePickupToken(string $token): ?Order
     {
@@ -150,32 +130,66 @@ class QrCodeService
 
     /**
      * Generate bulk QR codes for multiple orders
-     *
-     * @param array $orderIds
-     * @return array Generated URLs
      */
     public function generateBulkQrCodes(array $orderIds): array
     {
-        $results = [];
-
-        foreach ($orderIds as $orderId) {
+        // 5.3: Use Collection mapWithKeys instead of foreach
+        return collect($orderIds)->mapWithKeys(function (int $orderId) {
             $order = Order::find($orderId);
 
-            if ($order) {
-                try {
-                    $results[$orderId] = [
+            // 5.4.1: Early Return - Order not found
+            if (!$order) {
+                return [$orderId => ['success' => false, 'error' => 'Order not found']];
+            }
+
+            try {
+                return [
+                    $orderId => [
                         'success' => true,
                         'url' => $this->generateQrCodeForOrder($order),
-                    ];
-                } catch (\Exception $e) {
-                    $results[$orderId] = [
+                    ]
+                ];
+            } catch (\Exception $e) {
+                return [
+                    $orderId => [
                         'success' => false,
                         'error' => $e->getMessage(),
-                    ];
-                }
+                    ]
+                ];
             }
+        })->toArray();
+    }
+
+    /**
+     * Ensure tokens exist for order
+     * 5.5: Private helper method following SRP
+     */
+    private function ensureTokensExist(Order $order): void
+    {
+        if (empty($order->qr_token)) {
+            $order->qr_token = Str::random(32);
         }
 
-        return $results;
+        if (empty($order->pickup_token)) {
+            $order->pickup_token = Str::random(16);
+        }
+    }
+
+    /**
+     * Save QR code image to storage
+     * 5.5: Private helper method following SRP
+     */
+    private function saveQrCodeToStorage(Order $order, string $qrCodeImage): string
+    {
+        $directory = "qr_codes/{$order->business_id}";
+
+        if (!Storage::disk('public')->exists($directory)) {
+            Storage::disk('public')->makeDirectory($directory);
+        }
+
+        $fileName = "{$directory}/order_{$order->order_id}_{$order->qr_token}.svg";
+        Storage::disk('public')->put($fileName, $qrCodeImage);
+
+        return $fileName;
     }
 }

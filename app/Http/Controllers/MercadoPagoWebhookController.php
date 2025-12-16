@@ -1,30 +1,29 @@
 <?php
 
 /**
- * ============================================
- * CETAM - MercadoPago Webhook Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: MercadoPagoWebhookController.php
+ * Created on: 20/11/2025
+ * Created by:Dafne Vanessa Castillo Moreo
+ * Approved by: Dafne Vanessa Castillo Moreo
  *
- * @project     Centro de Servicios (CS)
- * @file        MercadoPagoWebhookController.php
- * @description Controlador de webhooks de MercadoPago
- * @author      CETAM Dev Team
- * @created     2025-11-20
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 15/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreo |
+ *   Description: Refactored to comply  |
  */
 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use App\Services\MercadoPagoService;
 use Illuminate\Support\Facades\Log;
 
 class MercadoPagoWebhookController extends Controller
 {
-    protected $mercadoPagoService;
+    protected MercadoPagoService $mercadoPagoService;
 
     public function __construct(MercadoPagoService $mercadoPagoService)
     {
@@ -34,7 +33,7 @@ class MercadoPagoWebhookController extends Controller
     /**
      * Handle MercadoPago webhook notifications
      */
-    public function handleWebhook(Request $request)
+    public function handleWebhook(Request $request): JsonResponse
     {
         Log::info('MercadoPago webhook received', [
             'data' => $request->all(),
@@ -46,11 +45,12 @@ class MercadoPagoWebhookController extends Controller
             // Procesar notificación
             $result = $this->mercadoPagoService->processWebhookNotification($data);
 
-            if ($result) {
-                return response()->json(['status' => 'success'], 200);
-            } else {
+            // 5.4.1: Early Return - Notification ignored
+            if (!$result) {
                 return response()->json(['status' => 'ignored'], 200);
             }
+
+            return response()->json(['status' => 'success'], 200);
 
         } catch (\Exception $e) {
             Log::error('Webhook processing error', [

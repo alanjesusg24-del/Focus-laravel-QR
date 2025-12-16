@@ -1,10 +1,26 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: BusinessManagementController.php
+ * Created on: 23/11/2025
+ * Created by: Dafne Vanessa Castillo Moreno
+ * Approved by: Dafne Vanessa Castillo Moreno
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 04/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreno |
+ *   Description: SuperAdmin controller for business management |
+ */
+
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Models\Plan;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -15,28 +31,28 @@ class BusinessManagementController extends Controller
     /**
      * Display a listing of businesses
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $query = Business::with('plan');
 
         // Search functionality
         if ($request->filled('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('business_name', 'like', "%{$search}%")
-                  ->orWhere('email', 'like', "%{$search}%")
-                  ->orWhere('rfc', 'like', "%{$search}%")
-                  ->orWhere('phone', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('rfc', 'like', "%{$search}%")
+                    ->orWhere('phone', 'like', "%{$search}%");
             });
         }
 
-        // Filter by status
+        // 5.1.2: Filter by status using match instead of if-elseif
         if ($request->filled('status')) {
-            if ($request->status === 'active') {
-                $query->where('is_active', true);
-            } elseif ($request->status === 'inactive') {
-                $query->where('is_active', false);
-            }
+            $query->where('is_active', match ($request->status) {
+                'active' => true,
+                'inactive' => false,
+                default => null
+            });
         }
 
         // Filter by plan
@@ -56,33 +72,9 @@ class BusinessManagementController extends Controller
     }
 
     /**
-     * Display the specified business
-     * DESACTIVADO - No se usa la vista de detalle
-     */
-    // public function show($id)
-    // {
-    //     $business = Business::with(['plan', 'orders', 'payments', 'supportTickets'])
-    //         ->findOrFail($id);
-
-    //     // Get statistics for this business
-    //     $stats = [
-    //         'total_orders' => $business->orders()->count(),
-    //         'pending_orders' => $business->orders()->where('status', 'pending')->count(),
-    //         'delivered_orders' => $business->orders()->where('status', 'delivered')->count(),
-    //         'total_payments' => $business->payments()->sum('amount'),
-    //         'open_tickets' => $business->supportTickets()->where('status', 'open')->count(),
-    //     ];
-
-    //     $recentOrders = $business->orders()->latest()->limit(10)->get();
-    //     $recentPayments = $business->payments()->latest()->limit(10)->get();
-
-    //     return view('superadmin.businesses.show', compact('business', 'stats', 'recentOrders', 'recentPayments'));
-    // }
-
-    /**
      * Show the form for editing the specified business
      */
-    public function edit($id)
+    public function edit(int $id): View
     {
         $business = Business::findOrFail($id);
         $plans = Plan::all();
@@ -93,7 +85,7 @@ class BusinessManagementController extends Controller
     /**
      * Update the specified business
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id): RedirectResponse
     {
         $business = Business::findOrFail($id);
 
@@ -135,12 +127,9 @@ class BusinessManagementController extends Controller
         // Handle checkbox (is_active)
         $data['is_active'] = $request->has('is_active');
 
-        // Si se cambió el plan, actualizar los campos derivados del plan
+        // Handle plan change and update derived fields
         if ($request->filled('plan_id') && $request->plan_id != $business->plan_id) {
-            $selectedPlan = Plan::findOrFail($request->plan_id);
-            $data['monthly_price'] = $selectedPlan->price;
-            $data['has_chat_module'] = $selectedPlan->has_chat_module;
-            $data['data_retention_months'] = $selectedPlan->retention_days ? ceil($selectedPlan->retention_days / 30) : 1;
+            $this->updatePlanDerivedFields($data, $request->plan_id);
         }
 
         // Handle password update
@@ -150,13 +139,7 @@ class BusinessManagementController extends Controller
 
         // Handle photo upload
         if ($request->hasFile('photo')) {
-            // Delete old photo
-            if ($business->photo && Storage::disk('public')->exists($business->photo)) {
-                Storage::disk('public')->delete($business->photo);
-            }
-
-            $path = $request->file('photo')->store('businesses', 'public');
-            $data['photo'] = $path;
+            $data['photo'] = $this->handlePhotoUpload($request, $business);
         }
 
         $business->update($data);
@@ -166,9 +149,35 @@ class BusinessManagementController extends Controller
     }
 
     /**
+     * Update plan-derived fields
+     */
+    private function updatePlanDerivedFields(array &$data, int $planId): void
+    {
+        $selectedPlan = Plan::findOrFail($planId);
+        $data['monthly_price'] = $selectedPlan->price;
+        $data['has_chat_module'] = $selectedPlan->has_chat_module;
+        $data['data_retention_months'] = $selectedPlan->retention_days
+            ? ceil($selectedPlan->retention_days / 30)
+            : 1;
+    }
+
+    /**
+     * Handle photo upload and delete old photo
+     */
+    private function handlePhotoUpload(Request $request, Business $business): string
+    {
+        // Delete old photo if exists
+        if ($business->photo && Storage::disk('public')->exists($business->photo)) {
+            Storage::disk('public')->delete($business->photo);
+        }
+
+        return $request->file('photo')->store('businesses', 'public');
+    }
+
+    /**
      * Toggle business active status
      */
-    public function toggleStatus($id)
+    public function toggleStatus(int $id): RedirectResponse
     {
         $business = Business::findOrFail($id);
         $business->is_active = !$business->is_active;
@@ -183,18 +192,26 @@ class BusinessManagementController extends Controller
     /**
      * Remove the specified business (soft delete)
      */
-    public function destroy($id)
+    public function destroy(int $id): RedirectResponse
     {
         $business = Business::findOrFail($id);
 
         // Delete photo if exists
-        if ($business->photo && Storage::disk('public')->exists($business->photo)) {
-            Storage::disk('public')->delete($business->photo);
-        }
+        $this->deleteBusinessPhoto($business);
 
         $business->delete();
 
         return redirect()->route('superadmin.businesses.index')
             ->with('success', 'Negocio eliminado correctamente.');
+    }
+
+    /**
+     * Delete business photo from storage
+     */
+    private function deleteBusinessPhoto(Business $business): void
+    {
+        if ($business->photo && Storage::disk('public')->exists($business->photo)) {
+            Storage::disk('public')->delete($business->photo);
+        }
     }
 }

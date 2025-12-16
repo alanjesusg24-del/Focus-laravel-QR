@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: BusinessApiController.php
+ * Created on: 20/11/2025
+ * Created by: Dafne Vanessa Castillo Moreno
+ * Approved by: Dafne Vanessa Castillo Moreno
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 15/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreno |
+ *   Description: Refactored to comply |
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
@@ -11,9 +25,6 @@ class BusinessApiController extends Controller
 {
     /**
      * Get all active businesses with their locations
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function index(Request $request): JsonResponse
     {
@@ -53,21 +64,8 @@ class BusinessApiController extends Controller
                 'theme'
             ])->get();
 
-            // Formatear la respuesta
-            $businesses->transform(function ($business) {
-                return [
-                    'id' => $business->business_id,
-                    'name' => $business->business_name,
-                    'photo' => $business->photo ? url($business->photo) : null,
-                    'address' => $business->address,
-                    'latitude' => (float) $business->latitude,
-                    'longitude' => (float) $business->longitude,
-                    'location_description' => $business->location_description,
-                    'phone' => $business->phone,
-                    'theme' => $business->theme,
-                    'distance' => isset($business->distance) ? round($business->distance, 2) : null,
-                ];
-            });
+            // 5.3.1: Using arrow function with type hint
+            $businesses->transform(fn(Business $business) => $this->formatBusinessForResponse($business));
 
             return response()->json([
                 'success' => true,
@@ -85,9 +83,6 @@ class BusinessApiController extends Controller
 
     /**
      * Get business details by ID
-     *
-     * @param int $id
-     * @return JsonResponse
      */
     public function show(int $id): JsonResponse
     {
@@ -96,6 +91,7 @@ class BusinessApiController extends Controller
                 ->where('is_active', true)
                 ->first();
 
+            // 5.4.1: Early Return - Business not found
             if (!$business) {
                 return response()->json([
                     'success' => false,
@@ -105,17 +101,7 @@ class BusinessApiController extends Controller
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'id' => $business->business_id,
-                    'name' => $business->business_name,
-                    'photo' => $business->photo ? url($business->photo) : null,
-                    'address' => $business->address,
-                    'latitude' => (float) $business->latitude,
-                    'longitude' => (float) $business->longitude,
-                    'location_description' => $business->location_description,
-                    'phone' => $business->phone,
-                    'theme' => $business->theme,
-                ]
+                'data' => $this->formatBusinessForResponse($business),
             ]);
         } catch (\Exception $e) {
             return response()->json([
@@ -124,5 +110,25 @@ class BusinessApiController extends Controller
                 'error' => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }
+    }
+
+    /**
+     * Format business object for API response
+     * 5.5: Private helper method following SRP - Eliminates code duplication
+     */
+    private function formatBusinessForResponse(Business $business): array
+    {
+        return [
+            'id' => $business->business_id,
+            'name' => $business->business_name,
+            'photo' => $business->photo ? url($business->photo) : null,
+            'address' => $business->address,
+            'latitude' => (float) $business->latitude,
+            'longitude' => (float) $business->longitude,
+            'location_description' => $business->location_description,
+            'phone' => $business->phone,
+            'theme' => $business->theme,
+            'distance' => isset($business->distance) ? round($business->distance, 2) : null,
+        ];
     }
 }

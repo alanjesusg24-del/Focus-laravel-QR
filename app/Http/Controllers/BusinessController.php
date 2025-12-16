@@ -1,25 +1,25 @@
 <?php
 
 /**
- * ============================================
- * CETAM - Business Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: BusinessController.php
+ * Created on: 04/10/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
  *
- * @project     Centro de Servicios (CS)
- * @file        BusinessController.php
- * @description Controlador de gestión de negocios y perfiles
- * @author      CETAM Dev Team
- * @created     2025-11-20
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 04/12/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Controller to handle business operations |
  */
 
 namespace App\Http\Controllers;
 
 use App\Models\Business;
 use App\Models\Plan;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -32,7 +32,7 @@ class BusinessController extends Controller
     /**
      * Show business registration form
      */
-    public function register()
+    public function register(): View
     {
         $plans = Plan::where('is_active', true)->get();
 
@@ -42,7 +42,7 @@ class BusinessController extends Controller
     /**
      * Process business registration
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'business_name' => 'required|string|max:255',
@@ -86,7 +86,7 @@ class BusinessController extends Controller
     /**
      * Show business profile
      */
-    public function profile()
+    public function profile(): View
     {
         $business = Auth::user()->load('plan');
 
@@ -96,7 +96,7 @@ class BusinessController extends Controller
     /**
      * Show edit profile form
      */
-    public function edit()
+    public function edit(): View
     {
         $business = Auth::user();
 
@@ -106,113 +106,87 @@ class BusinessController extends Controller
     /**
      * Update business profile
      */
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $businessId = Auth::id();
         $business = Business::findOrFail($businessId);
 
         // DEBUG: Log what we're receiving
-        \Log::info('=== UPDATE BUSINESS DEBUG ===');
-        \Log::info('Latitude recibida: ' . $request->input('latitude'));
-        \Log::info('Longitude recibida: ' . $request->input('longitude'));
-        \Log::info('Address recibida: ' . $request->input('address'));
+        Log::info('=== UPDATE BUSINESS DEBUG ===');
+        Log::info('Latitude recibida: ' . $request->input('latitude'));
+        Log::info('Longitude recibida: ' . $request->input('longitude'));
+        Log::info('Address recibida: ' . $request->input('address'));
 
         try {
             $validated = $request->validate([
-            'business_name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                Rule::unique('businesses', 'email')->ignore($businessId, 'business_id'),
-            ],
-            'phone' => 'required|string|max:15',
-            'address' => 'nullable|string',
-            'latitude' => 'nullable|numeric|between:-90,90',
-            'longitude' => 'nullable|numeric|between:-180,180',
-            'logo_url' => 'nullable|image|max:2048|mimes:jpg,jpeg,png',
-            'photo' => 'nullable|image|max:5120|mimes:jpg,jpeg,png',
-            // Password fields (optional)
-            'current_password' => 'nullable|string',
-            'password' => 'nullable|string|min:8|confirmed',
-        ]);
-
-        // Handle password update if provided
-        if ($request->filled('current_password') || $request->filled('password')) {
-            // If any password field is filled, validate all are required
-            $request->validate([
-                'current_password' => 'required|string',
-                'password' => 'required|string|min:8|confirmed',
+                'business_name' => 'required|string|max:255',
+                'email' => [
+                    'required',
+                    'email',
+                    Rule::unique('businesses', 'email')->ignore($businessId, 'business_id'),
+                ],
+                'phone' => 'required|string|max:15',
+                'address' => 'nullable|string',
+                'latitude' => 'nullable|numeric|between:-90,90',
+                'longitude' => 'nullable|numeric|between:-180,180',
+                'logo_url' => 'nullable|image|max:2048|mimes:jpg,jpeg,png',
+                'photo' => 'nullable|image|max:5120|mimes:jpg,jpeg,png',
+                // Password fields (optional)
+                'current_password' => 'nullable|string',
+                'password' => 'nullable|string|min:8|confirmed',
             ]);
 
-            // Verify current password
-            if (!Hash::check($request->current_password, $business->password)) {
-                return back()
-                    ->withInput()
-                    ->withErrors(['current_password' => 'La contraseña actual es incorrecta']);
+            // 5.4.1: Handle password update with Early Returns
+            if ($request->filled('current_password') || $request->filled('password')) {
+                $passwordUpdateResult = $this->handlePasswordUpdate($request, $business);
+
+                if ($passwordUpdateResult !== null) {
+                    return $passwordUpdateResult;
+                }
             }
 
-            // Update password
-            $business->password = Hash::make($request->password);
-        }
-
-        // Handle logo upload
-        if ($request->hasFile('logo_url')) {
-            // Delete old logo
-            if ($business->logo_url) {
-                $oldPath = str_replace('/storage/', '', $business->logo_url);
-                Storage::disk('public')->delete($oldPath);
+            // 5.4.1: Handle logo upload
+            if ($request->hasFile('logo_url')) {
+                $validated['logo_url'] = $this->handleLogoUpload($request, $business, $businessId);
             }
 
-            $file = $request->file('logo_url');
-            $fileName = 'logo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('business_logos', $fileName, 'public');
-            $validated['logo_url'] = Storage::url($path);
-        }
-
-        // Handle business photo upload
-        if ($request->hasFile('photo')) {
-            // Delete old photo
-            if ($business->photo) {
-                Storage::disk('public')->delete($business->photo);
+            // 5.4.1: Handle business photo upload
+            if ($request->hasFile('photo')) {
+                $validated['photo'] = $this->handlePhotoUpload($request, $business, $businessId);
             }
 
-            $file = $request->file('photo');
-            $fileName = 'business_photo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
-            $path = $file->storeAs('business_photos', $fileName, 'public');
-            $validated['photo'] = $path;
-        }
+            // Prepare data for update
+            $data = $request->except(['current_password', 'password', 'password_confirmation', '_token', '_method', 'logo_url', 'photo']);
 
-        // Prepare data for update (similar to superadmin approach)
-        $data = $request->except(['current_password', 'password', 'password_confirmation', '_token', '_method', 'logo_url', 'photo']);
+            // Add validated photo and logo_url if they were uploaded
+            if (isset($validated['logo_url'])) {
+                $data['logo_url'] = $validated['logo_url'];
+            }
 
-        // Add validated photo and logo_url if they were uploaded
-        if (isset($validated['logo_url'])) {
-            $data['logo_url'] = $validated['logo_url'];
-        }
-        if (isset($validated['photo'])) {
-            $data['photo'] = $validated['photo'];
-        }
+            if (isset($validated['photo'])) {
+                $data['photo'] = $validated['photo'];
+            }
 
-        // DEBUG: Log what we're about to save
-        \Log::info('Valores a guardar:');
-        \Log::info('Latitude: ' . ($data['latitude'] ?? 'NULL'));
-        \Log::info('Longitude: ' . ($data['longitude'] ?? 'NULL'));
-        \Log::info('Address: ' . ($data['address'] ?? 'NULL'));
+            // DEBUG: Log what we're about to save
+            Log::info('Valores a guardar:');
+            Log::info('Latitude: ' . ($data['latitude'] ?? 'NULL'));
+            Log::info('Longitude: ' . ($data['longitude'] ?? 'NULL'));
+            Log::info('Address: ' . ($data['address'] ?? 'NULL'));
 
-        $business->update($data);
+            $business->update($data);
 
-        // DEBUG: Log what was actually saved
-        \Log::info('Valores guardados en BD:');
-        \Log::info('Latitude: ' . $business->latitude);
-        \Log::info('Longitude: ' . $business->longitude);
+            // DEBUG: Log what was actually saved
+            Log::info('Valores guardados en BD:');
+            Log::info('Latitude: ' . $business->latitude);
+            Log::info('Longitude: ' . $business->longitude);
 
-        return redirect()
-            ->route('business.profile.index')
-            ->with('success', 'Perfil actualizado exitosamente');
+            return redirect()
+                ->route('business.profile.index')
+                ->with('success', 'Perfil actualizado exitosamente');
 
         } catch (\Exception $e) {
-            \Log::error('ERROR al actualizar business: ' . $e->getMessage());
-            \Log::error('Stack trace: ' . $e->getTraceAsString());
+            Log::error('ERROR al actualizar business: ' . $e->getMessage());
+            Log::error('Stack trace: ' . $e->getTraceAsString());
 
             return back()
                 ->withInput()
@@ -221,9 +195,70 @@ class BusinessController extends Controller
     }
 
     /**
+     * Handle password update with validation
+     *
+     * @return RedirectResponse|null Returns RedirectResponse on error, null on success
+     */
+    private function handlePasswordUpdate(Request $request, Business $business): ?RedirectResponse
+    {
+        // If any password field is filled, validate all are required
+        $request->validate([
+            'current_password' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        // 5.4.1: Early Return - Verify current password
+        if (!Hash::check($request->current_password, $business->password)) {
+            return back()
+                ->withInput()
+                ->withErrors(['current_password' => 'La contraseña actual es incorrecta']);
+        }
+
+        // Update password
+        $business->password = Hash::make($request->password);
+
+        return null;
+    }
+
+    /**
+     * Handle logo file upload
+     */
+    private function handleLogoUpload(Request $request, Business $business, int $businessId): string
+    {
+        // Delete old logo if exists
+        if ($business->logo_url) {
+            $oldPath = str_replace('/storage/', '', $business->logo_url);
+            Storage::disk('public')->delete($oldPath);
+        }
+
+        $file = $request->file('logo_url');
+        $fileName = 'logo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('business_logos', $fileName, 'public');
+
+        return Storage::url($path);
+    }
+
+    /**
+     * Handle business photo upload
+     */
+    private function handlePhotoUpload(Request $request, Business $business, int $businessId): string
+    {
+        // Delete old photo if exists
+        if ($business->photo) {
+            Storage::disk('public')->delete($business->photo);
+        }
+
+        $file = $request->file('photo');
+        $fileName = 'business_photo_' . $businessId . '_' . time() . '.' . $file->getClientOriginalExtension();
+        $path = $file->storeAs('business_photos', $fileName, 'public');
+
+        return $path;
+    }
+
+    /**
      * Show change password form
      */
-    public function showChangePassword()
+    public function showChangePassword(): View
     {
         return view('business.change-password');
     }
@@ -231,7 +266,7 @@ class BusinessController extends Controller
     /**
      * Update business password
      */
-    public function updatePassword(Request $request)
+    public function updatePassword(Request $request): RedirectResponse
     {
         $businessId = Auth::id();
         $business = Business::findOrFail($businessId);
@@ -241,7 +276,7 @@ class BusinessController extends Controller
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        // Verify current password
+        // 5.4.1: Early Return - Verify current password
         if (!Hash::check($validated['current_password'], $business->password)) {
             return back()->with('error', 'La contraseña actual es incorrecta');
         }
@@ -258,7 +293,7 @@ class BusinessController extends Controller
     /**
      * Show theme customization
      */
-    public function showTheme()
+    public function showTheme(): View
     {
         $businessId = Auth::id();
         $business = Business::findOrFail($businessId);
@@ -275,7 +310,7 @@ class BusinessController extends Controller
     /**
      * Update business theme
      */
-    public function updateTheme(Request $request)
+    public function updateTheme(Request $request): RedirectResponse
     {
         $businessId = Auth::id();
         $business = Business::findOrFail($businessId);
@@ -294,7 +329,7 @@ class BusinessController extends Controller
     /**
      * Deactivate business account
      */
-    public function deactivate(Request $request)
+    public function deactivate(Request $request): RedirectResponse
     {
         $businessId = Auth::id();
         $business = Business::findOrFail($businessId);
@@ -303,7 +338,7 @@ class BusinessController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Verify password
+        // 5.4.1: Early Return - Verify password
         if (!Hash::check($validated['password'], $business->password)) {
             return back()->with('error', 'Contraseña incorrecta');
         }

@@ -1,19 +1,17 @@
 <?php
 
 /**
- * ============================================
- * CETAM - Order Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: OrderController.php (CS)
+ * Created on: 20/11/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
  *
- * @project     Centro de Servicios (CS)
- * @file        OrderController.php
- * @description Controlador CRUD de órdenes con sistema QR
- * @author      CETAM Dev Team
- * @created     2025-11-20
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 15/12/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Refactored to comply |
  */
 
 namespace App\Http\Controllers\CS;
@@ -34,8 +32,6 @@ class OrderController extends Controller
 
     /**
      * Create a new controller instance
-     *
-     * @param OrderService $orderService
      */
     public function __construct(OrderService $orderService)
     {
@@ -44,9 +40,6 @@ class OrderController extends Controller
 
     /**
      * Display a listing of orders for the authenticated business
-     *
-     * @param Request $request
-     * @return View
      */
     public function index(Request $request): View
     {
@@ -68,8 +61,6 @@ class OrderController extends Controller
 
     /**
      * Show the form for creating a new order
-     *
-     * @return View
      */
     public function create(): View
     {
@@ -78,9 +69,6 @@ class OrderController extends Controller
 
     /**
      * Store a newly created order
-     *
-     * @param Request $request
-     * @return RedirectResponse
      */
     public function store(Request $request): RedirectResponse
     {
@@ -105,9 +93,6 @@ class OrderController extends Controller
 
     /**
      * Display the specified order
-     *
-     * @param Order $order
-     * @return View
      */
     public function show(Order $order): View
     {
@@ -118,9 +103,6 @@ class OrderController extends Controller
 
     /**
      * Show the form for editing the order
-     *
-     * @param Order $order
-     * @return View
      */
     public function edit(Order $order): View
     {
@@ -131,10 +113,6 @@ class OrderController extends Controller
 
     /**
      * Update the specified order
-     *
-     * @param Request $request
-     * @param Order $order
-     * @return RedirectResponse
      */
     public function update(Request $request, Order $order): RedirectResponse
     {
@@ -153,9 +131,6 @@ class OrderController extends Controller
 
     /**
      * Mark order as ready
-     *
-     * @param Order $order
-     * @return RedirectResponse
      */
     public function markAsReady(Order $order): RedirectResponse
     {
@@ -172,10 +147,6 @@ class OrderController extends Controller
 
     /**
      * Mark order as delivered
-     *
-     * @param Request $request
-     * @param Order $order
-     * @return RedirectResponse
      */
     public function markAsDelivered(Request $request, Order $order): RedirectResponse
     {
@@ -196,10 +167,6 @@ class OrderController extends Controller
 
     /**
      * Cancel the specified order
-     *
-     * @param Request $request
-     * @param Order $order
-     * @return RedirectResponse
      */
     public function cancel(Request $request, Order $order): RedirectResponse
     {
@@ -220,20 +187,19 @@ class OrderController extends Controller
 
     /**
      * Download QR code
-     *
-     * @param Order $order
-     * @return BinaryFileResponse|RedirectResponse
      */
     public function downloadQr(Order $order): BinaryFileResponse|RedirectResponse
     {
         $this->authorize('view', $order);
 
+        // 5.4.1: Early Return - No QR code
         if (!$order->qr_code_url) {
             return back()->with('error', 'Esta orden no tiene código QR');
         }
 
         $filePath = public_path(str_replace('/storage/', 'storage/', $order->qr_code_url));
 
+        // 5.4.1: Early Return - File not found
         if (!file_exists($filePath)) {
             return back()->with('error', 'Archivo de código QR no encontrado');
         }
@@ -243,9 +209,6 @@ class OrderController extends Controller
 
     /**
      * Get order statistics
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function statistics(Request $request): JsonResponse
     {
@@ -259,9 +222,6 @@ class OrderController extends Controller
 
     /**
      * Check if order is linked to mobile user
-     *
-     * @param Order $order
-     * @return JsonResponse
      */
     public function checkLinked(Order $order): JsonResponse
     {

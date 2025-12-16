@@ -1,11 +1,26 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: ChatApiController.php
+ * Created on: 04/10/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 23/11/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: API controller for chat messaging |
+ */
+
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Models\ChatMessage;
 use App\Models\Order;
 use App\Models\MobileUser;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -16,58 +31,26 @@ class ChatApiController extends Controller
      * Get messages for a specific order
      * GET /api/orders/{order}/messages
      */
-    public function getMessages(Request $request, $orderId)
+    public function getMessages(Request $request, int $orderId): JsonResponse
     {
         try {
-            // Obtener usuario autenticado desde el token Bearer
-            $user = $request->user('sanctum');
-            $mobileUser = $request->mobile_user ?? null;
-
-            // Determinar el mobile_user_id (prioridad: usuario autenticado > dispositivo)
-            $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
-
+            // 5.4.1: Early Return - Validate authentication
+            $mobileUserId = $this->getMobileUserId($request);
             if (!$mobileUserId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Se requiere autenticación o device_id',
-                ], 401);
+                return $this->unauthorizedResponse();
             }
 
-            // Verificar que la orden existe y pertenece al usuario autenticado
-            $order = Order::where('order_id', $orderId)
-                ->where('mobile_user_id', $mobileUserId)
-                ->first();
-
+            // 5.4.1: Early Return - Validate order access
+            $order = $this->getOrderForUser($orderId, $mobileUserId);
             if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Orden no encontrada o no tienes acceso a ella',
-                ], 404);
+                return $this->orderNotFoundResponse();
             }
 
-            // Obtener mensajes
-            $messages = ChatMessage::forOrder($orderId)
-                ->orderBy('created_at', 'asc')
-                ->get()
-                ->map(function ($message) {
-                    return [
-                        'message_id' => $message->message_id,
-                        'sender_type' => $message->sender_type,
-                        'message' => $message->message,
-                        'attachment_url' => $message->attachment_url,
-                        'is_read' => $message->is_read,
-                        'created_at' => $message->created_at->toIso8601String(),
-                        'read_at' => $message->read_at ? $message->read_at->toIso8601String() : null,
-                    ];
-                });
+            // Get and format messages
+            $messages = $this->getFormattedMessages($orderId);
 
-            // Marcar mensajes del negocio como leídos
-            ChatMessage::forOrder($orderId)
-                ->bySenderType('business')
-                ->unread()
-                ->each(function ($message) {
-                    $message->markAsRead();
-                });
+            // Mark business messages as read
+            $this->markBusinessMessagesAsRead($orderId);
 
             return response()->json([
                 'success' => true,
@@ -91,52 +74,31 @@ class ChatApiController extends Controller
      * Send a message from mobile app
      * POST /api/orders/{order}/messages
      */
-    public function sendMessage(Request $request, $orderId)
+    public function sendMessage(Request $request, int $orderId): JsonResponse
     {
         try {
-            // Validar datos
+            // Validate request data
             $validated = $request->validate([
                 'message' => 'required|string|max:1000',
                 'attachment' => 'nullable|file|max:5120|mimes:jpg,jpeg,png,pdf',
             ]);
 
-            // Obtener usuario autenticado desde el token Bearer
-            $user = $request->user('sanctum');
-            $mobileUser = $request->mobile_user ?? null;
-
-            // Determinar el mobile_user_id (prioridad: usuario autenticado > dispositivo)
-            $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
-
+            // 5.4.1: Early Return - Validate authentication
+            $mobileUserId = $this->getMobileUserId($request);
             if (!$mobileUserId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Se requiere autenticación o device_id',
-                ], 401);
+                return $this->unauthorizedResponse();
             }
 
-            // Verificar que la orden existe y pertenece al usuario autenticado
-            $order = Order::where('order_id', $orderId)
-                ->where('mobile_user_id', $mobileUserId)
-                ->with('business')
-                ->first();
-
+            // 5.4.1: Early Return - Validate order access
+            $order = $this->getOrderForUser($orderId, $mobileUserId, ['business']);
             if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Orden no encontrada o no tienes acceso a ella',
-                ], 404);
+                return $this->orderNotFoundResponse();
             }
 
-            // Manejar archivo adjunto si existe
-            $attachmentUrl = null;
-            if ($request->hasFile('attachment')) {
-                $file = $request->file('attachment');
-                $fileName = time() . '_' . $mobileUserId . '_' . $file->getClientOriginalName();
-                $path = $file->storeAs('chat_attachments', $fileName, 'public');
-                $attachmentUrl = Storage::url($path);
-            }
+            // Handle attachment upload
+            $attachmentUrl = $this->handleAttachmentUpload($request, $mobileUserId);
 
-            // Crear mensaje
+            // Create message
             $message = ChatMessage::create([
                 'order_id' => $orderId,
                 'sender_type' => 'customer',
@@ -146,7 +108,7 @@ class ChatApiController extends Controller
                 'is_read' => false,
             ]);
 
-            // TODO: Enviar notificación push al negocio (implementar después)
+            // TODO: Send push notification to business
 
             return response()->json([
                 'success' => true,
@@ -178,36 +140,22 @@ class ChatApiController extends Controller
      * Mark messages as read
      * PUT /api/orders/{order}/messages/mark-read
      */
-    public function markAsRead(Request $request, $orderId)
+    public function markAsRead(Request $request, int $orderId): JsonResponse
     {
         try {
-            // Obtener usuario autenticado desde el token Bearer
-            $user = $request->user('sanctum');
-            $mobileUser = $request->mobile_user ?? null;
-
-            // Determinar el mobile_user_id (prioridad: usuario autenticado > dispositivo)
-            $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
-
+            // 5.4.1: Early Return - Validate authentication
+            $mobileUserId = $this->getMobileUserId($request);
             if (!$mobileUserId) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Se requiere autenticación o device_id',
-                ], 401);
+                return $this->unauthorizedResponse();
             }
 
-            // Verificar que la orden existe y pertenece al usuario autenticado
-            $order = Order::where('order_id', $orderId)
-                ->where('mobile_user_id', $mobileUserId)
-                ->first();
-
+            // 5.4.1: Early Return - Validate order access
+            $order = $this->getOrderForUser($orderId, $mobileUserId);
             if (!$order) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Orden no encontrada o no tienes acceso a ella',
-                ], 404);
+                return $this->orderNotFoundResponse();
             }
 
-            // Marcar todos los mensajes del negocio como leídos
+            // Mark all business messages as read
             $updatedCount = ChatMessage::forOrder($orderId)
                 ->bySenderType('business')
                 ->unread()
@@ -236,11 +184,12 @@ class ChatApiController extends Controller
      * Get all orders linked to a mobile user with unread message count
      * GET /api/mobile/orders
      */
-    public function getOrdersForMobileUser(Request $request)
+    public function getOrdersForMobileUser(Request $request): JsonResponse
     {
         try {
             $deviceId = $request->header('X-Device-ID');
 
+            // 5.4.1: Early Return - Validate device ID
             if (!$deviceId) {
                 return response()->json([
                     'success' => false,
@@ -248,9 +197,8 @@ class ChatApiController extends Controller
                 ], 400);
             }
 
-            // Verificar que el dispositivo existe
+            // 5.4.1: Early Return - Validate mobile user exists
             $mobileUser = MobileUser::where('device_id', $deviceId)->first();
-
             if (!$mobileUser) {
                 return response()->json([
                     'success' => false,
@@ -258,34 +206,8 @@ class ChatApiController extends Controller
                 ], 404);
             }
 
-            // Obtener órdenes del usuario con conteo de mensajes no leídos
-            $orders = Order::where('mobile_user_id', $mobileUser->id)
-                ->with('business:business_id,business_name,logo_url,phone')
-                ->withCount([
-                    'chatMessages as unread_messages_count' => function ($query) {
-                        $query->where('sender_type', 'business')->where('is_read', false);
-                    }
-                ])
-                ->orderBy('created_at', 'desc')
-                ->get()
-                ->map(function ($order) {
-                    return [
-                        'order_id' => $order->order_id,
-                        'folio_number' => $order->folio_number,
-                        'pickup_token' => $order->pickup_token,
-                        'description' => $order->description,
-                        'status' => $order->status,
-                        'created_at' => $order->created_at->toIso8601String(),
-                        'business' => [
-                            'business_id' => $order->business->business_id,
-                            'business_name' => $order->business->business_name,
-                            'logo_url' => $order->business->logo_url,
-                            'phone' => $order->business->phone,
-                        ],
-                        'unread_messages_count' => $order->unread_messages_count ?? 0,
-                        'has_unread_messages' => ($order->unread_messages_count ?? 0) > 0,
-                    ];
-                });
+            // Get orders with unread message count
+            $orders = $this->getOrdersWithUnreadCount($mobileUser->id);
 
             return response()->json([
                 'success' => true,
@@ -301,5 +223,130 @@ class ChatApiController extends Controller
                 'message' => 'Error al obtener órdenes: ' . $e->getMessage(),
             ], 500);
         }
+    }
+
+    /**
+     * Get mobile user ID from request (authenticated user or device)
+     * 5.1.3: Using null coalescing operator instead of nested ternary
+     */
+    private function getMobileUserId(Request $request): ?int
+    {
+        $user = $request->user('sanctum');
+        $mobileUser = $request->mobile_user;
+
+        return $user?->id ?? $mobileUser?->id;
+    }
+
+    /**
+     * Get order for authenticated user
+     */
+    private function getOrderForUser(int $orderId, int $mobileUserId, array $with = []): ?Order
+    {
+        return Order::where('order_id', $orderId)
+            ->where('mobile_user_id', $mobileUserId)
+            ->when(!empty($with), fn($query) => $query->with($with))
+            ->first();
+    }
+
+    /**
+     * Get formatted messages for order
+     */
+    private function getFormattedMessages(int $orderId)
+    {
+        return ChatMessage::forOrder($orderId)
+            ->orderBy('created_at', 'asc')
+            ->get()
+            ->map(fn(ChatMessage $message) => [
+                'message_id' => $message->message_id,
+                'sender_type' => $message->sender_type,
+                'message' => $message->message,
+                'attachment_url' => $message->attachment_url,
+                'is_read' => $message->is_read,
+                'created_at' => $message->created_at->toIso8601String(),
+                'read_at' => $message->read_at?->toIso8601String(),
+            ]);
+    }
+
+    /**
+     * Mark business messages as read for order
+     */
+    private function markBusinessMessagesAsRead(int $orderId): void
+    {
+        ChatMessage::forOrder($orderId)
+            ->bySenderType('business')
+            ->unread()
+            ->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+    }
+
+    /**
+     * Handle attachment file upload
+     */
+    private function handleAttachmentUpload(Request $request, int $mobileUserId): ?string
+    {
+        if (!$request->hasFile('attachment')) {
+            return null;
+        }
+
+        $file = $request->file('attachment');
+        $fileName = time() . '_' . $mobileUserId . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('chat_attachments', $fileName, 'public');
+
+        return Storage::url($path);
+    }
+
+    /**
+     * Get orders with unread message count for mobile user
+     */
+    private function getOrdersWithUnreadCount(int $mobileUserId)
+    {
+        return Order::where('mobile_user_id', $mobileUserId)
+            ->with('business:business_id,business_name,logo_url,phone')
+            ->withCount([
+                'chatMessages as unread_messages_count' => fn($query) =>
+                    $query->where('sender_type', 'business')->where('is_read', false)
+            ])
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(fn(Order $order) => [
+                'order_id' => $order->order_id,
+                'folio_number' => $order->folio_number,
+                'pickup_token' => $order->pickup_token,
+                'description' => $order->description,
+                'status' => $order->status,
+                'created_at' => $order->created_at->toIso8601String(),
+                'business' => [
+                    'business_id' => $order->business->business_id,
+                    'business_name' => $order->business->business_name,
+                    'logo_url' => $order->business->logo_url,
+                    'phone' => $order->business->phone,
+                ],
+                'unread_messages_count' => $order->unread_messages_count ?? 0,
+                'has_unread_messages' => ($order->unread_messages_count ?? 0) > 0,
+            ]);
+    }
+
+    /**
+     * Return unauthorized response
+     */
+    private function unauthorizedResponse(): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Se requiere autenticación o device_id',
+        ], 401);
+    }
+
+    /**
+     * Return order not found response
+     */
+    private function orderNotFoundResponse(): JsonResponse
+    {
+        return response()->json([
+            'success' => false,
+            'message' => 'Orden no encontrada o no tienes acceso a ella',
+        ], 404);
     }
 }

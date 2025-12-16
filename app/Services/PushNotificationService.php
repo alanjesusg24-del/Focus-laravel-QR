@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: PushNotificationService.php
+ * Created on: 20/11/2025
+ * Created by: Dafne Vanessa Castillo Moreo
+ * Approved by: Dafne Vanessa Castillo Moreo
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 16/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreo |
+ *   Description: Refactored PushNotificationService |
+ */
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
@@ -14,14 +28,13 @@ class PushNotificationService
      */
     private static function getMessaging()
     {
-        // Obtener la ruta del archivo de credenciales
         $credentialsPath = env('FIREBASE_CREDENTIALS_PATH');
 
-        // Si está vacía o no configurada, usar la ruta predeterminada
         if (empty($credentialsPath)) {
             $credentialsPath = storage_path('firebase-credentials.json');
         }
 
+        // 5.4.1: Early Return - Credentials file not found
         if (!file_exists($credentialsPath)) {
             Log::error('❌ Archivo de credenciales de Firebase no encontrado', [
                 'path' => $credentialsPath,
@@ -36,19 +49,11 @@ class PushNotificationService
 
     /**
      * Enviar notificación de cambio de estado de orden
-     *
-     * @param string $fcmToken Token FCM del dispositivo móvil
-     * @param object $order Objeto de la orden
-     * @param string $oldStatus Estado anterior
-     * @param string $newStatus Estado nuevo
-     * @return bool
      */
     public static function sendOrderStatusChange($fcmToken, $order, $oldStatus, $newStatus)
     {
-        // Determinar el título y mensaje según el estado
         [$title, $body] = self::getNotificationContent($order, $oldStatus, $newStatus);
 
-        // Payload de la notificación
         $data = [
             'to' => $fcmToken,
             'notification' => [
@@ -157,11 +162,6 @@ class PushNotificationService
 
     /**
      * Enviar notificación de nuevo mensaje de chat desde el negocio
-     *
-     * @param string $fcmToken Token FCM del dispositivo móvil
-     * @param object $order Objeto de la orden
-     * @param string $messageText Texto del mensaje
-     * @return array
      */
     public static function sendChatMessage($fcmToken, $order, $messageText)
     {
@@ -177,7 +177,6 @@ class PushNotificationService
             $title = "💬 Mensaje de {$businessName}";
             $body = substr($messageText, 0, 100);
 
-            // Construir el mensaje usando la nueva API
             $notification = Notification::create($title, $body);
 
             $message = CloudMessage::withTarget('token', $fcmToken)
@@ -192,7 +191,6 @@ class PushNotificationService
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                 ]);
 
-            // Enviar el mensaje
             $result = $messaging->send($message);
 
             Log::info('✅ Notificación de chat enviada exitosamente', [
@@ -234,11 +232,6 @@ class PushNotificationService
 
     /**
      * Enviar recordatorio de orden lista (re-alerta)
-     *
-     * @param string $fcmToken Token FCM del dispositivo móvil
-     * @param object $order Objeto de la orden
-     * @param int $alertNumber Número de re-alerta (1, 2, 3, etc.)
-     * @return array
      */
     public static function sendReadyReminder($fcmToken, $order, $alertNumber = 1)
     {
@@ -251,14 +244,13 @@ class PushNotificationService
                 'alert_number' => $alertNumber,
             ]);
 
-            // Personalizar el mensaje según el número de alerta
+            // 5.1: Use ternary operator for simple conditional
             $title = $alertNumber === 1
                 ? '⏰ Recordatorio: Tu orden está lista'
                 : "⏰ Recordatorio #{$alertNumber}: Tu orden sigue esperando";
 
             $body = "La orden {$order->order_number} está lista para recoger. ¡No olvides pasar por ella!";
 
-            // Construir el mensaje usando la nueva API
             $notification = Notification::create($title, $body);
 
             $message = CloudMessage::withTarget('token', $fcmToken)
@@ -272,7 +264,6 @@ class PushNotificationService
                     'click_action' => 'FLUTTER_NOTIFICATION_CLICK',
                 ]);
 
-            // Enviar el mensaje
             $result = $messaging->send($message);
 
             Log::info('✅ Re-alerta enviada exitosamente', [
@@ -315,44 +306,38 @@ class PushNotificationService
 
     /**
      * Obtener el contenido de la notificación según el cambio de estado
+     * 5.5: Private helper method following SRP
      */
-    private static function getNotificationContent($order, $oldStatus, $newStatus)
+    private static function getNotificationContent($order, $oldStatus, $newStatus): array
     {
-        switch ($newStatus) {
-            case 'ready':
-                return [
-                    '🎉 ¡Tu orden está lista!',
-                    "La orden {$order->order_number} está lista para recoger. ¡Ve por ella!"
-                ];
-
-            case 'delivered':
-                return [
-                    '✅ Orden entregada',
-                    "La orden {$order->order_number} ha sido entregada exitosamente"
-                ];
-
-            case 'cancelled':
-                return [
-                    '❌ Orden cancelada',
-                    "La orden {$order->order_number} ha sido cancelada"
-                ];
-
-            case 'pending':
-                return [
-                    '⏳ Orden en preparación',
-                    "Tu orden {$order->order_number} está siendo preparada"
-                ];
-
-            default:
-                return [
-                    '🔔 Actualización de orden',
-                    "La orden {$order->order_number} cambió de estado a {$newStatus}"
-                ];
-        }
+        // 5.1: Use match expression instead of switch
+        return match ($newStatus) {
+            'ready' => [
+                '🎉 ¡Tu orden está lista!',
+                "La orden {$order->order_number} está lista para recoger. ¡Ve por ella!"
+            ],
+            'delivered' => [
+                '✅ Orden entregada',
+                "La orden {$order->order_number} ha sido entregada exitosamente"
+            ],
+            'cancelled' => [
+                '❌ Orden cancelada',
+                "La orden {$order->order_number} ha sido cancelada"
+            ],
+            'pending' => [
+                '⏳ Orden en preparación',
+                "Tu orden {$order->order_number} está siendo preparada"
+            ],
+            default => [
+                '🔔 Actualización de orden',
+                "La orden {$order->order_number} cambió de estado a {$newStatus}"
+            ],
+        };
     }
 
     /**
      * Enviar notificación usando FCM HTTP v1 API
+     * 5.5: Private helper method following SRP
      */
     private static function sendNotification($data)
     {
@@ -366,7 +351,6 @@ class PushNotificationService
                 'order_id' => $data['data']['order_id'] ?? null,
             ]);
 
-            // Construir el mensaje usando la nueva API
             $notification = Notification::create(
                 $data['notification']['title'],
                 $data['notification']['body']
@@ -376,7 +360,6 @@ class PushNotificationService
                 ->withNotification($notification)
                 ->withData($data['data']);
 
-            // Enviar el mensaje
             $result = $messaging->send($message);
 
             Log::info('✅ Notificación enviada exitosamente (FCM v1)', [

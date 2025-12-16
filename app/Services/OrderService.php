@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: OrderService.php
+ * Created on: 20/10/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Dafne Vanessa Castillo Moreo
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 10/11/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Refactored OrderService |
+ */
+
 namespace App\Services;
 
 use App\Models\Business;
@@ -22,18 +36,12 @@ class OrderService
 
     /**
      * Create a new order with QR code
-     *
-     * @param int $businessId
-     * @param array $data
-     * @return Order
      */
     public function createOrder(int $businessId, array $data): Order
     {
         return DB::transaction(function () use ($businessId, $data) {
-            // Generate folio number
             $folioNumber = $this->generateFolioNumber($businessId);
 
-            // Create order
             $order = Order::create([
                 'business_id' => $businessId,
                 'folio_number' => $folioNumber,
@@ -45,7 +53,6 @@ class OrderService
                 'mobile_user_id' => $data['mobile_user_id'] ?? null,
             ]);
 
-            // Generate QR code
             $this->qrCodeService->generateQrCodeForOrder($order);
 
             return $order->fresh();
@@ -54,41 +61,16 @@ class OrderService
 
     /**
      * Update order status
-     *
-     * @param Order $order
-     * @param string $newStatus
-     * @param array $additionalData
-     * @return Order
      */
     public function updateOrderStatus(Order $order, string $newStatus, array $additionalData = []): Order
     {
         return DB::transaction(function () use ($order, $newStatus, $additionalData) {
-            $updateData = ['status' => $newStatus];
-
-            switch ($newStatus) {
-                case 'ready':
-                    $updateData['ready_at'] = now();
-
-                    // Send notification if mobile user exists
-                    if ($order->mobile_user_id) {
-                        $this->notificationService->sendOrderReadyNotification($order);
-                    }
-                    break;
-
-                case 'delivered':
-                    $updateData['delivered_at'] = now();
-                    break;
-
-                case 'cancelled':
-                    $updateData['cancelled_at'] = now();
-                    $updateData['cancellation_reason'] = $additionalData['cancellation_reason'] ?? 'No reason provided';
-
-                    // Send cancellation notification
-                    if ($order->mobile_user_id) {
-                        $this->notificationService->sendOrderCancelledNotification($order, $updateData['cancellation_reason']);
-                    }
-                    break;
-            }
+            $updateData = match ($newStatus) {
+                'ready' => $this->prepareReadyStatusData($order),
+                'delivered' => $this->prepareDeliveredStatusData(),
+                'cancelled' => $this->prepareCancelledStatusData($order, $additionalData),
+                default => ['status' => $newStatus],
+            };
 
             $order->update($updateData);
 
@@ -98,9 +80,6 @@ class OrderService
 
     /**
      * Mark order as ready
-     *
-     * @param Order $order
-     * @return Order
      */
     public function markAsReady(Order $order): Order
     {
@@ -113,9 +92,6 @@ class OrderService
 
     /**
      * Mark order as delivered
-     *
-     * @param Order $order
-     * @return Order
      */
     public function markAsDelivered(Order $order): Order
     {
@@ -128,13 +104,10 @@ class OrderService
 
     /**
      * Cancel order
-     *
-     * @param Order $order
-     * @param string $reason
-     * @return Order
      */
     public function cancelOrder(Order $order, string $reason): Order
     {
+        
         if (in_array($order->status, ['delivered', 'cancelled'])) {
             throw new \Exception('Cannot cancel delivered or already cancelled orders');
         }
@@ -146,10 +119,6 @@ class OrderService
 
     /**
      * Link order to mobile user via QR scan
-     *
-     * @param string $qrToken
-     * @param int $mobileUserId
-     * @return Order
      */
     public function linkOrderToMobileUser(string $qrToken, int $mobileUserId): Order
     {
@@ -167,9 +136,6 @@ class OrderService
 
     /**
      * Get active orders for a business
-     *
-     * @param int $businessId
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getActiveOrders(int $businessId)
     {
@@ -181,10 +147,6 @@ class OrderService
 
     /**
      * Get order statistics for a business
-     *
-     * @param int $businessId
-     * @param int $days
-     * @return array
      */
     public function getOrderStatistics(int $businessId, int $days = 30): array
     {
@@ -206,33 +168,24 @@ class OrderService
 
     /**
      * Generate folio number for business
-     *
-     * @param int $businessId
-     * @return string
      */
     protected function generateFolioNumber(int $businessId): string
     {
         $business = Business::findOrFail($businessId);
         $prefix = strtoupper(substr($business->business_name, 0, 3));
 
-        // Buscar el último folio con este prefijo específico
         $lastOrder = Order::where('business_id', $businessId)
             ->where('folio_number', 'like', $prefix . '-%')
             ->orderBy('folio_number', 'desc')
-            ->lockForUpdate() // Bloquear para evitar condiciones de carrera
+            ->lockForUpdate()
             ->first();
 
-        $nextNumber = 1;
-
-        if ($lastOrder) {
-            // Extraer el número del último folio
-            $lastNumber = (int) substr($lastOrder->folio_number, strlen($prefix) + 1);
-            $nextNumber = $lastNumber + 1;
-        }
+        $nextNumber = $lastOrder
+            ? ((int) substr($lastOrder->folio_number, strlen($prefix) + 1)) + 1
+            : 1;
 
         $folioNumber = sprintf('%s-%04d', $prefix, $nextNumber);
 
-        // Verificar que no exista (por si acaso)
         $attempt = 0;
         while (Order::where('folio_number', $folioNumber)->exists() && $attempt < 100) {
             $nextNumber++;
@@ -245,32 +198,27 @@ class OrderService
 
     /**
      * Calculate average preparation time
-     *
-     * @param \Illuminate\Database\Eloquent\Collection $orders
-     * @return float|null Minutes
+     * Protected helper method following SRP
      */
     protected function calculateAveragePreparationTime($orders): ?float
     {
         $completedOrders = $orders->whereIn('status', ['delivered', 'ready'])
-            ->filter(fn($order) => $order->ready_at !== null);
+            ->filter(fn(Order $order) => $order->ready_at !== null);
 
         if ($completedOrders->isEmpty()) {
             return null;
         }
 
-        $totalMinutes = 0;
-        foreach ($completedOrders as $order) {
-            $totalMinutes += $order->created_at->diffInMinutes($order->ready_at);
-        }
+        $totalMinutes = $completedOrders->reduce(
+            fn(float $total, Order $order) => $total + $order->created_at->diffInMinutes($order->ready_at),
+            0
+        );
 
         return round($totalMinutes / $completedOrders->count(), 2);
     }
 
     /**
      * Clean up old orders based on business plan retention days
-     *
-     * @param int $businessId
-     * @return int Number of deleted orders
      */
     public function cleanupOldOrders(int $businessId): int
     {
@@ -281,5 +229,54 @@ class OrderService
             ->where('created_at', '<', $retentionDate)
             ->whereIn('status', ['delivered', 'cancelled'])
             ->delete();
+    }
+
+    /**
+     * Prepare ready status data
+     * Private helper method following SRP
+     */
+    private function prepareReadyStatusData(Order $order): array
+    {
+        $updateData = [
+            'status' => 'ready',
+            'ready_at' => now(),
+        ];
+
+        if ($order->mobile_user_id) {
+            $this->notificationService->sendOrderReadyNotification($order);
+        }
+
+        return $updateData;
+    }
+
+    /**
+     * Prepare delivered status data
+     * Private helper method following SRP
+     */
+    private function prepareDeliveredStatusData(): array
+    {
+        return [
+            'status' => 'delivered',
+            'delivered_at' => now(),
+        ];
+    }
+
+    /**
+     * Prepare cancelled status data
+     * Private helper method following SRP
+     */
+    private function prepareCancelledStatusData(Order $order, array $additionalData): array
+    {
+        $updateData = [
+            'status' => 'cancelled',
+            'cancelled_at' => now(),
+            'cancellation_reason' => $additionalData['cancellation_reason'] ?? 'No reason provided',
+        ];
+
+        if ($order->mobile_user_id) {
+            $this->notificationService->sendOrderCancelledNotification($order, $updateData['cancellation_reason']);
+        }
+
+        return $updateData;
     }
 }
