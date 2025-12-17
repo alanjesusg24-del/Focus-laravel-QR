@@ -404,6 +404,33 @@ document.addEventListener('DOMContentLoaded', function() {
             submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...';
         }
     });
+
+    // Manejar respuesta del servidor después del submit
+    @if(session('success'))
+        // Si hay mensaje de éxito, significa que el logo se actualizó
+        document.addEventListener('DOMContentLoaded', function() {
+            // Esperar a que Livewire esté disponible
+            if (typeof Livewire !== 'undefined') {
+                const currentLogoPreview = document.getElementById('logoPreview');
+                if (currentLogoPreview && currentLogoPreview.tagName === 'IMG') {
+                    // Emitir evento para actualizar el topbar
+                    Livewire.emit('profile-photo-updated', {
+                        logoUrl: currentLogoPreview.src
+                    });
+                    console.log('Logo actualizado exitosamente, evento emitido para topbar');
+                }
+            } else {
+                // Fallback: usar evento personalizado del DOM
+                const currentLogoPreview = document.getElementById('logoPreview');
+                if (currentLogoPreview && currentLogoPreview.tagName === 'IMG') {
+                    window.dispatchEvent(new CustomEvent('profile-photo-updated', {
+                        detail: { logoUrl: currentLogoPreview.src }
+                    }));
+                    console.log('Logo actualizado exitosamente, evento DOM emitido para topbar');
+                }
+            }
+        });
+    @endif
 });
 </script>
 

@@ -346,7 +346,8 @@ class BusinessController extends Controller
             ]);
 
             return redirect()
-                ->route('business.profile.index');
+                ->route('business.profile.index')
+                ->with('success', 'Logo actualizado exitosamente');
 
         } catch (\Exception $e) {
             Log::error('Logo update failed: ' . $e->getMessage());

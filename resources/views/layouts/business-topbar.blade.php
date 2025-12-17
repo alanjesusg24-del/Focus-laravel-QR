@@ -24,15 +24,19 @@
 
         <li class="nav-item dropdown ms-lg-3">
           <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <div class="media d-flex align-items-center">
+            <div class="d-flex align-items-center">
+              @if(auth()->guard('business')->user()->logo_url)
+                <img id="topbar-user-avatar" src="{{ asset('storage/' . auth()->guard('business')->user()->logo_url) }}" 
+                     alt="Logo" 
+                     class="rounded-circle me-2" 
+                     style="width: 40px; height: 40px; object-fit: cover;">
+              @else
+                <div id="topbar-user-avatar" class="rounded-circle d-flex align-items-center justify-content-center text-white me-2" style="background-color: #FB503B; width: 40px; height: 40px;">
+                  <span class="small fw-bold">{{ substr(auth()->guard('business')->user()->business_name ?? 'B', 0, 1) }}</span>
+                </div>
+              @endif
               
-              <div class="avatar-sm rounded-circle d-flex align-items-center justify-content-center text-white me-3" style="background-color: #FB503B;">
-                <span class="h6 mb-0">{{ substr(auth()->guard('business')->user()->business_name ?? 'B', 0, 1) }}</span>
-              </div>
-              
-              <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                <span class="mb-0 font-small fw-bold text-gray-900">{{ auth()->guard('business')->user()->business_name ?? 'Business' }}</span>
-              </div>
+              <span class="mb-0 font-small fw-bold text-gray-900 d-none d-lg-inline">{{ auth()->guard('business')->user()->business_name ?? 'Business' }}</span>
             </div>
           </a>
           <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
@@ -62,3 +66,40 @@
     </div>
   </div>
 </nav>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Función para actualizar la foto del topbar
+    function updateTopbarPhoto(imageSrc) {
+        const avatar = document.getElementById('topbar-user-avatar');
+        if (avatar) {
+            if (imageSrc) {
+                // Si es una imagen, reemplazar con img
+                const newImg = document.createElement('img');
+                newImg.id = 'topbar-user-avatar';
+                newImg.src = imageSrc.startsWith('/storage') ? imageSrc : '/storage/' + imageSrc;
+                newImg.alt = 'Logo';
+                newImg.className = 'rounded-circle me-2';
+                newImg.style.cssText = 'width: 40px; height: 40px; object-fit: cover;';
+                avatar.parentNode.replaceChild(newImg, avatar);
+            }
+        }
+    }
+
+    // Escuchar eventos de Livewire
+    if (window.Livewire) {
+        Livewire.on('profile-photo-updated', function(data) {
+            if (data && data.logo_url) {
+                updateTopbarPhoto(data.logo_url);
+            }
+        });
+    }
+
+    // Escuchar eventos DOM como fallback
+    document.addEventListener('profile-photo-updated', function(event) {
+        if (event.detail && event.detail.logo_url) {
+            updateTopbarPhoto(event.detail.logo_url);
+        }
+    });
+});
+</script>
