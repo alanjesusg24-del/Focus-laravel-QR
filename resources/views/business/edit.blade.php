@@ -19,7 +19,7 @@
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
                         <a href="{{ route('business.dashboard.index') }}">
-                            <x-icon name="home" />
+                            <x-icon name="nav.home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="{{ route('business.profile.index') }}">Mi Perfil</a></li>
@@ -29,12 +29,7 @@
             <h2 class="h4">Editar Perfil</h2>
             <p class="mb-0">Actualiza la información de tu negocio</p>
         </div>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ route('business.profile.index') }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
-                <x-icon name="back" class="me-2" />
-                Atras
-            </a>
-        </div>
+        
     </div>
 
     @if(session('success'))
@@ -227,14 +222,15 @@
                             </div>
                         </div>
 
-                        <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a href="{{ route('business.profile.index') }}" class="btn btn-light">
+                        <div class="d-flex justify-content-start gap-3 pt-3 border-top">
+                            <button type="submit" class="btn btn-primary">
+                                <x-icon name="action.save" class="me-2" />
+                                Guardar
+                            </button>
+
+                            <a href="{{ route('business.profile.index') }}" class="btn btn-gray-500">
                                 Cancelar
                             </a>
-                            <button type="submit" class="btn btn-primary">
-                                <x-icon name="save" class="me-2" />
-                                Guardar Cambios
-                            </button>
                         </div>
                     </form>
                 </div>

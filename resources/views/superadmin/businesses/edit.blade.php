@@ -12,20 +12,25 @@
 
 @section('page')
 <div class="py-4">
-    <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-        <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}"><svg class="icon icon-xxs" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg></a></li>
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.businesses.index') }}">Negocios</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Editar {{ $business->business_name }}</li>
-        </ol>
-    </nav>
-    <div class="d-flex justify-content-between w-100 flex-wrap">
-        <div class="mb-3 mb-lg-0">
-            <h1 class="h4">Editar Negocio</h1>
-            <p class="mb-0">Modifica la información del negocio</p>
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
+        <div class="d-block mb-4 mb-md-0">
+            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('superadmin.dashboard') }}" class="text-primary">
+                            <x-icon name="nav.home" />
+                        </a>
+                    </li>
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('superadmin.businesses.index') }}" class="text-primary">Negocios</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Editar</li>
+                </ol>
+            </nav>
+            <h2 class="h4 mt-1">Editar Negocio</h2>
+            <p class="mb-0 text-primary">Modifica la información de {{ $business->business_name }}</p>
         </div>
     </div>
-</div>
 
 @if($errors->any())
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -164,20 +169,15 @@
                         </div>
                         <small class="form-text text-muted">Los negocios inactivos no pueden acceder al sistema</small>
                     </div>
-                </div>
-            </div>
 
-            {{-- Action Buttons --}}
-            <div class="card border-0 shadow">
-                <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">
-                            <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z"></path>
-                            </svg>
-                            Guardar Cambios
+                    {{-- Action Buttons --}}
+                    <div class="d-flex justify-content-start gap-3 pt-3 border-top">
+                        <button type="submit" class="btn btn-primary">
+                            <x-icon name="action.save" class="me-2" />
+                            Guardar
                         </button>
-                        <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-primary btn-lg">
+
+                        <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-gray-500">
                             Cancelar
                         </a>
                     </div>

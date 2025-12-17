@@ -43,12 +43,12 @@
                     <input type="text"
                            id="search"
                            class="form-control border-start-0 ps-0"
-                           placeholder="Buscar por ID, nombre, RFC, email o teléfono..."
+                           placeholder="Buscar por nombre o email..."
                            autocomplete="off">
                 </div>
 
                 <div class="d-flex align-items-center">
-                    <span class="small fw-bold text-gray-600 me-2">Filtrar por estado</span>
+                    <span class="small fw-bold text-gray-600 me-2">Filtrar por estado:</span>
                     <form method="GET" action="{{ route('superadmin.businesses.index') }}">
                         <input type="hidden" name="plan_id" value="{{ request('plan_id') }}">
                         <select name="status" onchange="this.form.submit()" class="form-select" style="min-width: 140px;">
@@ -72,6 +72,13 @@
                             @endforeach
                         </select>
                     </form>
+                </div>
+
+                <div class="ms-auto">
+                    <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-secondary text-white ">
+                        <x-icon name="action.refresh" class="me-2" />
+                        Limpiar filtros
+                    </a>
                 </div>
 
             </div>
@@ -120,9 +127,9 @@
                             <td class="text-gray-500">{{ $business->registration_date?->format('d/m/Y H:i') ?? '-' }}</td>
                             <td>
                                 @if($business->is_active)
-                                    <span class="fw-bold text-success">Activo</span>
+                                    <span class="fw-bold text-success">Activa</span>
                                 @else
-                                    <span class="fw-bold text-danger">Inactivo</span>
+                                    <span class="fw-bold text-warning">Inactiva</span>
                                 @endif
                             </td>
 
@@ -137,21 +144,18 @@
                                             <x-icon name="action.edit" class="text-gray-400 me-2"/> Editar
                                         </a>
 
-                                        <div role="separator" class="dropdown-divider my-1"></div>
+                                        @if($business->is_active)
+                                            <div role="separator" class="dropdown-divider my-1"></div>
 
-                                        <a class="dropdown-item d-flex align-items-center {{ $business->is_active ? 'text-danger' : 'text-success' }}" href="#"
-                                           onclick="event.preventDefault(); document.getElementById('toggle-form-{{ $business->business_id }}').submit();">
+                                            <a class="dropdown-item d-flex align-items-center text-warning" href="#"
+                                               onclick="event.preventDefault(); confirmDeactivate({{ $business->business_id }}, '{{ $business->business_name }}');">
+                                                <x-icon name="action.cancel" class="text-warning me-2"/> Inactivar cuenta
+                                            </a>
 
-                                            @if($business->is_active)
-                                                <x-icon name="state.error" class="text-danger me-2"/> Desactivar
-                                            @else
-                                                <x-icon name="state.success" class="text-success me-2"/> Activar
-                                            @endif
-                                        </a>
-
-                                        <form id="toggle-form-{{ $business->business_id }}" action="{{ route('superadmin.businesses.toggle', $business->business_id) }}" method="POST" class="d-none">
-                                            @csrf
-                                        </form>
+                                            <form id="toggle-form-{{ $business->business_id }}" action="{{ route('superadmin.businesses.toggle', $business->business_id) }}" method="POST" class="d-none">
+                                                @csrf
+                                            </form>
+                                        @endif
                                     </div>
                                 </div>
                             </td>
@@ -217,16 +221,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Search in: ID, Name, RFC, Email, Phone
-                const id = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
-                const businessNameCell = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
+                // Search in: Business Name (only the span, not RFC), Email
+                const businessName = row.querySelector('td:nth-child(2) span.fw-bold')?.textContent.toLowerCase() || '';
                 const email = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-                const phone = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
 
-                const matches = id.includes(searchTerm) ||
-                               businessNameCell.includes(searchTerm) ||
-                               email.includes(searchTerm) ||
-                               phone.includes(searchTerm);
+                const matches = businessName.includes(searchTerm) ||
+                               email.includes(searchTerm);
 
                 row.style.display = matches ? '' : 'none';
 
@@ -240,7 +240,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     noResultsRow.innerHTML = `
                         <td colspan="8" class="text-center py-5">
                             <p class="text-gray-600 mb-0">No se encontraron negocios que coincidan con "<strong>${searchTerm}</strong>"</p>
-                            <small class="text-muted">Intenta buscar por ID, nombre, RFC, email o teléfono</small>
+                            <small class="text-muted">Intenta buscar por nombre o email</small>
                         </td>
                     `;
                     tbody.appendChild(noResultsRow);
@@ -254,5 +254,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Sweet Alert para confirmar desactivación
+function confirmDeactivate(businessId, businessName) {
+    Swal.fire({
+        title: '¿Inactivar suscripción?',
+        text: 'El usuario perderá el acceso a las funciones de su plan inmediatamente.',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Confirmar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: false
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('toggle-form-' + businessId).submit();
+        }
+    });
+}
 </script>
 @endpush
