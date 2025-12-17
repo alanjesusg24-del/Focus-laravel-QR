@@ -140,6 +140,7 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
         Route::get('/profile', [App\Http\Controllers\BusinessController::class, 'profile'])->name('profile.index');
         Route::get('/profile/edit', [App\Http\Controllers\BusinessController::class, 'edit'])->name('profile.edit');
         Route::put('/profile', [App\Http\Controllers\BusinessController::class, 'update'])->name('profile.update');
+        Route::patch('/profile/logo', [App\Http\Controllers\BusinessController::class, 'updateLogo'])->name('profile.update-logo');
         Route::get('/profile/change-password', [App\Http\Controllers\BusinessController::class, 'showChangePassword'])->name('profile.change-password');
         Route::put('/profile/password', [App\Http\Controllers\BusinessController::class, 'updatePassword'])->name('profile.update-password');
         Route::post('/profile/deactivate', [App\Http\Controllers\BusinessController::class, 'deactivate'])->name('profile.deactivate');

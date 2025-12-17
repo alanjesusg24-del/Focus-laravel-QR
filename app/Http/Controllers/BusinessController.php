@@ -292,6 +292,73 @@ class BusinessController extends Controller
     }
 
     /**
+     * Update business logo
+     */
+    public function updateLogo(Request $request)
+    {
+        $businessId = Auth::id();
+        $business = Business::findOrFail($businessId);
+
+        $validated = $request->validate([
+            'logo' => 'required|file|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Max 2MB
+        ], [
+            'logo.required' => 'Por favor selecciona una imagen.',
+            'logo.file' => 'El archivo seleccionado no es válido.',
+            'logo.image' => 'El archivo debe ser una imagen.',
+            'logo.mimes' => 'La imagen debe ser de tipo: JPEG, PNG, JPG, GIF o WebP.',
+            'logo.max' => 'La imagen no debe ser mayor a 2MB.',
+        ]);
+
+        try {
+            // Verify file was uploaded
+            if (!$request->hasFile('logo') || !$request->file('logo')->isValid()) {
+                return redirect()
+                    ->route('business.profile.index')
+                    ->with('error', 'Error: No se pudo procesar el archivo. Intenta de nuevo.');
+            }
+
+            $file = $request->file('logo');
+            
+            // Additional file verification
+            $allowedMimes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
+            if (!in_array($file->getMimeType(), $allowedMimes)) {
+                return redirect()
+                    ->route('business.profile.index')
+                    ->with('error', 'Tipo de archivo no permitido: ' . $file->getMimeType());
+            }
+
+            // Delete old logo if exists (clean up the path)
+            if ($business->logo_url) {
+                $oldPath = str_replace('storage/', '', $business->logo_url);
+                if (Storage::disk('public')->exists($oldPath)) {
+                    Storage::disk('public')->delete($oldPath);
+                }
+            }
+
+            // Store new logo with custom name
+            $extension = $file->getClientOriginalExtension();
+            $filename = 'business_' . $business->business_id . '_' . time() . '.' . $extension;
+            $logoPath = $file->storeAs('business-logos', $filename, 'public');
+            
+            // Update business with new logo path (just the relative path)
+            $business->update([
+                'logo_url' => $logoPath
+            ]);
+
+            return redirect()
+                ->route('business.profile.index');
+
+        } catch (\Exception $e) {
+            Log::error('Logo update failed: ' . $e->getMessage());
+            Log::error('Request data: ' . json_encode($request->all()));
+            
+            return redirect()
+                ->route('business.profile.index')
+                ->with('error', 'Error al actualizar el logo: ' . $e->getMessage());
+        }
+    }
+
+    /**
      * Deactivate business account
      */
     public function deactivate(Request $request)

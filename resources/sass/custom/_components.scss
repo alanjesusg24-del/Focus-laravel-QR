@@ -276,6 +276,29 @@
     box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
 }
 
+// Profile Components - Estilos específicos para el perfil de negocio
+.avatar-container {
+    width: 120px;
+    height: 120px;
+}
+
+.logo-preview-size {
+    width: 130px;
+    height: 130px;
+}
+
+.map-height {
+    height: 350px;
+}
+
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+
 // Responsive utilities - Mobile first
 @media (max-width: 767.98px) {
     .table-responsive {

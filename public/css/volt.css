@@ -958,7 +958,7 @@
   --bs-secondary: #FF8832;
   --bs-tertiary: #31316A;
   --bs-success: #10B981;
-  --bs-info: #3B82F6;
+  --bs-info: #1E90FF;
   --bs-warning: #FBA918;
   --bs-danger: #EF4444;
   --bs-white: #FFFFFF;
@@ -980,7 +980,7 @@
   --bs-secondary-rgb: 255, 136, 50;
   --bs-tertiary-rgb: 49, 49, 106;
   --bs-success-rgb: 16, 185, 129;
-  --bs-info-rgb: 59, 130, 246;
+  --bs-info-rgb: 30, 144, 255;
   --bs-warning-rgb: 251, 169, 24;
   --bs-danger-rgb: 239, 68, 68;
   --bs-white-rgb: 255, 255, 255;
@@ -1001,7 +1001,7 @@
   --bs-primary-text-emphasis: rgb(12.4, 16.4, 22);
   --bs-secondary-text-emphasis: rgb(102, 54.4, 20);
   --bs-success-text-emphasis: rgb(6.4, 74, 51.6);
-  --bs-info-text-emphasis: rgb(23.6, 52, 98.4);
+  --bs-info-text-emphasis: rgb(12, 57.6, 102);
   --bs-warning-text-emphasis: rgb(100.4, 67.6, 9.6);
   --bs-danger-text-emphasis: rgb(95.6, 27.2, 27.2);
   --bs-light-text-emphasis: #374151;
@@ -1009,7 +1009,7 @@
   --bs-primary-bg-subtle: rgb(210.2, 212.2, 215);
   --bs-secondary-bg-subtle: rgb(255, 231.2, 214);
   --bs-success-bg-subtle: rgb(207.2, 241, 229.8);
-  --bs-info-bg-subtle: rgb(215.8, 230, 253.2);
+  --bs-info-bg-subtle: rgb(210, 232.8, 255);
   --bs-warning-bg-subtle: rgb(254.2, 237.8, 208.8);
   --bs-danger-bg-subtle: rgb(251.8, 217.6, 217.6);
   --bs-light-bg-subtle: rgb(248.5, 249.5, 250.5);
@@ -1017,7 +1017,7 @@
   --bs-primary-border-subtle: rgb(165.4, 169.4, 175);
   --bs-secondary-border-subtle: rgb(255, 207.4, 173);
   --bs-success-border-subtle: rgb(159.4, 227, 204.6);
-  --bs-info-border-subtle: rgb(176.6, 205, 251.4);
+  --bs-info-border-subtle: rgb(165, 210.6, 255);
   --bs-warning-border-subtle: rgb(253.4, 220.6, 162.6);
   --bs-danger-border-subtle: rgb(248.6, 180.2, 180.2);
   --bs-light-border-subtle: #E5E7EB;
@@ -1098,7 +1098,7 @@
   --bs-primary-text-emphasis: rgb(120.6, 126.6, 135);
   --bs-secondary-text-emphasis: rgb(255, 183.6, 132);
   --bs-success-text-emphasis: rgb(111.6, 213, 179.4);
-  --bs-info-text-emphasis: rgb(137.4, 180, 249.6);
+  --bs-info-text-emphasis: rgb(120, 188.4, 255);
   --bs-warning-text-emphasis: rgb(252.6, 203.4, 116.4);
   --bs-danger-text-emphasis: rgb(245.4, 142.8, 142.8);
   --bs-light-text-emphasis: #F2F4F6;
@@ -1106,7 +1106,7 @@
   --bs-primary-bg-subtle: rgb(6.2, 8.2, 11);
   --bs-secondary-bg-subtle: rgb(51, 27.2, 10);
   --bs-success-bg-subtle: rgb(3.2, 37, 25.8);
-  --bs-info-bg-subtle: rgb(11.8, 26, 49.2);
+  --bs-info-bg-subtle: rgb(6, 28.8, 51);
   --bs-warning-bg-subtle: rgb(50.2, 33.8, 4.8);
   --bs-danger-bg-subtle: rgb(47.8, 13.6, 13.6);
   --bs-light-bg-subtle: #1F2937;
@@ -1114,7 +1114,7 @@
   --bs-primary-border-subtle: rgb(18.6, 24.6, 33);
   --bs-secondary-border-subtle: rgb(153, 81.6, 30);
   --bs-success-border-subtle: rgb(9.6, 111, 77.4);
-  --bs-info-border-subtle: rgb(35.4, 78, 147.6);
+  --bs-info-border-subtle: rgb(18, 86.4, 153);
   --bs-warning-border-subtle: rgb(150.6, 101.4, 14.4);
   --bs-danger-border-subtle: rgb(143.4, 40.8, 40.8);
   --bs-light-border-subtle: #374151;
@@ -2919,13 +2919,13 @@ progress {
 
 .table-info {
   --bs-table-color: #1F2937;
-  --bs-table-bg: rgb(215.8, 230, 253.2);
-  --bs-table-border-color: rgb(197.32, 211.1, 233.38);
-  --bs-table-striped-bg: rgb(206.56, 220.55, 243.29);
+  --bs-table-bg: rgb(210, 232.8, 255);
+  --bs-table-border-color: rgb(192.1, 213.62, 235);
+  --bs-table-striped-bg: rgb(201.05, 223.21, 245);
   --bs-table-striped-color: #1F2937;
-  --bs-table-active-bg: rgb(197.32, 211.1, 233.38);
+  --bs-table-active-bg: rgb(192.1, 213.62, 235);
   --bs-table-active-color: #1F2937;
-  --bs-table-hover-bg: rgb(201.94, 215.825, 238.335);
+  --bs-table-hover-bg: rgb(196.575, 218.415, 240);
   --bs-table-hover-color: #1F2937;
   color: var(--bs-table-color);
   border-color: var(--bs-table-border-color);
@@ -4036,19 +4036,19 @@ textarea.form-control-lg {
 
 .btn-info {
   --bs-btn-color: #FFFFFF;
-  --bs-btn-bg: #3B82F6;
-  --bs-btn-border-color: #3B82F6;
+  --bs-btn-bg: #1E90FF;
+  --bs-btn-border-color: #1E90FF;
   --bs-btn-hover-color: #FFFFFF;
-  --bs-btn-hover-bg: rgb(50.15, 110.5, 209.1);
-  --bs-btn-hover-border-color: rgb(47.2, 104, 196.8);
-  --bs-btn-focus-shadow-rgb: 88, 149, 247;
+  --bs-btn-hover-bg: rgb(25.5, 122.4, 216.75);
+  --bs-btn-hover-border-color: rgb(24, 115.2, 204);
+  --bs-btn-focus-shadow-rgb: 64, 161, 255;
   --bs-btn-active-color: #FFFFFF;
-  --bs-btn-active-bg: rgb(47.2, 104, 196.8);
-  --bs-btn-active-border-color: rgb(44.25, 97.5, 184.5);
+  --bs-btn-active-bg: rgb(24, 115.2, 204);
+  --bs-btn-active-border-color: rgb(22.5, 108, 191.25);
   --bs-btn-active-shadow: inset 0 3px 5px rgba(17, 24, 39, 0.125);
   --bs-btn-disabled-color: #FFFFFF;
-  --bs-btn-disabled-bg: #3B82F6;
-  --bs-btn-disabled-border-color: #3B82F6;
+  --bs-btn-disabled-bg: #1E90FF;
+  --bs-btn-disabled-border-color: #1E90FF;
 }
 
 .btn-warning {
@@ -4409,19 +4409,19 @@ textarea.form-control-lg {
 }
 
 .btn-outline-info {
-  --bs-btn-color: #3B82F6;
-  --bs-btn-border-color: #3B82F6;
+  --bs-btn-color: #1E90FF;
+  --bs-btn-border-color: #1E90FF;
   --bs-btn-hover-color: #FFFFFF;
-  --bs-btn-hover-bg: #3B82F6;
-  --bs-btn-hover-border-color: #3B82F6;
-  --bs-btn-focus-shadow-rgb: 59, 130, 246;
+  --bs-btn-hover-bg: #1E90FF;
+  --bs-btn-hover-border-color: #1E90FF;
+  --bs-btn-focus-shadow-rgb: 30, 144, 255;
   --bs-btn-active-color: #FFFFFF;
-  --bs-btn-active-bg: #3B82F6;
-  --bs-btn-active-border-color: #3B82F6;
+  --bs-btn-active-bg: #1E90FF;
+  --bs-btn-active-border-color: #1E90FF;
   --bs-btn-active-shadow: inset 0 3px 5px rgba(17, 24, 39, 0.125);
-  --bs-btn-disabled-color: #3B82F6;
+  --bs-btn-disabled-color: #1E90FF;
   --bs-btn-disabled-bg: transparent;
-  --bs-btn-disabled-border-color: #3B82F6;
+  --bs-btn-disabled-border-color: #1E90FF;
   --bs-gradient: none;
 }
 
@@ -8133,8 +8133,8 @@ textarea.form-control-lg {
   text-decoration-color: RGBA(var(--bs-info-rgb), var(--bs-link-underline-opacity, 1)) !important;
 }
 .link-info:hover, .link-info:focus {
-  color: RGBA(47, 104, 197, var(--bs-link-opacity, 1)) !important;
-  text-decoration-color: RGBA(47, 104, 197, var(--bs-link-underline-opacity, 1)) !important;
+  color: RGBA(24, 115, 204, var(--bs-link-opacity, 1)) !important;
+  text-decoration-color: RGBA(24, 115, 204, var(--bs-link-underline-opacity, 1)) !important;
 }
 
 .link-warning {
@@ -16089,8 +16089,8 @@ label {
 }
 
 .btn-info:hover {
-  background-color: rgb(34.6195121951, 114.4512195122, 244.8804878049);
-  border-color: rgb(34.6195121951, 114.4512195122, 244.8804878049);
+  background-color: rgb(4.5, 131.42, 255);
+  border-color: rgb(4.5, 131.42, 255);
 }
 
 .btn-warning:hover {
@@ -16676,7 +16676,7 @@ label {
 }
 
 .breadcrumb-info {
-  background: #3B82F6;
+  background: #1E90FF;
 }
 .breadcrumb-info .breadcrumb-item.active {
   color: #FFFFFF;
@@ -16685,7 +16685,7 @@ label {
   background: transparent;
 }
 .breadcrumb-info.breadcrumb-transparent .breadcrumb-item.active {
-  color: #3B82F6;
+  color: #1E90FF;
 }
 
 .breadcrumb-warning {
@@ -17490,8 +17490,8 @@ label {
 }
 
 .icon-shape-info {
-  color: #3B82F6;
-  background-color: rgba(59, 130, 246, 0.3);
+  color: #1E90FF;
+  background-color: rgba(30, 144, 255, 0.3);
 }
 
 .icon-shape-warning {
@@ -17811,18 +17811,18 @@ label {
 }
 
 .modal-info .modal-title {
-  color: color-yiq(#3B82F6);
+  color: color-yiq(#1E90FF);
 }
 .modal-info .modal-header,
 .modal-info .modal-footer {
-  border-color: rgba(59, 130, 246, 0.075);
+  border-color: rgba(30, 144, 255, 0.075);
 }
 .modal-info .modal-content {
-  background-color: #3B82F6;
-  color: color-yiq(#3B82F6);
+  background-color: #1E90FF;
+  color: color-yiq(#1E90FF);
 }
 .modal-info .modal-content .heading {
-  color: color-yiq(#3B82F6);
+  color: color-yiq(#1E90FF);
 }
 .modal-info .close > span:not(.sr-only) {
   color: #FFFFFF;
@@ -18435,29 +18435,29 @@ label {
 }
 
 .popover-info {
-  background-color: #3B82F6;
+  background-color: #1E90FF;
 }
 .popover-info .popover-header {
-  background-color: #3B82F6;
-  color: color-yiq(#3B82F6);
+  background-color: #1E90FF;
+  color: color-yiq(#1E90FF);
 }
 .popover-info .popover-body {
-  color: color-yiq(#3B82F6);
+  color: color-yiq(#1E90FF);
 }
 .popover-info .popover-header {
-  border-color: rgba(59, 130, 246, 0.2);
+  border-color: rgba(30, 144, 255, 0.2);
 }
 .popover-info.bs-popover-top .arrow::after, .popover-info.bs-popover-auto[data-popper-placement^=top] .arrow::after {
-  border-top-color: #3B82F6;
+  border-top-color: #1E90FF;
 }
 .popover-info.bs-popover-end .arrow::after, .popover-info.bs-popover-auto[data-popper-placement^=right] .arrow::after {
-  border-right-color: #3B82F6;
+  border-right-color: #1E90FF;
 }
 .popover-info.bs-popover-bottom .arrow::after, .popover-info.bs-popover-auto[data-popper-placement^=bottom] .arrow::after {
-  border-bottom-color: #3B82F6;
+  border-bottom-color: #1E90FF;
 }
 .popover-info.bs-popover-start .arrow::after, .popover-info.bs-popover-auto[data-popper-placement^=left] .arrow::after {
-  border-left-color: #3B82F6;
+  border-left-color: #1E90FF;
 }
 
 .popover-warning {
@@ -19016,7 +19016,7 @@ label {
 }
 
 .progress-info .bg-info::after {
-  border-top-color: #3B82F6;
+  border-top-color: #1E90FF;
 }
 
 .progress-info .bg-warning::after {
@@ -19588,13 +19588,13 @@ code[class*=language-], pre[class*=language-] {
 }
 
 .text-info, .text-info:hover {
-  color: #3B82F6 !important;
+  color: #1E90FF !important;
 }
 .text-info a:not(.btn), .text-info h1, .text-info h2, .text-info h3, .text-info h4, .text-info h5, .text-info h6, .text-info .h1, .text-info .h2, .text-info .h3, .text-info .h4, .text-info .h5, .text-info .h6, .text-info .display-1, .text-info .display-2, .text-info .display-3, .text-info .display-4 {
-  color: #3B82F6;
+  color: #1E90FF;
 }
 .text-info .text-muted {
-  color: rgba(59, 130, 246, 0.7) !important;
+  color: rgba(30, 144, 255, 0.7) !important;
 }
 
 .text-warning, .text-warning:hover {
@@ -20354,6 +20354,29 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
 .popover {
   border-color: #D1D5DB;
   box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+
+.avatar-container {
+  width: 120px;
+  height: 120px;
+}
+
+.logo-preview-size {
+  width: 130px;
+  height: 130px;
+}
+
+.map-height {
+  height: 350px;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.object-fit-cover {
+  -o-object-fit: cover;
+     object-fit: cover;
 }
 
 @media (max-width: 767.98px) {
