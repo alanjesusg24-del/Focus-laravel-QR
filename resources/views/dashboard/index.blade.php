@@ -183,6 +183,20 @@
                         </table>
                     </div>
                 </div>
+                <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+                    <div></div>
+                    @if(count($reportData['orders_by_hour']) > 0)
+                        <div class="fw-normal small">
+                            Mostrando
+                            <span class="fw-bold">1</span>
+                            a
+                            <span class="fw-bold">{{ count($reportData['orders_by_hour']) }}</span>
+                            de
+                            <span class="fw-bold">{{ count($reportData['orders_by_hour']) }}</span>
+                            {{ count($reportData['orders_by_hour']) == 1 ? 'entrada' : 'entradas' }}
+                        </div>
+                    @endif
+                </div>
             </div>
         </div>
 
@@ -221,6 +235,23 @@
                             </tbody>
                         </table>
                     </div>
+                </div>
+                <div class="card-footer px-3 border-0 d-flex flex-column flex-lg-row align-items-center justify-content-between">
+                    <div></div>
+                    @php
+                        $weekdayTotal = count($reportData['orders_by_weekday']);
+                    @endphp
+                    @if($weekdayTotal > 0)
+                        <div class="fw-normal small">
+                            Mostrando
+                            <span class="fw-bold">1</span>
+                            a
+                            <span class="fw-bold">{{ $weekdayTotal }}</span>
+                            de
+                            <span class="fw-bold">{{ $weekdayTotal }}</span>
+                            {{ $weekdayTotal == 1 ? 'entrada' : 'entradas' }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

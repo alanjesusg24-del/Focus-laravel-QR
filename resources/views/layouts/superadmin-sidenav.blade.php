@@ -66,7 +66,7 @@
       <li class="nav-item {{ request()->routeIs('superadmin.businesses.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.businesses.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
-            <x-icon name="business.list" class="me-0" />
+            <x-icon name="list.checklist" class="me-0" />
           </span>
           <span class="sidebar-text">Negocios</span>
         </a>
@@ -76,7 +76,7 @@
       <li class="nav-item {{ request()->routeIs('superadmin.plans.*') ? 'active' : '' }}">
         <a href="{{ route('superadmin.plans.index') }}" class="nav-link d-flex align-items-center py-1 px-2">
           <span class="sidebar-icon d-flex align-items-center justify-content-center me-2">
-            <x-icon name="plan.subscription" class="me-0" />
+            <x-icon name="money.card" class="me-0" />
           </span>
           <span class="sidebar-text">Planes</span>
         </a>

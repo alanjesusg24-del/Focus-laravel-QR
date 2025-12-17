@@ -61,7 +61,7 @@
                                 <span class="input-group-text bg-white border-end-0">
                                     <i class="fa-regular fa-credit-card text-muted"></i>
                                 </span>
-                                <input type="text" name="card_number" id="card_number" class="form-control py-2 border-start-0 ps-0" placeholder="0000 0000 0000 0000" maxlength="16" required>
+                                <input type="text" name="card_number" id="card_number" class="form-control py-2 border-start-0 ps-0" placeholder="0000 0000 0000 0000" maxlength="20" required>
                             </div>
                             <div class="invalid-feedback">Por favor ingrese un número de tarjeta válido</div>
                         </div>
@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const matches = v.match(/\d{4,16}/g);
         const match = matches && matches[0] || '';
         const parts = [];
+        const cardName = document.getElementById('card_name');
 
         for (let i = 0, len = match.length; i < len; i += 4) {
             parts.push(match.substring(i, i + 4));
@@ -173,6 +174,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 e.target.value = '';
             }
         }
+    });
+    cardName.addEventListener('input', function(e) {
+        const value = e.target.value;
+        e.target.value = value.replace(/[^a-zA-Z\s]/g, ''); // Permitir solo letras y espacios
     });
 
     // Input masking: Just numbers for year (YY)

@@ -43,8 +43,7 @@ class AuthController extends Controller
         if (Auth::guard('superadmin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
-            return redirect()->intended(route('superadmin.dashboard'))
-                ->with('success', '¡Bienvenido de nuevo, ' . Auth::guard('superadmin')->user()->full_name . '!');
+            return redirect()->intended(route('superadmin.dashboard'));
         }
 
         throw ValidationException::withMessages([
@@ -62,7 +61,6 @@ class AuthController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('business.login')
-            ->with('success', 'Has cerrado sesión correctamente.');
+        return redirect()->route('business.login');
     }
 }
