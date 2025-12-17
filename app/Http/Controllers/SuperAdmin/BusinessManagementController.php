@@ -167,17 +167,24 @@ class BusinessManagementController extends Controller
 
     /**
      * Toggle business active status
+     * Solo permite desactivar - La reactivación se hace automáticamente al pagar/renovar plan
      */
     public function toggleStatus($id)
     {
         $business = Business::findOrFail($id);
-        $business->is_active = !$business->is_active;
-        $business->save();
 
-        $status = $business->is_active ? 'activado' : 'desactivado';
+        // Solo permitir desactivar, no reactivar manualmente
+        if ($business->is_active) {
+            $business->is_active = false;
+            $business->save();
 
+            return redirect()->back()
+                ->with('success', 'Cuenta inactivada correctamente. Solo se reactivará cuando el negocio pague o renueve su plan.');
+        }
+
+        // Si está inactivo, no permitir reactivar manualmente
         return redirect()->back()
-            ->with('success', "Negocio {$status} correctamente.");
+            ->with('warning', 'No se puede reactivar manualmente. La cuenta se reactivará automáticamente cuando el negocio pague o renueve su plan.');
     }
 
     /**

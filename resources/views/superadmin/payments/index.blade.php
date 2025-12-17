@@ -44,9 +44,10 @@
                     <input type="text"
                            id="search"
                            class="form-control border-start-0 ps-0"
-                           placeholder="Buscar por ID, negocio o plan..."
+                           placeholder="Buscar por negocio..."
                            autocomplete="off">
                 </div>
+
                 <div class="d-flex align-items-center">
                     <span class="small fw-bold text-gray-600 me-2">Filtrar por estado:</span>
                     <form method="GET" action="{{ route('superadmin.payments.index') }}">
@@ -75,6 +76,12 @@
                     </form>
                 </div>
 
+                <div class="ms-auto">
+                    <a href="{{ route('superadmin.payments.index') }}" class="btn btn-secondary text-white">
+                        <x-icon name="action.refresh" class="me-2" />
+                        Limpiar filtros
+                    </a>
+                </div>
 
             </div>
 
@@ -198,18 +205,10 @@ document.addEventListener('DOMContentLoaded', function() {
                     return;
                 }
 
-                // Search in: ID, Business, Plan, Amount, Date
-                const id = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || '';
-                const businessName = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || '';
-                const planName = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || '';
-                const amount = row.querySelector('td:nth-child(4)')?.textContent.toLowerCase() || '';
-                const paymentDate = row.querySelector('td:nth-child(5)')?.textContent.toLowerCase() || '';
+                // Search in: Business Name only
+                const businessName = row.querySelector('td:nth-child(2) span.fw-bold')?.textContent.toLowerCase() || '';
 
-                const matches = id.includes(searchTerm) ||
-                               businessName.includes(searchTerm) ||
-                               planName.includes(searchTerm) ||
-                               amount.includes(searchTerm) ||
-                               paymentDate.includes(searchTerm);
+                const matches = businessName.includes(searchTerm);
 
                 row.style.display = matches ? '' : 'none';
 
@@ -223,7 +222,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     noResultsRow.innerHTML = `
                         <td colspan="7" class="text-center py-5">
                             <p class="text-gray-600 mb-0">No se encontraron pagos que coincidan con "<strong>${searchTerm}</strong>"</p>
-                            <small class="text-muted">Intenta buscar por ID, negocio, plan, monto o fecha</small>
+                            <small class="text-muted">Intenta buscar por nombre del negocio</small>
                         </td>
                     `;
                     tbody.appendChild(noResultsRow);

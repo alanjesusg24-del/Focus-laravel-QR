@@ -14,7 +14,7 @@
 
 @extends('layouts.business-app')
 
-@section('title', 'Subscription Plans')
+@section('title', 'Planes de Suscripción')
 
 @section('page')
     <div class="py-4">
