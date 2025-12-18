@@ -1,18 +1,34 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: AuthController.php
+ * Created on: 20/11/2025
+ * Created by: Dafne Vanessa Castillo Moreo
+ * Approved by: Dafne Vanessa Castillo Moreo
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 15/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreo |
+ *   Description: Refactored to comply  |
+ */
+
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
 {
     /**
      * Show login form
      */
-    public function showLoginForm()
+    public function showLoginForm(): View
     {
         return view('auth.login');
     }
@@ -20,7 +36,7 @@ class AuthController extends Controller
     /**
      * Handle login request
      */
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
             'email' => 'required|email',
@@ -33,14 +49,14 @@ class AuthController extends Controller
 
         $remember = $request->filled('remember');
 
-        // First, try to authenticate as superadmin
+        // 5.4.1: Early Return - Superadmin authentication
         if (Auth::guard('superadmin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
             return redirect()->intended(route('superadmin.dashboard'));
         }
 
-        // If not superadmin, try to authenticate as business
+        // 5.4.1: Early Return - Business authentication
         if (Auth::guard('business')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
@@ -55,7 +71,7 @@ class AuthController extends Controller
     /**
      * Handle logout request
      */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::guard('business')->logout();
 

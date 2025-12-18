@@ -1,20 +1,35 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: AuthController.php (SuperAdmin)
+ * Created on: 20/11/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 15/12/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Refactored to comply  |
+ */
+
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Http\RedirectResponse;
 
 class AuthController extends Controller
 {
     /**
      * Show the login form for super admin
      */
-    public function showLoginForm()
+    public function showLoginForm(): RedirectResponse
     {
-        // Redirect if already authenticated
+        // 5.4.1: Early Return - Already authenticated
         if (Auth::guard('superadmin')->check()) {
             return redirect()->route('superadmin.dashboard');
         }
@@ -26,7 +41,7 @@ class AuthController extends Controller
     /**
      * Handle super admin login
      */
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
         $request->validate([
             'email' => 'required|email',
@@ -40,6 +55,7 @@ class AuthController extends Controller
         $credentials = $request->only('email', 'password');
         $remember = $request->filled('remember');
 
+        // 5.4.1: Early Return - Authentication success
         if (Auth::guard('superadmin')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
 
@@ -54,7 +70,7 @@ class AuthController extends Controller
     /**
      * Handle super admin logout
      */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
         Auth::guard('superadmin')->logout();
 

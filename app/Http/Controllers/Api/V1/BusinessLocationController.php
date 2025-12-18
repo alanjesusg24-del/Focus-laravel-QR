@@ -1,19 +1,17 @@
 <?php
 
 /**
- * ============================================
- * CETAM - Business Location Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: BusinessLocationController.php (API V1)
+ * Created on: 26/11/2025
+ * Created by: Dafne Vanessa Castillo Moreo
+ * Approved by: Dafne Vanessa Castillo Moreo
  *
- * @project     Order QR API
- * @file        BusinessLocationController.php
- * @description Controlador para endpoints de geolocalización de negocios
- * @author      CETAM Dev Team
- * @created     2025-11-26
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 16/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreo |
+ *   Description: Refactored to Business Location Controller standards |
  */
 
 namespace App\Http\Controllers\Api\V1;
@@ -23,98 +21,49 @@ use App\Models\Business;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class BusinessLocationController extends Controller
 {
-    /**
-     * Obtener todos los negocios con paginación
-     *
-     * @endpoint GET /api/v1/businesses
-     * @param Request $request
-     * @return JsonResponse
-     */
+    
     public function index(Request $request): JsonResponse
     {
         try {
-            // Parámetros de paginación
-            $perPage = $request->input('per_page', 20);
+            $perPage = min($request->input('per_page', 20), 500);
             $page = $request->input('page', 1);
 
-            // Validar que per_page no sea excesivo
-            if ($perPage > 500) {
-                $perPage = 500;
-            }
-
-            \Log::info('📋 Obteniendo todos los negocios', [
+            Log::info('📋 Obteniendo todos los negocios', [
                 'page' => $page,
                 'per_page' => $perPage,
             ]);
 
-            // Query base
-            $query = Business::active();
+            // 5.5: Extract query building to private method
+            $query = $this->buildIndexQuery($request);
 
-            // Filtros opcionales
-            if ($request->filled('city')) {
-                $query->where('city', $request->input('city'));
-            }
-
-            if ($request->filled('state')) {
-                $query->where('state', $request->input('state'));
-            }
-
-            if ($request->filled('with_location') && $request->input('with_location') == '1') {
-                $query->withPublicLocation();
-            }
-
-            // Ordenar y paginar
             $businesses = $query->orderBy('created_at', 'desc')
                                ->paginate($perPage);
 
-            \Log::info('✅ Negocios obtenidos', [
+            Log::info('✅ Negocios obtenidos', [
                 'total' => $businesses->total(),
                 'current_page' => $businesses->currentPage(),
             ]);
 
-            // Formatear resultados (items() para obtener solo los items de la paginación)
-            $formattedBusinesses = $businesses->map(function ($business) {
-                return [
-                    'business_id' => $business->business_id,
-                    'business_name' => $business->business_name,
-                    'phone' => $business->phone,
-                    'email' => $business->email,
-                    'address' => $business->address,
-                    'address_details' => $business->address_details ?? null,
-                    'city' => $business->city,
-                    'state' => $business->state,
-                    'postal_code' => $business->postal_code,
-                    'latitude' => $business->latitude ? (float) $business->latitude : null,
-                    'longitude' => $business->longitude ? (float) $business->longitude : null,
-                    'is_open' => true,
-                    'rating' => null,
-                    'total_reviews' => null,
-                    'created_at' => $business->created_at,
-                    'updated_at' => $business->updated_at,
-                ];
-            });
+            // 5.3: Use Collection map instead of foreach
+            $formattedBusinesses = $businesses->map(
+                fn($business) => $this->formatBusinessForIndex($business)
+            );
 
             return response()->json([
                 'success' => true,
                 'message' => 'Negocios obtenidos exitosamente',
                 'data' => [
                     'businesses' => $formattedBusinesses,
-                    'pagination' => [
-                        'current_page' => $businesses->currentPage(),
-                        'per_page' => $businesses->perPage(),
-                        'total' => $businesses->total(),
-                        'total_pages' => $businesses->lastPage(),
-                        'from' => $businesses->firstItem(),
-                        'to' => $businesses->lastItem(),
-                    ]
+                    'pagination' => $this->formatPaginationData($businesses),
                 ]
             ], 200);
 
         } catch (\Exception $e) {
-            \Log::error('❌ Error al obtener todos los negocios', [
+            Log::error(' Error al obtener todos los negocios', [
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
             ]);
@@ -127,16 +76,9 @@ class BusinessLocationController extends Controller
         }
     }
 
-    /**
-     * Obtener negocios cercanos a la ubicación del usuario
-     *
-     * @endpoint GET /api/v1/businesses/nearby
-     * @param Request $request
-     * @return JsonResponse
-     */
+  
     public function nearby(Request $request): JsonResponse
     {
-        // Validar parámetros de entrada
         $validator = Validator::make($request->all(), [
             'latitude' => 'required|numeric|min:-90|max:90',
             'longitude' => 'required|numeric|min:-180|max:180',
@@ -157,6 +99,7 @@ class BusinessLocationController extends Controller
             'radius.max' => 'El radio máximo permitido es 100 km',
         ]);
 
+        // 5.4.1: Early Return - Validation failure
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -168,18 +111,16 @@ class BusinessLocationController extends Controller
         try {
             $userLat = $request->input('latitude');
             $userLng = $request->input('longitude');
-            $radius = $request->input('radius', 10); // default 10km
+            $radius = $request->input('radius', 10);
             $limit = $request->input('limit', 20);
             $page = $request->input('page', 1);
 
-            // Obtener negocios cercanos usando el scope
             $query = Business::nearby($userLat, $userLng, $radius)
                 ->active();
 
-            // Aplicar paginación
             $businesses = $query->paginate($limit, ['*'], 'page', $page);
 
-            // Verificar si hay resultados
+            // 5.4.1: Early Return - No results found
             if ($businesses->isEmpty()) {
                 return response()->json([
                     'success' => false,
@@ -195,38 +136,16 @@ class BusinessLocationController extends Controller
                 ], 404);
             }
 
-            // Formatear datos de respuesta
-            $formattedBusinesses = $businesses->map(function ($business) {
-                return [
-                    'business_id' => $business->business_id,
-                    'business_name' => $business->business_name,
-                    'phone' => $business->phone,
-                    'address' => $business->address,
-                    'address_details' => $business->address_details,
-                    'city' => $business->city,
-                    'state' => $business->state,
-                    'postal_code' => $business->postal_code,
-                    'latitude' => (float) $business->latitude,
-                    'longitude' => (float) $business->longitude,
-                    'distance_km' => (float) $business->distance_km,
-                    'is_open' => true, // TODO: Implementar lógica de horarios
-                    'rating' => null, // TODO: Implementar sistema de ratings
-                    'total_reviews' => null, // TODO: Implementar sistema de reviews
-                ];
-            });
+            // 5.3: Use Collection map
+            $formattedBusinesses = $businesses->map(
+                fn($business) => $this->formatBusinessForNearby($business)
+            );
 
             return response()->json([
                 'success' => true,
                 'data' => [
                     'businesses' => $formattedBusinesses,
-                    'pagination' => [
-                        'current_page' => $businesses->currentPage(),
-                        'per_page' => $businesses->perPage(),
-                        'total' => $businesses->total(),
-                        'last_page' => $businesses->lastPage(),
-                        'from' => $businesses->firstItem(),
-                        'to' => $businesses->lastItem(),
-                    ],
+                    'pagination' => $this->formatPaginationData($businesses),
                     'user_location' => [
                         'latitude' => (float) $userLat,
                         'longitude' => (float) $userLng,
@@ -245,22 +164,14 @@ class BusinessLocationController extends Controller
         }
     }
 
-    /**
-     * Obtener detalle de un negocio con distancia opcional
-     *
-     * @endpoint GET /api/v1/businesses/{business_id}
-     * @param Request $request
-     * @param int $businessId
-     * @return JsonResponse
-     */
     public function show(Request $request, int $businessId): JsonResponse
     {
-        // Validar parámetros opcionales de ubicación
         $validator = Validator::make($request->all(), [
             'user_latitude' => 'nullable|numeric|min:-90|max:90',
             'user_longitude' => 'nullable|numeric|min:-180|max:180',
         ]);
 
+        // 5.4.1: Early Return - Validation failure
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -274,6 +185,7 @@ class BusinessLocationController extends Controller
                 ->active()
                 ->first();
 
+            // 5.4.1: Early Return - Not found
             if (!$business) {
                 return response()->json([
                     'success' => false,
@@ -281,36 +193,12 @@ class BusinessLocationController extends Controller
                 ], 404);
             }
 
-            // Calcular distancia si se proporciona ubicación del usuario
-            $distanceKm = null;
-            if ($request->has(['user_latitude', 'user_longitude'])) {
-                $distanceKm = $business->distanceTo(
-                    $request->input('user_latitude'),
-                    $request->input('user_longitude')
-                );
-            }
+            // 5.5: Extract distance calculation to private method
+            $distanceKm = $this->calculateDistance($business, $request);
 
             return response()->json([
                 'success' => true,
-                'data' => [
-                    'business_id' => $business->business_id,
-                    'business_name' => $business->business_name,
-                    'phone' => $business->phone,
-                    'address' => $business->address,
-                    'address_details' => $business->address_details,
-                    'city' => $business->city,
-                    'state' => $business->state,
-                    'postal_code' => $business->postal_code,
-                    'latitude' => (float) $business->latitude,
-                    'longitude' => (float) $business->longitude,
-                    'distance_km' => $distanceKm,
-                    'is_open' => true, // TODO: Implementar lógica de horarios
-                    'opening_hours' => null, // TODO: Implementar horarios de apertura
-                    'rating' => null, // TODO: Implementar ratings
-                    'total_reviews' => null, // TODO: Implementar reviews
-                    'created_at' => $business->created_at,
-                    'updated_at' => $business->updated_at,
-                ],
+                'data' => $this->formatBusinessForShow($business, $distanceKm),
                 'message' => 'Detalle del negocio obtenido exitosamente'
             ], 200);
 
@@ -325,15 +213,9 @@ class BusinessLocationController extends Controller
 
     /**
      * Buscar negocios por ciudad, estado o código postal
-     * NOTA: Ahora funciona sin parámetros obligatorios para compatibilidad con app móvil
-     *
-     * @endpoint GET /api/v1/businesses/search
-     * @param Request $request
-     * @return JsonResponse
      */
     public function search(Request $request): JsonResponse
     {
-        // Validar parámetros de búsqueda (todos opcionales)
         $validator = Validator::make($request->all(), [
             'query' => 'nullable|string|max:255',
             'city' => 'nullable|string|max:100',
@@ -345,6 +227,7 @@ class BusinessLocationController extends Controller
             'per_page' => 'nullable|integer|min:1|max:500',
         ]);
 
+        // 5.4.1: Early Return - Validation failure
         if ($validator->fails()) {
             return response()->json([
                 'success' => false,
@@ -354,94 +237,24 @@ class BusinessLocationController extends Controller
         }
 
         try {
-            $query = Business::active();
+            // 5.5: Extract query building to private method
+            $query = $this->buildSearchQuery($request);
 
-            // Si NO hay filtros de búsqueda, retornar todos los negocios activos
-            // Si hay filtros, aplicar filtro de ubicación pública
-            $hasSearchFilters = $request->filled(['query', 'city', 'state', 'postal_code']);
-
-            if ($hasSearchFilters) {
-                // Solo aplicar filtro de ubicación pública si hay búsqueda específica
-                $query->withPublicLocation();
-            }
-
-            // Búsqueda por nombre
-            if ($request->filled('query')) {
-                $searchTerm = $request->input('query');
-                $query->where('business_name', 'LIKE', "%{$searchTerm}%");
-            }
-
-            // Filtrar por ciudad
-            if ($request->filled('city')) {
-                $query->where('city', $request->input('city'));
-            }
-
-            // Filtrar por estado
-            if ($request->filled('state')) {
-                $query->where('state', $request->input('state'));
-            }
-
-            // Filtrar por código postal
-            if ($request->filled('postal_code')) {
-                $query->where('postal_code', $request->input('postal_code'));
-            }
-
-            // Si se proporciona ubicación, calcular distancia y ordenar
-            if ($request->has(['latitude', 'longitude'])) {
-                $userLat = $request->input('latitude');
-                $userLng = $request->input('longitude');
-
-                $query->selectRaw(
-                    '*, ( 6371 * acos( cos( radians(?) ) *
-                    cos( radians( latitude ) ) *
-                    cos( radians( longitude ) - radians(?) ) +
-                    sin( radians(?) ) *
-                    sin( radians( latitude ) ) ) ) AS distance_km',
-                    [$userLat, $userLng, $userLat]
-                )->orderBy('distance_km', 'asc');
-            }
-
-            // Paginación
             $perPage = $request->input('per_page', 20);
             $page = $request->input('page', 1);
             $businesses = $query->paginate($perPage, ['*'], 'page', $page);
 
-            // Formatear resultados
-            $formattedBusinesses = $businesses->map(function ($business) {
-                return [
-                    'business_id' => $business->business_id,
-                    'business_name' => $business->business_name,
-                    'phone' => $business->phone,
-                    'email' => $business->email,
-                    'address' => $business->address,
-                    'address_details' => $business->address_details ?? null,
-                    'city' => $business->city,
-                    'state' => $business->state,
-                    'postal_code' => $business->postal_code,
-                    'latitude' => $business->latitude ? (float) $business->latitude : null,
-                    'longitude' => $business->longitude ? (float) $business->longitude : null,
-                    'distance_km' => isset($business->distance_km) ? (float) $business->distance_km : null,
-                    'is_open' => true,
-                    'rating' => null,
-                    'total_reviews' => null,
-                    'created_at' => $business->created_at,
-                    'updated_at' => $business->updated_at,
-                ];
-            });
+            // 5.3: Use Collection map
+            $formattedBusinesses = $businesses->map(
+                fn($business) => $this->formatBusinessForSearch($business)
+            );
 
             return response()->json([
                 'success' => true,
                 'message' => 'Búsqueda completada exitosamente',
                 'data' => [
                     'businesses' => $formattedBusinesses,
-                    'pagination' => [
-                        'current_page' => $businesses->currentPage(),
-                        'per_page' => $businesses->perPage(),
-                        'total' => $businesses->total(),
-                        'total_pages' => $businesses->lastPage(),
-                        'from' => $businesses->firstItem(),
-                        'to' => $businesses->lastItem(),
-                    ],
+                    'pagination' => $this->formatPaginationData($businesses),
                 ],
             ], 200);
 
@@ -452,5 +265,213 @@ class BusinessLocationController extends Controller
                 'error' => config('app.debug') ? $e->getMessage() : null
             ], 500);
         }
+    }
+
+    /**
+     * Build query for index method
+     * 5.5: Private helper method following SRP
+     */
+    private function buildIndexQuery(Request $request): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = Business::active();
+
+        if ($request->filled('city')) {
+            $query->where('city', $request->input('city'));
+        }
+
+        if ($request->filled('state')) {
+            $query->where('state', $request->input('state'));
+        }
+
+        if ($request->filled('with_location') && $request->input('with_location') == '1') {
+            $query->withPublicLocation();
+        }
+
+        return $query;
+    }
+
+    /**
+     * Build query for search method
+     * 5.5: Private helper method following SRP
+     */
+    private function buildSearchQuery(Request $request): \Illuminate\Database\Eloquent\Builder
+    {
+        $query = Business::active();
+
+        $hasSearchFilters = $request->filled(['query', 'city', 'state', 'postal_code']);
+
+        if ($hasSearchFilters) {
+            $query->withPublicLocation();
+        }
+
+        if ($request->filled('query')) {
+            $searchTerm = $request->input('query');
+            $query->where('business_name', 'LIKE', "%{$searchTerm}%");
+        }
+
+        if ($request->filled('city')) {
+            $query->where('city', $request->input('city'));
+        }
+
+        if ($request->filled('state')) {
+            $query->where('state', $request->input('state'));
+        }
+
+        if ($request->filled('postal_code')) {
+            $query->where('postal_code', $request->input('postal_code'));
+        }
+
+        if ($request->has(['latitude', 'longitude'])) {
+            $userLat = $request->input('latitude');
+            $userLng = $request->input('longitude');
+
+            $query->selectRaw(
+                '*, ( 6371 * acos( cos( radians(?) ) *
+                cos( radians( latitude ) ) *
+                cos( radians( longitude ) - radians(?) ) +
+                sin( radians(?) ) *
+                sin( radians( latitude ) ) ) ) AS distance_km',
+                [$userLat, $userLng, $userLat]
+            )->orderBy('distance_km', 'asc');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Calculate distance if user location provided
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateDistance(Business $business, Request $request): ?float
+    {
+        // 5.4.1: Early Return - No user location
+        if (!$request->has(['user_latitude', 'user_longitude'])) {
+            return null;
+        }
+
+        return $business->distanceTo(
+            $request->input('user_latitude'),
+            $request->input('user_longitude')
+        );
+    }
+
+    /**
+     * Format business object for index response
+     * 5.5: Private helper method following SRP - Eliminates code duplication
+     */
+    private function formatBusinessForIndex(Business $business): array
+    {
+        return [
+            'business_id' => $business->business_id,
+            'business_name' => $business->business_name,
+            'phone' => $business->phone,
+            'email' => $business->email,
+            'address' => $business->address,
+            'address_details' => $business->address_details ?? null,
+            'city' => $business->city,
+            'state' => $business->state,
+            'postal_code' => $business->postal_code,
+            'latitude' => $business->latitude ? (float) $business->latitude : null,
+            'longitude' => $business->longitude ? (float) $business->longitude : null,
+            'is_open' => true,
+            'rating' => null,
+            'total_reviews' => null,
+            'created_at' => $business->created_at,
+            'updated_at' => $business->updated_at,
+        ];
+    }
+
+    /**
+     * Format business object for nearby response
+     * 5.5: Private helper method following SRP
+     */
+    private function formatBusinessForNearby(Business $business): array
+    {
+        return [
+            'business_id' => $business->business_id,
+            'business_name' => $business->business_name,
+            'phone' => $business->phone,
+            'address' => $business->address,
+            'address_details' => $business->address_details,
+            'city' => $business->city,
+            'state' => $business->state,
+            'postal_code' => $business->postal_code,
+            'latitude' => (float) $business->latitude,
+            'longitude' => (float) $business->longitude,
+            'distance_km' => (float) $business->distance_km,
+            'is_open' => true,
+            'rating' => null,
+            'total_reviews' => null,
+        ];
+    }
+
+    /**
+     * Format business object for show response
+     * 5.5: Private helper method following SRP
+     */
+    private function formatBusinessForShow(Business $business, ?float $distanceKm): array
+    {
+        return [
+            'business_id' => $business->business_id,
+            'business_name' => $business->business_name,
+            'phone' => $business->phone,
+            'address' => $business->address,
+            'address_details' => $business->address_details,
+            'city' => $business->city,
+            'state' => $business->state,
+            'postal_code' => $business->postal_code,
+            'latitude' => (float) $business->latitude,
+            'longitude' => (float) $business->longitude,
+            'distance_km' => $distanceKm,
+            'is_open' => true,
+            'opening_hours' => null,
+            'rating' => null,
+            'total_reviews' => null,
+            'created_at' => $business->created_at,
+            'updated_at' => $business->updated_at,
+        ];
+    }
+
+    /**
+     * Format business object for search response
+     * 5.5: Private helper method following SRP
+     */
+    private function formatBusinessForSearch(Business $business): array
+    {
+        return [
+            'business_id' => $business->business_id,
+            'business_name' => $business->business_name,
+            'phone' => $business->phone,
+            'email' => $business->email,
+            'address' => $business->address,
+            'address_details' => $business->address_details ?? null,
+            'city' => $business->city,
+            'state' => $business->state,
+            'postal_code' => $business->postal_code,
+            'latitude' => $business->latitude ? (float) $business->latitude : null,
+            'longitude' => $business->longitude ? (float) $business->longitude : null,
+            'distance_km' => isset($business->distance_km) ? (float) $business->distance_km : null,
+            'is_open' => true,
+            'rating' => null,
+            'total_reviews' => null,
+            'created_at' => $business->created_at,
+            'updated_at' => $business->updated_at,
+        ];
+    }
+
+    /**
+     * Format pagination data
+     * 5.5: Private helper method following SRP - Eliminates code duplication
+     */
+    private function formatPaginationData($paginator): array
+    {
+        return [
+            'current_page' => $paginator->currentPage(),
+            'per_page' => $paginator->perPage(),
+            'total' => $paginator->total(),
+            'total_pages' => $paginator->lastPage(),
+            'from' => $paginator->firstItem(),
+            'to' => $paginator->lastItem(),
+        ];
     }
 }

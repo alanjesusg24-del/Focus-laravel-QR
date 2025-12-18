@@ -1,5 +1,19 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: MobileController.php
+ * Created on: 04/12/2025
+ * Created by: Dafne VAnessa CAstillo Moreno
+ * Approved by: EAlan Jesus Garcia Nava
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 04/12/2025 |
+ *   Modified by: Alan Jesus Garcia Nava|
+ *   Description: Controller for mobile device operations |
+ */
+
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
@@ -7,6 +21,8 @@ use App\Models\MobileUser;
 use App\Models\Order;
 use App\Services\PushNotificationService;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Log;
 
 class MobileController extends Controller
 {
@@ -14,7 +30,7 @@ class MobileController extends Controller
      * Registrar o actualizar un dispositivo móvil
      * POST /api/v1/mobile/register
      */
-    public function registerDevice(Request $request)
+    public function registerDevice(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'device_id' => 'required|string',
@@ -41,20 +57,21 @@ class MobileController extends Controller
      * Asociar una orden con el dispositivo mediante QR
      * POST /api/v1/mobile/orders/associate
      */
-    public function associateOrder(Request $request)
+    public function associateOrder(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'qr_token' => 'required|string',
         ]);
 
         $user = $request->user('sanctum');
-        $mobileUser = $request->mobile_user ?? null;
+        $mobileUser = $request->mobile_user;
 
         $order = Order::where('qr_token', $validated['qr_token'])
             ->whereNull('user_id') // Solo órdenes no asociadas a un usuario
             ->whereNull('mobile_user_id') // Y no asociadas a un dispositivo
             ->first();
 
+        // 5.4.1: Early Return - Guard Clause
         if (!$order) {
             return response()->json([
                 'success' => false,
@@ -62,34 +79,32 @@ class MobileController extends Controller
             ], 404);
         }
 
-        // Asociar según el método de autenticación
-        if ($user) {
-            // Usuario autenticado desde mobile_users: asociar solo a mobile_user_id
-            // NOTA: user_id se deja NULL porque mobile_users es una tabla diferente a users
-            $order->mobile_user_id = $user->id; // $user viene de mobile_users cuando usa Sanctum
-            $order->associated_at = now();
-            $order->save();
-
-            \Log::info('Order associated to authenticated mobile user', [
-                'order_id' => $order->order_id,
-                'mobile_user_id' => $user->id,
-                'email' => $user->email,
-            ]);
-        } else if ($mobileUser) {
-            // Sin autenticación: asociar solo a mobile_user_id (sistema antiguo - device_id)
-            $order->mobile_user_id = $mobileUser->id;
-            $order->associated_at = now();
-            $order->save();
-
-            \Log::info('Order associated to device without auth', [
-                'order_id' => $order->order_id,
-                'mobile_user_id' => $mobileUser->id,
-            ]);
-        } else {
+        // 5.4.1: Early Return - Guard Clause para autenticación
+        if (!$user && !$mobileUser) {
             return response()->json([
                 'success' => false,
                 'message' => 'Se requiere autenticación o device_id',
             ], 401);
+        }
+
+        // Asociar según el método de autenticación
+        $mobileUserId = $user?->id ?? $mobileUser->id;
+        $order->mobile_user_id = $mobileUserId;
+        $order->associated_at = now();
+        $order->save();
+
+        // Log según tipo de autenticación
+        if ($user) {
+            Log::info('Order associated to authenticated mobile user', [
+                'order_id' => $order->order_id,
+                'mobile_user_id' => $user->id,
+                'email' => $user->email,
+            ]);
+        } else {
+            Log::info('Order associated to device without auth', [
+                'order_id' => $order->order_id,
+                'mobile_user_id' => $mobileUser->id,
+            ]);
         }
 
         // Enviar notificación de orden asociada
@@ -119,31 +134,33 @@ class MobileController extends Controller
      * Obtener órdenes del dispositivo
      * GET /api/v1/mobile/orders?status=pending&page=1&per_page=20
      */
-    public function getOrders(Request $request)
+    public function getOrders(Request $request): JsonResponse
     {
-        $user = $request->user('sanctum'); // Usuario autenticado (si existe)
-        $mobileUser = $request->mobile_user ?? null; // Dispositivo del middleware
+        $user = $request->user('sanctum');
+        $mobileUser = $request->mobile_user;
 
-        // IMPORTANTE: Tanto usuarios autenticados como dispositivos usan mobile_user_id
-        // porque mobile_users es una tabla separada de users
-        if ($user) {
-            // Usuario autenticado desde mobile_users: filtrar por mobile_user_id
-            $query = Order::where('mobile_user_id', $user->id);
-            \Log::info('Fetching orders for authenticated mobile user', [
-                'mobile_user_id' => $user->id,
-                'email' => $user->email
-            ]);
-        } else if ($mobileUser) {
-            // Sin autenticación: filtrar por mobile_user_id (sistema antiguo - device_id)
-            $query = Order::where('mobile_user_id', $mobileUser->id);
-            \Log::info('Fetching orders for device', [
-                'mobile_user_id' => $mobileUser->id
-            ]);
-        } else {
+        // 5.4.1: Early Return - Guard Clause para autenticación
+        if (!$user && !$mobileUser) {
             return response()->json([
                 'success' => false,
                 'message' => 'Se requiere autenticación o device_id',
             ], 401);
+        }
+
+        // Determinar mobile_user_id y construir query
+        $mobileUserId = $user?->id ?? $mobileUser->id;
+        $query = Order::where('mobile_user_id', $mobileUserId);
+
+        // Log según tipo de autenticación
+        if ($user) {
+            Log::info('Fetching orders for authenticated mobile user', [
+                'mobile_user_id' => $user->id,
+                'email' => $user->email
+            ]);
+        } else {
+            Log::info('Fetching orders for device', [
+                'mobile_user_id' => $mobileUser->id
+            ]);
         }
 
         // Filtrar por estado
@@ -176,29 +193,29 @@ class MobileController extends Controller
      * Obtener detalle de una orden
      * GET /api/v1/mobile/orders/{orderId}
      */
-    public function getOrderDetail(Request $request, $orderId)
+    public function getOrderDetail(Request $request, int $orderId): JsonResponse
     {
         $user = $request->user('sanctum');
-        $mobileUser = $request->mobile_user ?? null;
+        $mobileUser = $request->mobile_user;
 
-        // Buscar la orden con verificación de propiedad
-        $query = Order::where('order_id', $orderId);
-
-        if ($user) {
-            // Usuario autenticado desde mobile_users: verificar que sea del usuario
-            $query->where('mobile_user_id', $user->id);
-        } else if ($mobileUser) {
-            // Sin autenticación: verificar que sea del dispositivo
-            $query->where('mobile_user_id', $mobileUser->id);
-        } else {
+        // 5.4.1: Early Return - Guard Clause para autenticación
+        if (!$user && !$mobileUser) {
             return response()->json([
                 'success' => false,
                 'message' => 'Se requiere autenticación o device_id',
             ], 401);
         }
 
-        $order = $query->with(['items', 'statusHistory'])->first();
+        // Determinar mobile_user_id
+        $mobileUserId = $user?->id ?? $mobileUser->id;
 
+        // Buscar la orden con verificación de propiedad
+        $order = Order::where('order_id', $orderId)
+            ->where('mobile_user_id', $mobileUserId)
+            ->with(['items', 'statusHistory'])
+            ->first();
+
+        // 5.4.1: Early Return - Guard Clause
         if (!$order) {
             return response()->json([
                 'success' => false,
@@ -221,7 +238,7 @@ class MobileController extends Controller
      * Actualizar token FCM del dispositivo
      * PUT /api/v1/mobile/update-token
      */
-    public function updateFcmToken(Request $request)
+    public function updateFcmToken(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'fcm_token' => 'required|string',
@@ -229,11 +246,12 @@ class MobileController extends Controller
         ]);
 
         $user = $request->user('sanctum');
-        $mobileUser = $request->mobile_user ?? null;
+        $mobileUser = $request->mobile_user;
 
-        // Determinar el mobile_user_id
-        $mobileUserId = $user ? $user->id : ($mobileUser ? $mobileUser->id : null);
+        // 5.1.3: Null coalescing operator en lugar de ternario anidado
+        $mobileUserId = $user?->id ?? $mobileUser?->id;
 
+        // 5.4.1: Early Return - Guard Clause
         if (!$mobileUserId) {
             return response()->json([
                 'success' => false,
@@ -253,7 +271,7 @@ class MobileController extends Controller
             ]
         );
 
-        \Log::info('FCM token updated', [
+        Log::info('FCM token updated', [
             'mobile_user_id' => $mobileUserId,
             'device_id' => $device->mobile_device_id,
         ]);
@@ -269,7 +287,7 @@ class MobileController extends Controller
      * Validar pickup token y marcar orden como entregada (Scanner QR desde Dashboard)
      * POST /api/v1/scanner/validate-delivery
      */
-    public function validateDelivery(Request $request)
+    public function validateDelivery(Request $request): JsonResponse
     {
         $validated = $request->validate([
             'pickup_token' => 'required|string',
@@ -280,11 +298,12 @@ class MobileController extends Controller
         // Intentar buscar por pickup_token primero
         $order = Order::where('pickup_token', $token)->first();
 
-        // Si no se encuentra, intentar con qr_token
+        // 5.4.1: Early Return - Si no se encuentra, intentar con qr_token
         if (!$order) {
             $order = Order::where('qr_token', $token)->first();
         }
 
+        // 5.4.1: Early Return - Guard Clause
         if (!$order) {
             return response()->json([
                 'success' => false,
@@ -292,7 +311,7 @@ class MobileController extends Controller
             ], 404);
         }
 
-        // Verificar que la orden esté lista para ser entregada
+        // 5.4.1: Early Return - Guard Clause para verificar estado
         if ($order->status !== 'ready') {
             return response()->json([
                 'success' => false,

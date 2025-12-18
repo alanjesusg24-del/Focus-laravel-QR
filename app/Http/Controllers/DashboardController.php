@@ -1,19 +1,17 @@
 <?php
 
 /**
- * ============================================
- * CETAM - Dashboard Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: DashboardController.php
+ * Created on: 20/11/2025
+ * Created by: Dafne Vanessa Castillo Moreno
+ * Approved by: Alan Jesus Garcia Nava
  *
- * @project     Centro de Servicios (CS)
- * @file        DashboardController.php
- * @description Controlador principal del dashboard de negocios
- * @author      CETAM Dev Team
- * @created     2025-11-20
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 15/12/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreno |
+ *   Description: Refactored to comply  |
  */
 
 namespace App\Http\Controllers;
@@ -23,14 +21,18 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+use Illuminate\Support\Collection;
 
 class DashboardController extends Controller
 {
     /**
      * Show business dashboard with reports
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $businessId = Auth::id();
 
@@ -50,7 +52,7 @@ class DashboardController extends Controller
             ->whereBetween('created_at', [$startDate, $endDate])
             ->get();
 
-        // Calculate metrics
+        // Calculate basic metrics
         $totalOrders = $orders->count();
         $completedOrders = $orders->where('status', 'delivered')->count();
         $cancelledOrders = $orders->where('status', 'cancelled')->count();
@@ -58,89 +60,36 @@ class DashboardController extends Controller
         $unlinkedOrders = $totalOrders - $linkedOrders;
 
         // Calculate rates
-        $completionRate = $totalOrders > 0 ? round(($completedOrders / $totalOrders) * 100, 1) : 0;
-        $cancellationRate = $totalOrders > 0 ? round(($cancelledOrders / $totalOrders) * 100, 1) : 0;
-        $mobileAdoptionRate = $totalOrders > 0 ? round(($linkedOrders / $totalOrders) * 100, 1) : 0;
+        $completionRate = $this->calculateRate($completedOrders, $totalOrders);
+        $cancellationRate = $this->calculateRate($cancelledOrders, $totalOrders);
+        $mobileAdoptionRate = $this->calculateRate($linkedOrders, $totalOrders);
 
-        // Calculate average preparation time (pending -> ready)
-        $avgPrepTime = $orders->where('status', '!=', 'pending')
-            ->filter(function ($order) {
-                return $order->ready_at && $order->created_at;
-            })
-            ->map(function ($order) {
-                return $order->created_at->diffInMinutes($order->ready_at);
-            })
-            ->avg();
+        // Calculate average preparation time
+        $avgPreparationTime = $this->calculateAveragePreparationTime($orders);
 
-        $avgPreparationTime = $avgPrepTime ? round($avgPrepTime, 0) : '--';
-
-        // Orders per day
-        $ordersPerDay = [];
-        $currentDate = $startDate->copy();
-        while ($currentDate <= $endDate) {
-            $dateKey = $currentDate->format('d/m');
-            $ordersPerDay[$dateKey] = $orders->filter(function ($order) use ($currentDate) {
-                return $order->created_at->format('Y-m-d') === $currentDate->format('Y-m-d');
-            })->count();
-            $currentDate->addDay();
-        }
+        // 5.2.3: Using CarbonPeriod instead of while loop
+        $ordersPerDay = $this->calculateOrdersPerDay($orders, $startDate, $endDate);
 
         // Status distribution
-        $statusDistribution = [
-            'pending' => $orders->where('status', 'pending')->count(),
-            'ready' => $orders->where('status', 'ready')->count(),
-            'delivered' => $orders->where('status', 'delivered')->count(),
-            'cancelled' => $orders->where('status', 'cancelled')->count(),
-        ];
+        $statusDistribution = $this->calculateStatusDistribution($orders);
 
-        // Orders by hour of day
-        $ordersByHour = [];
-        for ($hour = 0; $hour < 24; $hour++) {
-            $count = $orders->filter(function ($order) use ($hour) {
-                return $order->created_at->hour === $hour;
-            })->count();
-            if ($count > 0) {
-                $ordersByHour[$hour] = $count;
-            }
-        }
+        // 5.2.3: Using Collection range() instead of for loop
+        $ordersByHour = $this->calculateOrdersByHour($orders);
 
-        // Orders by day of week
-        $weekdays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-        $ordersByWeekday = [];
-        foreach ($weekdays as $index => $weekday) {
-            $dayOfWeek = $index + 1; // Carbon uses 1-7 (Monday-Sunday)
-            $ordersByWeekday[$weekday] = $orders->filter(function ($order) use ($dayOfWeek) {
-                return $order->created_at->dayOfWeekIso === $dayOfWeek;
-            })->count();
-        }
+        // 5.2.3: Using Collection methods instead of foreach
+        $ordersByWeekday = $this->calculateOrdersByWeekday($orders);
 
         // Comparison with previous period
-        $periodDuration = $startDate->diffInDays($endDate) + 1;
-        $previousStartDate = $startDate->copy()->subDays($periodDuration);
-        $previousEndDate = $startDate->copy()->subDay();
+        $periodComparison = $this->calculatePeriodComparison(
+            $businessId,
+            $startDate,
+            $endDate,
+            $totalOrders,
+            $completedOrders,
+            $cancelledOrders
+        );
 
-        $previousOrders = Order::where('business_id', $businessId)
-            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
-            ->get();
-
-        $previousTotalOrders = $previousOrders->count();
-        $previousCompletedOrders = $previousOrders->where('status', 'delivered')->count();
-        $previousCancelledOrders = $previousOrders->where('status', 'cancelled')->count();
-
-        // Calculate changes
-        $totalOrdersChange = $previousTotalOrders > 0
-            ? round((($totalOrders - $previousTotalOrders) / $previousTotalOrders) * 100, 1)
-            : ($totalOrders > 0 ? 100 : 0);
-
-        $completedOrdersChange = $previousCompletedOrders > 0
-            ? round((($completedOrders - $previousCompletedOrders) / $previousCompletedOrders) * 100, 1)
-            : ($completedOrders > 0 ? 100 : 0);
-
-        $cancelledOrdersChange = $previousCancelledOrders > 0
-            ? round((($cancelledOrders - $previousCancelledOrders) / $previousCancelledOrders) * 100, 1)
-            : ($cancelledOrders > 0 ? 100 : 0);
-
-        // Recent activity (últimas 10 órdenes)
+        // Recent activity
         $recentActivity = Order::where('business_id', $businessId)
             ->whereBetween('created_at', [$startDate, $endDate])
             ->orderBy('created_at', 'desc')
@@ -161,9 +110,9 @@ class DashboardController extends Controller
             'status_distribution' => $statusDistribution,
             'orders_by_hour' => $ordersByHour,
             'orders_by_weekday' => $ordersByWeekday,
-            'total_orders_change' => $totalOrdersChange,
-            'completed_orders_change' => $completedOrdersChange,
-            'cancelled_orders_change' => $cancelledOrdersChange,
+            'total_orders_change' => $periodComparison['total_orders_change'],
+            'completed_orders_change' => $periodComparison['completed_orders_change'],
+            'cancelled_orders_change' => $periodComparison['cancelled_orders_change'],
             'recent_activity' => $recentActivity,
         ];
 
@@ -178,8 +127,142 @@ class DashboardController extends Controller
     /**
      * Show analytics page (legacy - redirect to main dashboard)
      */
-    public function analytics(Request $request)
+    public function analytics(Request $request): RedirectResponse
     {
         return redirect()->route('business.dashboard.index', $request->all());
+    }
+
+    /**
+     * Calculate percentage rate
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateRate(int $numerator, int $denominator): float
+    {
+        return $denominator > 0 ? round(($numerator / $denominator) * 100, 1) : 0;
+    }
+
+    /**
+     * Calculate average preparation time in minutes
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateAveragePreparationTime(Collection $orders): string|int
+    {
+        $avgPrepTime = $orders
+            ->filter(fn($order) => $order->status !== 'pending' && $order->ready_at && $order->created_at)
+            ->map(fn($order) => $order->created_at->diffInMinutes($order->ready_at))
+            ->avg();
+
+        return $avgPrepTime ? round($avgPrepTime, 0) : '--';
+    }
+
+    /**
+     * Calculate orders per day using CarbonPeriod
+     * 5.2.3: Replace while loop with CarbonPeriod iteration
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateOrdersPerDay(Collection $orders, Carbon $startDate, Carbon $endDate): array
+    {
+        $period = CarbonPeriod::create($startDate, $endDate);
+
+        return collect($period)
+            ->mapWithKeys(function (Carbon $date) use ($orders) {
+                $dateKey = $date->format('d/m');
+                $count = $orders->filter(fn($order) => $order->created_at->isSameDay($date))->count();
+                return [$dateKey => $count];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Calculate status distribution
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateStatusDistribution(Collection $orders): array
+    {
+        return [
+            'pending' => $orders->where('status', 'pending')->count(),
+            'ready' => $orders->where('status', 'ready')->count(),
+            'delivered' => $orders->where('status', 'delivered')->count(),
+            'cancelled' => $orders->where('status', 'cancelled')->count(),
+        ];
+    }
+
+    /**
+     * Calculate orders by hour of day
+     * 5.2.3: Using Collection range() instead of for loop
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateOrdersByHour(Collection $orders): array
+    {
+        return collect(range(0, 23))
+            ->mapWithKeys(function (int $hour) use ($orders) {
+                $count = $orders->filter(fn($order) => $order->created_at->hour === $hour)->count();
+                return $count > 0 ? [$hour => $count] : [];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Calculate orders by day of week
+     * 5.2.3: Using Collection methods instead of foreach
+     * 5.5: Private helper method following SRP
+     */
+    private function calculateOrdersByWeekday(Collection $orders): array
+    {
+        $weekdays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+        return collect($weekdays)
+            ->mapWithKeys(function (string $weekday, int $index) use ($orders) {
+                $dayOfWeek = $index + 1;
+                $count = $orders->filter(fn($order) => $order->created_at->dayOfWeekIso === $dayOfWeek)->count();
+                return [$weekday => $count];
+            })
+            ->toArray();
+    }
+
+    /**
+     * Calculate period comparison with previous period
+     * 5.5: Private helper method following SRP
+     */
+    private function calculatePeriodComparison(
+        int $businessId,
+        Carbon $startDate,
+        Carbon $endDate,
+        int $totalOrders,
+        int $completedOrders,
+        int $cancelledOrders
+    ): array {
+        $periodDuration = $startDate->diffInDays($endDate) + 1;
+        $previousStartDate = $startDate->copy()->subDays($periodDuration);
+        $previousEndDate = $startDate->copy()->subDay();
+
+        $previousOrders = Order::where('business_id', $businessId)
+            ->whereBetween('created_at', [$previousStartDate, $previousEndDate])
+            ->get();
+
+        $previousTotalOrders = $previousOrders->count();
+        $previousCompletedOrders = $previousOrders->where('status', 'delivered')->count();
+        $previousCancelledOrders = $previousOrders->where('status', 'cancelled')->count();
+
+        return [
+            'total_orders_change' => $this->calculatePercentageChange($totalOrders, $previousTotalOrders),
+            'completed_orders_change' => $this->calculatePercentageChange($completedOrders, $previousCompletedOrders),
+            'cancelled_orders_change' => $this->calculatePercentageChange($cancelledOrders, $previousCancelledOrders),
+        ];
+    }
+
+    /**
+     * Calculate percentage change between two values
+     * 5.1.3: Eliminar ternarios anidados complejos
+     * 5.5: Private helper method following SRP
+     */
+    private function calculatePercentageChange(int $current, int $previous): float
+    {
+        // 5.4.1: Early Return - No previous data
+        if ($previous === 0) {
+            return $current > 0 ? 100 : 0;
+        }
+
+        return round((($current - $previous) / $previous) * 100, 1);
     }
 }
