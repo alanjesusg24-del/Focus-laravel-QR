@@ -33,8 +33,8 @@
                                 <label class="form-label">Nombre del Negocio <span class="text-danger">*</span></label>
                                 <input type="text" wire:model.blur="business_name"
                                        class="form-control @error('business_name') is-invalid @enderror"
-                                       placeholder="Nombre del negocio">
-                                @error('business_name') 
+                                       placeholder="Nombre del negocio" maxlength="15">
+                                @error('business_name')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -85,12 +85,12 @@
                                 <label class="form-label">Contraseña <span class="text-danger">*</span></label>
                                 <input type="password" wire:model.blur="password"
                                        class="form-control @error('password') is-invalid @enderror"
-                                       placeholder="Mínimo 8 caracteres">
-                                @error('password') 
+                                       placeholder="Mínimo 8 caracteres" maxlength="12">
+                                @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">
-                                    <small class="text-muted">Mínimo 8 caracteres.</small>
+                                    <small class="text-muted">Mínimo 8 caracteres, máximo 12.</small>
                                 </div>
                             </div>
 
@@ -98,8 +98,8 @@
                                 <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
                                 <input type="password" wire:model.blur="password_confirmation"
                                        class="form-control @error('password_confirmation') is-invalid @enderror"
-                                       placeholder="Confirmar contraseña">
-                                @error('password_confirmation') 
+                                       placeholder="Confirmar contraseña" maxlength="12">
+                                @error('password_confirmation')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
