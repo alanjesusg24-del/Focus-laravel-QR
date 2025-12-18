@@ -1,19 +1,17 @@
 <?php
 
 /**
- * ============================================
- * CETAM - Payment Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: PaymentController.php
+ * Created on: 04/10/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
  *
- * @project     Centro de Servicios (CS)
- * @file        PaymentController.php
- * @description Controlador de pagos y suscripciones (MercadoPago)
- * @author      CETAM Dev Team
- * @created     2025-11-20
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 04/12/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Controller to handle payment operations |
  */
 
 namespace App\Http\Controllers;
@@ -22,7 +20,10 @@ use App\Models\Payment;
 use App\Models\Plan;
 use App\Services\PaymentService;
 use App\Services\MercadoPagoService;
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -40,7 +41,7 @@ class PaymentController extends Controller
     /**
      * Display payment plans selection
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $plans = Plan::where('is_active', true)
             ->orderBy('price', 'asc')
@@ -55,8 +56,9 @@ class PaymentController extends Controller
     /**
      * Show payment checkout page for selected plan
      */
-    public function create(Plan $plan)
+    public function create(Plan $plan): View|RedirectResponse
     {
+        // 5.4.1: Early Return - Guard Clause
         if (!$plan->is_active) {
             return redirect()
                 ->route('business.payments.index')
@@ -71,7 +73,7 @@ class PaymentController extends Controller
     /**
      * Process simulated payment (for educational purposes)
      */
-    public function processSimulation(Request $request, Plan $plan)
+    public function processSimulation(Request $request, Plan $plan): RedirectResponse
     {
         // Validar los datos del formulario
         $validated = $request->validate([
@@ -122,9 +124,9 @@ class PaymentController extends Controller
     /**
      * Handle successful payment callback
      */
-    public function success(Request $request)
+    public function success(Request $request): View
     {
-        $sessionId = $request->query('session_id') ?? null;
+        $sessionId = $request->query('session_id');
 
         return view('payments.success', compact('sessionId'));
     }
@@ -132,7 +134,7 @@ class PaymentController extends Controller
     /**
      * Handle cancelled payment
      */
-    public function cancel()
+    public function cancel(): View
     {
         return view('payments.cancel');
     }
@@ -140,7 +142,7 @@ class PaymentController extends Controller
     /**
      * Display payment history
      */
-    public function history()
+    public function history(): View
     {
         $business = Auth::guard('business')->user();
 
@@ -159,7 +161,7 @@ class PaymentController extends Controller
     /**
      * Process a one-time payment
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'plan_id' => 'required|exists:plans,plan_id',
@@ -188,7 +190,7 @@ class PaymentController extends Controller
     /**
      * Display the specified payment
      */
-    public function show(Payment $payment)
+    public function show(Payment $payment): View
     {
         $this->authorize('view', $payment);
 
@@ -198,7 +200,7 @@ class PaymentController extends Controller
     /**
      * Show subscription creation form
      */
-    public function subscription()
+    public function subscription(): View
     {
         $businessId = Auth::id();
         $plans = Plan::where('is_active', true)->get();
@@ -213,7 +215,7 @@ class PaymentController extends Controller
     /**
      * Create a recurring subscription
      */
-    public function createSubscription(Request $request)
+    public function createSubscription(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'plan_id' => 'required|exists:plans,plan_id',
@@ -242,19 +244,21 @@ class PaymentController extends Controller
     /**
      * Cancel active subscription
      */
-    public function cancelSubscription(Request $request)
+    public function cancelSubscription(Request $request): RedirectResponse
     {
         try {
             $businessId = Auth::id();
             $cancelled = $this->paymentService->cancelSubscription($businessId);
 
-            if ($cancelled) {
-                return redirect()
-                    ->route('business.payments.subscription')
-                    ->with('success', 'Suscripción cancelada exitosamente');
+            // 5.4.1: Early Return - Guard Clause
+            if (!$cancelled) {
+                return back()->with('error', 'No se encontró una suscripción activa');
             }
 
-            return back()->with('error', 'No se encontró una suscripción activa');
+            return redirect()
+                ->route('business.payments.subscription')
+                ->with('success', 'Suscripción cancelada exitosamente');
+
         } catch (\Exception $e) {
             Log::error('Subscription cancellation failed: ' . $e->getMessage());
             return back()->with('error', 'Error al cancelar la suscripción: ' . $e->getMessage());
@@ -264,11 +268,12 @@ class PaymentController extends Controller
     /**
      * Handle Stripe webhook events
      */
-    public function webhook(Request $request)
+    public function webhook(Request $request): JsonResponse
     {
         $payload = $request->getContent();
         $signature = $request->header('Stripe-Signature');
 
+        // 5.4.1: Early Return - Guard Clause
         if (!$signature) {
             Log::error('Stripe webhook: Missing signature');
             return response()->json(['error' => 'Missing signature'], 400);
@@ -276,6 +281,7 @@ class PaymentController extends Controller
 
         $event = $this->paymentService->verifyWebhookSignature($payload, $signature);
 
+        // 5.4.1: Early Return - Guard Clause
         if (!$event) {
             Log::error('Stripe webhook: Invalid signature');
             return response()->json(['error' => 'Invalid signature'], 400);
@@ -296,7 +302,7 @@ class PaymentController extends Controller
     /**
      * Get payment statistics
      */
-    public function statistics(Request $request)
+    public function statistics(Request $request): JsonResponse
     {
         $businessId = Auth::id();
         $stats = $this->paymentService->getPaymentStatistics($businessId);

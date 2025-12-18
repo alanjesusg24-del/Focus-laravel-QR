@@ -1,36 +1,54 @@
 <?php
 
+/**
+ * Company: CETAM
+ * Project: FF
+ * File: ProfileController.php (SuperAdmin)
+ * Created on: 20/11/2025
+ * Created by: Alan Jesus Garcia Nava
+ * Approved by: Alan Jesus Garcia Nava
+ *
+ * Changelog:
+ * - ID: 1 | Modified on: 16/12/2025 |
+ *   Modified by: Alan Jesus Garcia Nava |
+ *   Description: Refactored Profile Controller |
+ */
+
 namespace App\Http\Controllers\SuperAdmin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class ProfileController extends Controller
 {
     /**
      * Display the super admin profile
      */
-    public function index()
+    public function index(): View
     {
         $superAdmin = auth()->guard('superadmin')->user();
+
         return view('superadmin.profile.index', compact('superAdmin'));
     }
 
     /**
      * Show the form for editing the profile
      */
-    public function edit()
+    public function edit(): View
     {
         $superAdmin = auth()->guard('superadmin')->user();
+
         return view('superadmin.profile.edit', compact('superAdmin'));
     }
 
     /**
      * Update the super admin profile
      */
-    public function update(Request $request)
+    public function update(Request $request): RedirectResponse
     {
         $superAdmin = auth()->guard('superadmin')->user();
 
@@ -42,23 +60,40 @@ class ProfileController extends Controller
             'new_password_confirmation' => ['nullable', 'required_with:new_password', 'same:new_password'],
         ]);
 
-        // Update basic info
-        $superAdmin->full_name = $validated['full_name'];
-        $superAdmin->email = $validated['email'];
+        //  Extract password update to private method
+        $this->updateBasicInfo($superAdmin, $validated);
 
-        // Update password if provided
+        //  Early Return - Invalid current password
         if ($request->filled('new_password')) {
-            // Verify current password
             if (!Hash::check($request->current_password, $superAdmin->password)) {
                 return back()->withErrors(['current_password' => 'La contraseña actual no es correcta.']);
             }
 
-            $superAdmin->password = Hash::make($validated['new_password']);
+            $this->updatePassword($superAdmin, $validated['new_password']);
         }
 
         $superAdmin->save();
 
         return redirect()->route('superadmin.profile.index')
             ->with('success', 'Perfil actualizado correctamente.');
+    }
+
+    /**
+     * Update basic profile information
+     * Private helper method following SRP
+     */
+    private function updateBasicInfo($superAdmin, array $validated): void
+    {
+        $superAdmin->full_name = $validated['full_name'];
+        $superAdmin->email = $validated['email'];
+    }
+
+    /**
+     * Update password
+     *Private helper method following SRP
+     */
+    private function updatePassword($superAdmin, string $newPassword): void
+    {
+        $superAdmin->password = Hash::make($newPassword);
     }
 }

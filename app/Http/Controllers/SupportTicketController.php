@@ -1,19 +1,17 @@
 <?php
 
 /**
- * ============================================
- * CETAM - Support Ticket Controller
- * ============================================
+ * Company: CETAM
+ * Project: FF
+ * File: SupportTicketController.php
+ * Created on: 20/10/2025
+ * Created by: Dafne Vanessa Castillo Moreo
+ * Approved by: Dafne Vanessa Castillo Moreo
  *
- * @project     Centro de Servicios (CS)
- * @file        SupportTicketController.php
- * @description Controlador de tickets de soporte técnico
- * @author      CETAM Dev Team
- * @created     2025-11-20
- * @version     1.0.0
- * @copyright   CETAM © 2025
- *
- * ============================================
+ * Changelog:
+ * - ID: 1 | Modified on: 16/11/2025 |
+ *   Modified by: Dafne Vanessa Castillo Moreo |
+ *   Description: Refactored Support Ticket Controller |
  */
 
 namespace App\Http\Controllers;
@@ -22,22 +20,23 @@ use App\Models\SupportTicket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
 
 class SupportTicketController extends Controller
 {
     /**
      * Display a listing of support tickets for the authenticated business
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $businessId = Auth::id();
 
-        $status = $request->get('status');
         $query = SupportTicket::where('business_id', $businessId)
             ->orderBy('created_at', 'desc');
 
-        if ($status) {
-            $query->where('status', $status);
+        if ($request->get('status')) {
+            $query->where('status', $request->get('status'));
         }
 
         $tickets = $query->paginate(config('cetam.cs.pagination.per_page', 15));
@@ -48,7 +47,7 @@ class SupportTicketController extends Controller
     /**
      * Show the form for creating a new support ticket
      */
-    public function create()
+    public function create(): View
     {
         return view('support.create');
     }
@@ -56,7 +55,7 @@ class SupportTicketController extends Controller
     /**
      * Store a newly created support ticket
      */
-    public function store(Request $request)
+    public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
             'subject' => 'required|string|max:255',
@@ -67,20 +66,14 @@ class SupportTicketController extends Controller
 
         $businessId = Auth::id();
 
-        // Handle file attachment
-        $attachmentUrl = null;
-        if ($request->hasFile('attachment')) {
-            $file = $request->file('attachment');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('support_tickets', $fileName, 'public');
-            $attachmentUrl = Storage::url($path);
-        }
+        // 5.5: Extract file handling to private method
+        $attachmentUrl = $this->handleAttachment($request);
 
         $ticket = SupportTicket::create([
             'business_id' => $businessId,
             'subject' => $validated['subject'],
             'description' => $validated['description'],
-            'priority' => $validated['priority'] ?? 'medium', // Default to medium if not provided
+            'priority' => $validated['priority'] ?? 'medium',
             'status' => 'open',
             'attachment_url' => $attachmentUrl,
         ]);
@@ -93,7 +86,7 @@ class SupportTicketController extends Controller
     /**
      * Display the specified support ticket
      */
-    public function show(SupportTicket $supportTicket)
+    public function show(SupportTicket $supportTicket): View
     {
         $this->authorize('view', $supportTicket);
 
@@ -101,13 +94,13 @@ class SupportTicketController extends Controller
     }
 
     /**
-     * Show the form for editing the support ticket (only description/priority)
+     * Show the form for editing the support ticket
      */
-    public function edit(SupportTicket $supportTicket)
+    public function edit(SupportTicket $supportTicket): View|RedirectResponse
     {
         $this->authorize('update', $supportTicket);
 
-        // Only allow editing if ticket is still open
+        // 5.4.1: Early Return - Ticket not open
         if ($supportTicket->status !== 'open') {
             return redirect()
                 ->route('business.support.show', $supportTicket->support_ticket_id)
@@ -120,11 +113,11 @@ class SupportTicketController extends Controller
     /**
      * Update the specified support ticket
      */
-    public function update(Request $request, SupportTicket $supportTicket)
+    public function update(Request $request, SupportTicket $supportTicket): RedirectResponse
     {
         $this->authorize('update', $supportTicket);
 
-        // Only allow editing if ticket is still open
+        // 5.4.1: Early Return - Ticket not open
         if ($supportTicket->status !== 'open') {
             return back()->with('error', 'No se pueden editar tickets que no están abiertos');
         }
@@ -143,10 +136,11 @@ class SupportTicketController extends Controller
     /**
      * Mark ticket as resolved (close it)
      */
-    public function close(SupportTicket $supportTicket)
+    public function close(SupportTicket $supportTicket): RedirectResponse
     {
         $this->authorize('update', $supportTicket);
 
+        // 5.4.1: Early Return - Already closed
         if ($supportTicket->status === 'closed') {
             return back()->with('error', 'Este ticket ya está cerrado');
         }
@@ -164,10 +158,11 @@ class SupportTicketController extends Controller
     /**
      * Reopen a closed ticket
      */
-    public function reopen(SupportTicket $supportTicket)
+    public function reopen(SupportTicket $supportTicket): RedirectResponse
     {
         $this->authorize('update', $supportTicket);
 
+        // 5.4.1: Early Return - Not closed
         if ($supportTicket->status !== 'closed') {
             return back()->with('error', 'Solo se pueden reabrir tickets cerrados');
         }
@@ -185,25 +180,55 @@ class SupportTicketController extends Controller
     /**
      * Delete ticket (only if open)
      */
-    public function destroy(SupportTicket $supportTicket)
+    public function destroy(SupportTicket $supportTicket): RedirectResponse
     {
         $this->authorize('delete', $supportTicket);
 
-        // Only allow deletion if ticket is open
+        // 5.4.1: Early Return - Not open
         if ($supportTicket->status !== 'open') {
             return back()->with('error', 'Solo se pueden eliminar tickets abiertos');
         }
 
-        // Delete attachment if exists
-        if ($supportTicket->attachment_url) {
-            $path = str_replace('/storage/', '', $supportTicket->attachment_url);
-            Storage::disk('public')->delete($path);
-        }
+        // 5.5: Extract attachment deletion to private method
+        $this->deleteAttachment($supportTicket);
 
         $supportTicket->delete();
 
         return redirect()
             ->route('business.support.index')
             ->with('success', 'Ticket eliminado exitosamente');
+    }
+
+    /**
+     * Handle file attachment upload
+     * 5.5: Private helper method following SRP - Eliminates code duplication
+     */
+    private function handleAttachment(Request $request): ?string
+    {
+        // 5.4.1: Early Return - No attachment
+        if (!$request->hasFile('attachment')) {
+            return null;
+        }
+
+        $file = $request->file('attachment');
+        $fileName = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('support_tickets', $fileName, 'public');
+
+        return Storage::url($path);
+    }
+
+    /**
+     * Delete attachment from storage
+     * 5.5: Private helper method following SRP
+     */
+    private function deleteAttachment(SupportTicket $supportTicket): void
+    {
+        // 5.4.1: Early Return - No attachment
+        if (!$supportTicket->attachment_url) {
+            return;
+        }
+
+        $path = str_replace('/storage/', '', $supportTicket->attachment_url);
+        Storage::disk('public')->delete($path);
     }
 }
