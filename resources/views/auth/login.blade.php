@@ -23,7 +23,7 @@
                                 <h1 class="mb-3 h3 fw-bold text-primary">Inicia sesión en Focus</h1>
                             </div>
 
-                            <form method="POST" action="{{ route('business.login') }}" class="mt-4">
+                            <form method="POST" action="{{ route('business.login') }}" class="mt-4" novalidate>
                                 @csrf
 
                                 <div class="form-group mb-4">
@@ -41,7 +41,7 @@
                                                autofocus>
                                     </div>
                                     @error('email')
-                                        <div class="text-danger mt-2">
+                                        <div class="invalid-feedback d-block">
                                             {{ $message }}
                                         </div>
                                     @enderror
@@ -60,7 +60,7 @@
                                                name="password">
                                     </div>
                                     @error('password')
-                                        <div class="text-danger mt-2">
+                                        <div class="invalid-feedback d-block">
                                             {{ $message }}
                                         </div>
                                     @enderror

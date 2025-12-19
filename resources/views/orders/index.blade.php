@@ -87,7 +87,7 @@
                             @if(auth()->guard('business')->user()->plan && auth()->guard('business')->user()->plan->has_chat_module)
                             <th class="border-bottom" scope="col">Chat</th>
                             @endif
-                            <th class="border-bottom text-center pe-4" scope="col">Acciones</th>
+                            <th class="border-bottom pe-4" scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -143,7 +143,7 @@
                             @endif
                             
     
-                            <td class="text-center position-static">
+                            <td class="position-static ps-3">
                                 <div class="dropdown position-static">
                                     <button class="btn btn-link text-dark m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <x-icon name="nav.menu" class="icon-xs text-dark" />

@@ -228,7 +228,7 @@
                                 Guardar
                             </button>
 
-                            <a href="{{ route('business.profile.index') }}" class="btn btn-gray-500">
+                            <a href="{{ route('business.profile.index') }}" class="btn btn-gray-300">
                                 Cancelar
                             </a>
                         </div>

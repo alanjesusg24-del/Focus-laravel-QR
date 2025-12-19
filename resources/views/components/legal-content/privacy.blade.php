@@ -6,72 +6,57 @@
   Created by: Dafne Vanessa Castillo Moreno
   Approved by: Dafne Vanessa Castillo Moreno
 --}}
-<div class="text-justify text-primary">
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">1. Identidad del Responsable</h6>
-    <p><strong>CETAM</strong> (Centro de Desarrollo Tecnológico Aplicado de México), con domicilio en México, es el responsable del tratamiento de sus datos personales conforme a la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</p>
+<div class="px-3">
+    <p class="fw-bold text-uppercase mb-3">CENTRO DE ESTUDIOS TECNOLÓGICOS Y ADMINISTRATIVOS DE MÉXICO (CETAM)</p>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">2. Datos Personales Recabados</h6>
-    <p>Para el funcionamiento de Focus QR System, recabamos los siguientes datos personales:</p>
-    <ul>
-        <li><strong>Datos de identificación:</strong> Nombre del negocio, RFC, correo electrónico, número telefónico, nombre del responsable</li>
-        <li><strong>Datos operativos:</strong> Dirección del negocio, coordenadas de ubicación, información de pagos, historial de órdenes, preferencias del sistema</li>
+    <p class="text-muted mb-3"><small>Última actualización: Diciembre 2025</small></p>
+
+    <h6 class="fw-bold text-dark mb-2">1. RESPONSABLE DEL TRATAMIENTO DE DATOS</h6>
+    <p class="text-muted mb-4">El Centro de Estudios Tecnológicos y Administrativos de México (CETAM), con domicilio en [Dirección completa], es el responsable del tratamiento de sus datos personales, conforme a lo establecido en la Ley Federal de Protección de Datos Personales en Posesión de los Particulares.</p>
+
+    <h6 class="fw-bold text-dark mb-2">2. DATOS PERSONALES QUE RECABAMOS</h6>
+    <p class="text-muted mb-2">Para cumplir con las finalidades descritas en este aviso, se recabarán los siguientes datos personales:</p>
+    <ul class="text-muted mb-4">
+        <li><strong>Datos de identificación:</strong> Nombre completo, CURP, RFC</li>
+        <li><strong>Datos de contacto:</strong> Correo electrónico institucional, teléfono, dirección</li>
     </ul>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">3. Finalidades del Tratamiento</h6>
-    <p>Sus datos personales serán utilizados para las siguientes finalidades:</p>
-    <p><strong>Finalidades Primarias (Necesarias para el servicio):</strong></p>
-    <ul>
-        <li>Registro y administración de cuentas de negocio</li>
-        <li>Procesamiento y gestión de órdenes mediante QR</li>
-        <li>Facturación y cobro de servicios</li>
-        <li>Soporte técnico y atención al cliente</li>
-        <li>Cumplimiento de obligaciones legales y fiscales</li>
-        <li>Seguridad y prevención de fraudes</li>
-    </ul>
-    <p><strong>Finalidades Secundarias (Opcionales - puede oponerse):</strong></p>
-    <ul>
-        <li>Envío de notificaciones promocionales</li>
-        <li>Análisis estadístico para mejora del servicio</li>
-        <li>Estudios de mercado y satisfacción del cliente</li>
-        <li>Ofertas personalizadas de productos y servicios</li>
+    <h6 class="fw-bold text-dark mb-2">3. FINALIDAD DEL TRATAMIENTO</h6>
+    <p class="text-muted mb-4">Los datos personales serán utilizados para las siguientes finalidades necesarias para la prestación del servicio:</p>
+    <ul class="text-muted mb-4">
+        <li>Registro y administración de cuentas</li>
+        <li>Procesamiento de órdenes y servicios</li>
+        <li>Facturación y cobro</li>
+        <li>Atención y soporte al cliente</li>
+        <li>Cumplimiento de obligaciones legales</li>
     </ul>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">4. Derechos ARCO</h6>
-    <p>Conforme a la Ley Federal de Protección de Datos Personales, usted tiene derecho a:</p>
-    <ul>
-        <li><strong>Acceder</strong> a sus datos personales - Conocer qué datos tenemos y para qué los usamos</li>
+    <h6 class="fw-bold text-dark mb-2">4. DERECHOS ARCO</h6>
+    <p class="text-muted mb-2">Usted tiene derecho a:</p>
+    <ul class="text-muted mb-4">
+        <li><strong>Acceder</strong> a sus datos personales</li>
         <li><strong>Rectificar</strong> datos incorrectos o desactualizados</li>
-        <li><strong>Cancelar</strong> sus datos - Solicitar la eliminación de sus datos</li>
-        <li><strong>Oponerse</strong> al tratamiento de sus datos</li>
+        <li><strong>Cancelar</strong> sus datos cuando lo considere pertinente</li>
+        <li><strong>Oponerse</strong> al tratamiento de sus datos para fines específicos</li>
     </ul>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">5. Medidas de Seguridad</h6>
-    <p>Implementamos medidas técnicas, físicas y administrativas para proteger sus datos personales:</p>
-    <ul>
-        <li><strong>Medidas técnicas:</strong> Cifrado de datos sensibles (AES-256), conexiones seguras SSL/TLS, tokens de autenticación seguros, monitoreo de vulnerabilidades</li>
-        <li><strong>Medidas administrativas:</strong> Control de acceso basado en roles, auditorías periódicas de seguridad, capacitación del personal, políticas de confidencialidad</li>
-    </ul>
+    <h6 class="fw-bold text-dark mb-2">5. MEDIDAS DE SEGURIDAD</h6>
+    <p class="text-muted mb-4">Implementamos medidas de seguridad técnicas, físicas y administrativas para proteger sus datos personales contra daño, pérdida, alteración, destrucción o uso no autorizado.</p>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">6. Conservación de Datos</h6>
-    <p>Sus datos se conservarán durante el tiempo necesario para cumplir con las finalidades establecidas:</p>
-    <ul>
-        <li><strong>Datos de cuenta:</strong> Mientras permanezca activo el servicio</li>
-        <li><strong>Historial de órdenes:</strong> 5 años por obligaciones fiscales</li>
-        <li><strong>Datos de facturación:</strong> 10 años conforme al Código Fiscal</li>
-        <li><strong>Logs de seguridad:</strong> 2 años para auditorías</li>
-    </ul>
+    <h6 class="fw-bold text-dark mb-2">6. TRANSFERENCIAS DE DATOS</h6>
+    <p class="text-muted mb-4">Sus datos personales pueden ser transferidos y tratados dentro y fuera del país, únicamente para las finalidades descritas en este aviso y bajo los términos establecidos por la ley.</p>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">7. Cookies y Tecnologías Similares</h6>
-    <p>Utilizamos cookies y tecnologías similares para mejorar la experiencia del usuario. Puede configurar su navegador para rechazar cookies, aunque esto puede afectar la funcionalidad del sistema.</p>
+    <h6 class="fw-bold text-dark mb-2">7. MODIFICACIONES AL AVISO</h6>
+    <p class="text-muted mb-4">Nos reservamos el derecho de efectuar modificaciones o actualizaciones al presente aviso de privacidad. Dichas modificaciones estarán disponibles en nuestro sitio web.</p>
 
-    <h6 class="h5 mt-4 mb-3 fw-bold text-primary">8. Contacto</h6>
-    <p>Para preguntas o dudas sobre este Aviso de Privacidad, contacte a:</p>
-    <ul> 
-        <li><strong>Correo:</strong> privacidad@focus.com.mx</li>
-        <li><strong>Teléfono:</strong> (+52) 722-647-8494</li>
-    </ul>
+    <h6 class="fw-bold text-dark mb-2">8. CONSENTIMIENTO</h6>
+    <p class="text-muted mb-4">Al proporcionar sus datos personales, usted consiente tácitamente el tratamiento de los mismos conforme a este aviso de privacidad.</p>
 
-    <div class="text-center mt-4">
-        <small class="text-muted">Última actualización: {{ date('d/m/Y') }}</small>
+    <div class="border-top pt-3 mt-4">
+        <p class="text-muted mb-2"><strong>Para más información o ejercer sus derechos ARCO, contacte a:</strong></p>
+        <ul class="text-muted mb-0">
+            <li><strong>Correo:</strong> privacidad@cetam.edu.mx</li>
+            <li><strong>Teléfono:</strong> (+52) 722-647-8494</li>
+        </ul>
     </div>
 </div>

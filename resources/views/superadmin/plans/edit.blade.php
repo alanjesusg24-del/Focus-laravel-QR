@@ -213,7 +213,7 @@
                             <x-icon name="action.save" class="me-2" />
                             Guardar
                         </button>
-                        <a href="{{ route('superadmin.plans.index') }}" class="btn btn-gray-500 d-inline-flex align-items-center">
+                        <a href="{{ route('superadmin.plans.index') }}" class="btn btn-gray-300 d-inline-flex align-items-center">
                             Cancelar
                         </a>
                     </div>
