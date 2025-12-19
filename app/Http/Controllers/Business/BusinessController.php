@@ -14,8 +14,9 @@
  *   Description: Controller to handle business operations |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Business;
 
+use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Models\Plan;
 use Illuminate\Contracts\View\View;

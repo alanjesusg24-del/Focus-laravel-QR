@@ -14,8 +14,9 @@
  *   Description: Controller for order management |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Orders;
 
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Services\OrderService;
 use Illuminate\Contracts\View\View;

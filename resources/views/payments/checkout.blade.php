@@ -50,7 +50,7 @@
                         {{-- Name card --}}
                         <div class="mb-3">
                             <label class="form-label fw-bold small">Nombre en la Tarjeta <span class="text-danger">*</span></label>
-                            <input type="text" name="card_name" id="card_name" class="form-control py-2" placeholder="Titular de la Tarjeta" required>
+                            <input type="text" name="card_name" id="card_name" class="form-control py-2" placeholder="Titular de la Tarjeta" maxlength="15" required>
                             <div class="invalid-feedback">Por favor ingrese el nombre del titular</div>
                         </div>
 
@@ -159,7 +159,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Input masking: Just numbers and format for card number
     cardNumber.addEventListener('input', function(e) {
-        const formatted = formatCardNumber(e.target.value);
+        // Remove all non-numeric characters first
+        const numericOnly = e.target.value.replace(/[^0-9]/g, '');
+        const formatted = formatCardNumber(numericOnly);
         e.target.value = formatted;
     });
 
@@ -217,17 +219,15 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         } else {
             cardName.classList.remove('is-invalid');
-            cardName.classList.add('is-valid');
         }
 
-        // Validate card number (16 digits) 
+        // Validate card number (16 digits)
         const cardNumberClean = cardNumber.value.replace(/\s+/g, '');
         if (cardNumberClean.length !== 16) {
             cardNumber.classList.add('is-invalid');
             isValid = false;
         } else {
             cardNumber.classList.remove('is-invalid');
-            cardNumber.classList.add('is-valid');
         }
 
         // Validate month (01-12)
@@ -237,7 +237,6 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         } else {
             expiryMonth.classList.remove('is-invalid');
-            expiryMonth.classList.add('is-valid');
         }
 
         // Validate year (2 digits)
@@ -246,16 +245,14 @@ document.addEventListener('DOMContentLoaded', function() {
             isValid = false;
         } else {
             expiryYear.classList.remove('is-invalid');
-            expiryYear.classList.add('is-valid');
         }
 
-        // Validate CVC (3 digits)  
+        // Validate CVC (3 digits)
         if (cvc.value.length !== 3) {
             cvc.classList.add('is-invalid');
             isValid = false;
         } else {
             cvc.classList.remove('is-invalid');
-            cvc.classList.add('is-valid');
         }
 
         // If all fields are valid, submit the form

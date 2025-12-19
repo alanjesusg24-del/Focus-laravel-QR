@@ -121,7 +121,8 @@
                                     </button>
                                     <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
 
-                                        <a class="dropdown-item d-flex align-items-center" href="{{ route('superadmin.plans.edit', $plan->plan_id) }}">
+                                        <a class="dropdown-item d-flex align-items-center" href="#"
+                                           onclick="event.preventDefault(); confirmEdit({{ $plan->plan_id }}, {{ $plan->businesses_count ?? 0 }}, '{{ $plan->name }}')">
                                             <x-icon name="action.edit" class="text-gray-400 me-2"/> Editar
                                         </a>
 
@@ -243,5 +244,30 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Function to confirm edit with sweet alert
+function confirmEdit(planId, businessCount, planName) {
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--bs-primary').trim() || '#262B40';
+
+    if (businessCount > 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: '¿Estás seguro?',
+            html: `El plan <strong>${planName}</strong> tiene <strong>${businessCount} negocio(s)</strong> asociado(s).<br><br>Los cambios en el precio o características afectarán a los negocios existentes.`,
+            showCancelButton: true,
+            confirmButtonColor: primaryColor,
+            cancelButtonColor: '#6c757d',
+            confirmButtonText: 'Sí, editar plan',
+            cancelButtonText: 'Cancelar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = `/superadmin/plans/${planId}/edit`;
+            }
+        });
+    } else {
+        // No businesses, redirect directly
+        window.location.href = `/superadmin/plans/${planId}/edit`;
+    }
+}
 </script>
 @endpush

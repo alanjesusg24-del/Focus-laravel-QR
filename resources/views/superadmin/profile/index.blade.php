@@ -12,87 +12,120 @@
 
 @section('page')
 <div class="py-4">
+    <!-- Breadcrumb -->
+    <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+        <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+            <li class="breadcrumb-item">
+                <a href="{{ route('superadmin.dashboard') }}">
+                    <x-icon name="nav.home" />
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Mi Perfil</li>
+        </ol>
+    </nav>
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-4">
-
-        <div class="d-block mb-4 mb-md-0">
-            <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-                <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('superadmin.dashboard') }}" class="text-primary">
-                            <x-icon name="nav.home" />
-                        </a>
-                    </li>
-                    <li class="breadcrumb-item active" aria-current="page">Perfil</li>
-                </ol>
-            </nav>
-            <h2 class="h4 mt-1">Mi Perfil</h2>
-            <p class="mb-0 text-primary">Información de tu cuenta de Super Administrador</p>
-        </div>
-
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ route('superadmin.profile.edit') }}" class="btn btn-sm btn-primary d-inline-flex align-items-center">
-                <x-icon name="action.edit" class="me-2"/> Editar Perfil
-            </a>
+    <!-- Page Header -->
+    <div class="d-flex justify-content-between w-100 flex-wrap">
+        <div class="mb-3 mb-lg-0">
+            <h1 class="h4">Mi Perfil</h1>
+            <p class="mb-0">Información de tu cuenta de Super Administrador</p>
         </div>
     </div>
+</div>
 
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <x-icon name="state.success" class="me-2" />
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+<div class="row">
 
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <x-icon name="state.error" class="me-2" />
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
+        {{-- COLUMNA DERECHA: TARJETA DE IDENTIDAD --}}
+        <div class="col-12 col-xl-4 order-xl-2">
+            <div class="card shadow border-0 text-center mb-3">
+                <div class="card-body py-3">
 
-    <div class="row justify-content-center">
-        <div class="col-12 col-xl-8">
-            <div class="card border-0 shadow mb-4">
-                <div class="card-header border-bottom">
-                    <h2 class="fs-5 fw-bold mb-0">Información Personal</h2>
+                    {{-- Avatar con Iniciales --}}
+                    <div class="mx-auto mb-4 position-relative avatar-container">
+                        @php
+                            $fullName = $superAdmin->full_name ?? 'SA';
+                            $words = explode(' ', trim($fullName));
+                            $initials = '';
+                            if (count($words) >= 2) {
+                                $initials = strtoupper(substr($words[0], 0, 1) . substr($words[1], 0, 1));
+                            } else {
+                                $initials = strtoupper(substr($fullName, 0, 2));
+                            }
+                        @endphp
+                        <div class="avatar-xl rounded-circle border border-gray-300 shadow w-100 h-100 d-flex align-items-center justify-content-center bg-primary text-white fs-1 fw-bold">
+                            {{ $initials }}
+                        </div>
+                    </div>
+
+                    <h4 class="h3 fw-bold text-primary">{{ $superAdmin->full_name }}</h4>
+                    <p class="text-gray-500 mb-3">{{ $superAdmin->email }}</p>
+                    <span class="badge bg-danger-soft text-danger">Super Administrador</span>
                 </div>
-                <div class="card-body">
-                    <div class="row align-items-center mb-4 pb-4 border-bottom">
-                        <div class="col-auto">
-                            <div class="avatar-lg bg-primary rounded-circle d-flex align-items-center justify-content-center text-white">
-                                <span class="h2 mb-0">{{ substr($superAdmin->full_name, 0, 2) }}</span>
-                            </div>
-                        </div>
-                        <div class="col ps-0">
-                            <div class="mb-1">
-                                <h3 class="h5 mb-0 text-gray-900">{{ $superAdmin->full_name }}</h3>
-                                <span class="fw-bold text-primary">Super Administrador</span>
-                            </div>
+            </div>
+        </div>
+
+
+        {{-- COLUMNA IZQUIERDA: INFORMACIÓN DETALLADA --}}
+        <div class="col-12 col-xl-8 order-xl-1">
+
+            {{-- 1. Información Personal --}}
+            <div class="card card-body border-0 shadow mb-4">
+                <h2 class="h5 mb-4 text-primary fw-bold">Información Personal</h2>
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="full_name" class="form-label text-primary fw-bold">Nombre Completo <span class="text-danger">*</span></label>
+                        <input type="text"
+                               class="form-control"
+                               id="full_name"
+                               value="{{ $superAdmin->full_name }}"
+                               disabled>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="email" class="form-label text-primary fw-bold">Email <span class="text-danger">*</span></label>
+                        <input type="email"
+                               class="form-control"
+                               id="email"
+                               value="{{ $superAdmin->email }}"
+                               disabled>
+                    </div>
+                </div>
+
+                {{-- Botón de Editar Perfil --}}
+                <div class="d-flex justify-content-start mt-3">
+                    <a href="{{ route('superadmin.profile.edit') }}" class="btn btn-primary d-inline-flex align-items-center">
+                        <x-icon name="action.edit" class="me-2" />
+                        Editar
+                    </a>
+                </div>
+            </div>
+
+            {{-- 2. Información del Sistema --}}
+            <div class="card card-body border-0 shadow mb-4">
+                <h2 class="h5 mb-4 text-primary fw-bold">Información del Sistema</h2>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="text-primary fw-bold">Rol</label>
+                        <div class="mt-1 fw-bold text-dark">
+                            Super Administrador
                         </div>
                     </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-gray-600 small">Nombre Completo</label>
-                            <div class="text-gray-900">{{ $superAdmin->full_name }}</div>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-gray-600 small">Email</label>
-                            <div class="text-gray-900">{{ $superAdmin->email }}</div>
+                    <div class="col-md-6">
+                        <label class="text-primary fw-bold">ID de Usuario</label>
+                        <div class="mt-1 fw-bold text-dark">
+                            #{{ $superAdmin->super_admin_id }}
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-gray-600 small">Fecha de Registro</label>
-                            <div class="text-gray-500">{{ $superAdmin->created_at->format('d/m/Y H:i') }}</div>
+                    <div class="col-md-6">
+                        <label class="text-primary fw-bold">Fecha de Registro</label>
+                        <div class="mt-1 text-gray-600">
+                            {{ $superAdmin->created_at->format('d/m/Y H:i') }}
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold text-gray-600 small">Última Actualización</label>
-                            <div class="text-gray-500">{{ $superAdmin->updated_at->format('d/m/Y H:i') }}</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="text-primary fw-bold">Última Actualización</label>
+                        <div class="mt-1 text-gray-600">
+                            {{ $superAdmin->updated_at->format('d/m/Y H:i') }}
                         </div>
                     </div>
                 </div>

@@ -33,16 +33,7 @@
     </div>
 </div>
 
-{{-- Flash Messages --}}
-    @if(session('success'))
-        <div class="alert alert-success d-flex align-items-center mb-4" role="alert">
-            <x-icon name="success" class="me-2" />
-            <div>{{ session('success') }}</div>
-            <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <div class="row">
+<div class="row">
         
         {{-- COLUMNA DERECHA: TARJETA DE IDENTIDAD --}}
         <div class="col-12 col-xl-4 order-xl-2">

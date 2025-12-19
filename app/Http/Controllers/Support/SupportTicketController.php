@@ -14,8 +14,9 @@
  *   Description: Refactored Support Ticket Controller |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Support;
 
+use App\Http\Controllers\Controller;
 use App\Models\SupportTicket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
