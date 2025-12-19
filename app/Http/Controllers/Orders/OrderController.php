@@ -178,7 +178,15 @@ class OrderController extends Controller
 
         $validated = $request->validate([
             'cancellation_reason' => 'required|string|max:500',
+        ], [
+            'cancellation_reason.required' => 'El motivo de cancelación es obligatorio.',
+            'cancellation_reason.max' => 'El motivo de cancelación no puede exceder 500 caracteres.',
         ]);
+
+        // Validate that cancellation_reason is not only whitespace
+        if (empty(trim($validated['cancellation_reason']))) {
+            return back()->withInput()->withErrors(['cancellation_reason' => 'El motivo de cancelación no puede estar vacío.']);
+        }
 
         try {
             $this->orderService->cancelOrder($order, $validated['cancellation_reason']);

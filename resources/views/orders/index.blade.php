@@ -133,8 +133,8 @@
                             @if(auth()->guard('business')->user()->plan && auth()->guard('business')->user()->plan->has_chat_module)
                             <td>
                                 @if($order->mobile_user_id)
-                                    <a href="{{ route('business.chat.index', ['order_id' => $order->order_id]) }}" class="btn btn-sm btn-info text-white p-1 px-2" title="Chat">
-                                        <x-icon name="chat" class="icon-xs"/>
+                                    <a href="{{ route('business.chat.index', ['order_id' => $order->order_id]) }}" class="btn btn-sm p-0" title="Chat">
+                                        <x-icon name="msg.chat" class="text-dark fs-5"/>
                                     </a>
                                 @else
                                     <span class="text-muted small">-</span>
@@ -144,48 +144,47 @@
                             
     
                             <td class="position-static ps-3">
-                                <div class="dropdown position-static">
-                                    <button class="btn btn-link text-dark m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <x-icon name="nav.menu" class="icon-xs text-dark" />
-                                    </button>
-                                    <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
+                                @if($order->status !== 'delivered' && $order->status !== 'cancelled')
+                                    <div class="dropdown position-static">
+                                        <button class="btn btn-link text-dark m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <x-icon name="nav.menu" class="icon-xs text-dark" />
+                                        </button>
+                                        <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-1">
 
-                                        @if($order->status === 'ready')
-                                            {{-- Only show Deliver Order when it is ready --}}
-                                            <a class="dropdown-item d-flex align-items-center text-primary" href="#" data-bs-toggle="modal" data-bs-target="#deliverModal{{ $order->order_id }}">
-                                                <x-icon name="action.edit" class="text-primary me-2"/> Entregar Orden
-                                            </a>
-                                        @else
-                                            
-                                            @if($order->status === 'pending' && !$order->mobile_user_id)
-                                                <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.edit', $order) }}">
-                                                    <x-icon name="action.edit" class="text-gray-400 me-2"/> Editar Orden
+                                            @if($order->status === 'ready')
+                                                {{-- Only show Deliver Order when it is ready --}}
+                                                <a class="dropdown-item d-flex align-items-center text-primary" href="#" data-bs-toggle="modal" data-bs-target="#deliverModal{{ $order->order_id }}">
+                                                    <x-icon name="action.edit" class="text-primary me-2"/> Entregar Orden
                                                 </a>
-                                            @endif
-                                            @if(in_array($order->status, ['delivered', 'cancelled']))
-                                                <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.show', $order) }}">
-                                                    <x-icon name="action.view" class="text-gray-400 me-2"/> Ver detalles
-                                                </a>
-                                            @endif
+                                            @else
 
-                                            @if($order->status === 'pending' && $order->mobile_user_id)
-                                                <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
-                                                    <x-icon name="state.success" class="text-success me-2"/> Marcar Listo
-                                                </a>
-                                                <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
-                                                    @csrf @method('PUT')
-                                                </form>
-                                            @endif
+                                                @if($order->status === 'pending' && !$order->mobile_user_id)
+                                                    <a class="dropdown-item d-flex align-items-center" href="{{ route('business.orders.edit', $order) }}">
+                                                        <x-icon name="action.edit" class="text-gray-400 me-2"/> Editar Orden
+                                                    </a>
+                                                @endif
 
-                                            @if($order->status === 'pending')
-                                                <div role="separator" class="dropdown-divider my-1"></div>
-                                                <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
-                                                     Cancelar Orden
-                                                </a>
+                                                @if($order->status === 'pending' && $order->mobile_user_id)
+                                                    <a class="dropdown-item d-flex align-items-center text-success" href="#" onclick="event.preventDefault(); document.getElementById('mark-ready-form-{{ $order->order_id }}').submit();">
+                                                        <x-icon name="state.success" class="text-success me-2"/> Marcar Listo
+                                                    </a>
+                                                    <form id="mark-ready-form-{{ $order->order_id }}" action="{{ route('business.orders.markAsReady', $order) }}" method="POST" class="d-none">
+                                                        @csrf @method('PUT')
+                                                    </form>
+                                                @endif
+
+                                                @if($order->status === 'pending')
+                                                    <div role="separator" class="dropdown-divider my-1"></div>
+                                                    <a class="dropdown-item d-flex align-items-center text-danger" href="#" data-bs-toggle="modal" data-bs-target="#cancelModal{{ $order->order_id }}">
+                                                         Cancelar Orden
+                                                    </a>
+                                                @endif
                                             @endif
-                                        @endif
+                                        </div>
                                     </div>
-                                </div>
+                                @else
+                                    <span class="text-muted">-</span>
+                                @endif
                             </td>
                         </tr>
 
@@ -215,16 +214,20 @@
                                         <h5 class="modal-title">Cancelar Orden</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                     </div>
-                                    <form action="{{ route('business.orders.cancel', $order) }}" method="POST">
+                                    <form action="{{ route('business.orders.cancel', $order) }}" method="POST" id="cancelForm{{ $order->order_id }}" onsubmit="return validateCancellationReason({{ $order->order_id }})">
                                         @csrf @method('PUT')
                                         <div class="modal-body">
                                             <p class="text-gray-600">¿Estás seguro de cancelar la orden <strong>{{ $order->folio_number }}</strong>?</p>
                                             <div class="mb-3">
-                                                <label class="form-label">Motivo de cancelación</label>
-                                                <textarea name="cancellation_reason" rows="3" required class="form-control" placeholder="Explica el motivo..."></textarea>
+                                                <label class="form-label">Motivo de cancelación <span class="text-danger">*</span></label>
+                                                <textarea name="cancellation_reason" id="cancellation_reason{{ $order->order_id }}" rows="3" required class="form-control" placeholder="Explica el motivo..."></textarea>
+                                                <div class="invalid-feedback" id="cancelError{{ $order->order_id }}" style="display: none;">
+                                                    El motivo de cancelación es obligatorio.
+                                                </div>
                                             </div>
                                         </div>
                                         <div class="modal-footer">
+                                            <button type="button" class="btn btn-gray-300" data-bs-dismiss="modal">Cerrar</button>
                                             <button type="submit" class="btn btn-danger">Cancelar Orden</button>
                                         </div>
                                     </form>
@@ -447,6 +450,22 @@
                     .catch(error => console.log('Error:', error));
             }
         });
+    }
+
+    function validateCancellationReason(orderId) {
+        const textarea = document.getElementById('cancellation_reason' + orderId);
+        const errorDiv = document.getElementById('cancelError' + orderId);
+        const value = textarea.value.trim();
+
+        if (value === '') {
+            textarea.classList.add('is-invalid');
+            errorDiv.style.display = 'block';
+            return false;
+        }
+
+        textarea.classList.remove('is-invalid');
+        errorDiv.style.display = 'none';
+        return true;
     }
 </script>
 @endsection

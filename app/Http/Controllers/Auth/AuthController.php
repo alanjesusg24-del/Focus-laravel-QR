@@ -39,13 +39,15 @@ class AuthController extends Controller
     public function login(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|min:8',
+            'email' => 'required|email|regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/',
+            'password' => 'required|min:8|max:12',
         ], [
             'email.required' => 'El campo correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico debe ser una dirección válida.',
+            'email.regex' => 'El correo electrónico debe tener un formato válido con dominio (ejemplo: usuario@dominio.com).',
             'password.required' => 'El campo contraseña es obligatorio.',
             'password.min' => 'El campo contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'El campo contraseña no debe superar los 12 caracteres.',
         ]);
 
         $remember = $request->filled('remember');

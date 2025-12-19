@@ -53,7 +53,7 @@ class CreateBusinessRequest extends FormRequest
         return [
             'business_name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:businesses,email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|max:12',
             'phone' => 'required|string|regex:/^[0-9]{10}$/',
             'rfc' => 'required|string|min:12|max:13|unique:businesses,rfc',
             'address' => 'nullable|string|max:500',
@@ -81,6 +81,7 @@ class CreateBusinessRequest extends FormRequest
             'email.unique' => 'Este correo electrónico ya está registrado.',
             'password.required' => 'La contraseña es obligatoria.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La contraseña no debe superar los 12 caracteres.',
             'phone.required' => 'El teléfono es obligatorio.',
             'phone.regex' => 'El teléfono debe tener exactamente 10 dígitos.',
             'rfc.required' => 'El RFC es obligatorio.',

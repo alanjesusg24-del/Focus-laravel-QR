@@ -48,7 +48,7 @@ class BusinessController extends Controller
         $validated = $request->validate([
             'business_name' => 'required|string|max:255',
             'email' => 'required|email|unique:businesses,email',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string|min:8|max:12',
             'phone' => 'required|string|max:15',
             'rfc' => 'required|string|min:12|max:13|unique:businesses,rfc',
             'plan_id' => 'required|exists:plans,plan_id',
@@ -134,7 +134,7 @@ class BusinessController extends Controller
                 'photo' => 'nullable|image|max:5120|mimes:jpg,jpeg,png',
                 // Password fields (optional)
                 'current_password' => 'nullable|string',
-                'password' => 'nullable|string|min:8|confirmed',
+                'password' => 'nullable|string|min:8|max:12|confirmed',
             ]);
 
             // 5.4.1: Handle password update with Early Returns
@@ -205,7 +205,7 @@ class BusinessController extends Controller
         // If any password field is filled, validate all are required
         $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:12|confirmed',
         ]);
 
         // 5.4.1: Early Return - Verify current password
@@ -274,7 +274,7 @@ class BusinessController extends Controller
 
         $validated = $request->validate([
             'current_password' => 'required|string',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:12|confirmed',
         ]);
 
         // 5.4.1: Early Return - Verify current password

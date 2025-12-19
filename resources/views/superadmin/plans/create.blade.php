@@ -31,21 +31,6 @@
     </div>
 </div>
 
-@if($errors->any())
-    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
-        <x-icon name="state.error" class="me-2" />
-        <div>
-            <strong>¡Error!</strong> Por favor corrige los siguientes errores:
-            <ul class="mb-0 mt-2">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-@endif
-
 <form method="POST" action="{{ route('superadmin.plans.store') }}" novalidate>
     @csrf
 
@@ -152,29 +137,46 @@
                         {{-- Days --}}
                         <div class="mb-4">
                             <label for="realert_days" class="form-label text-primary fw-bold">Días</label>
-                            <input type="number" class="form-control" id="realert_days" name="realert_days" value="{{ old('realert_days', 0) }}" min="0" max="30" onchange="updateIntervalMinutes()">
+                            <input type="number" class="form-control @error('realert_days') is-invalid @enderror" id="realert_days" name="realert_days" value="{{ old('realert_days', 0) }}" min="0" max="30" maxlength="2" onchange="updateIntervalMinutes()">
+                            @error('realert_days')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- Hours --}}
                         <div class="mb-4">
                             <label for="realert_hours" class="form-label text-primary fw-bold">Horas</label>
-                            <input type="number" class="form-control" id="realert_hours" name="realert_hours" value="{{ old('realert_hours', 0) }}" min="0" max="23" onchange="updateIntervalMinutes()">
+                            <input type="number" class="form-control @error('realert_hours') is-invalid @enderror" id="realert_hours" name="realert_hours" value="{{ old('realert_hours', 0) }}" min="0" max="23" maxlength="2" onchange="updateIntervalMinutes()">
+                            @error('realert_hours')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- Minutes --}}
                         <div class="mb-4">
                             <label for="realert_minutes" class="form-label text-primary fw-bold">Minutos</label>
-                            <input type="number" class="form-control" id="realert_minutes" name="realert_minutes" value="{{ old('realert_minutes', 15) }}" min="1" max="59" onchange="updateIntervalMinutes()">
+                            <input type="number" class="form-control @error('realert_minutes') is-invalid @enderror" id="realert_minutes" name="realert_minutes" value="{{ old('realert_minutes', 15) }}" min="1" max="59" maxlength="2" onchange="updateIntervalMinutes()">
+                            @error('realert_minutes')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         {{-- Maximum Alerts --}}
                         <div class="mb-4">
-                            <label for="realert_max_count" class="form-label text-primary fw-bold">Máximo de alertas</label>
-                            <input type="number" class="form-control" id="realert_max_count" name="realert_max_count" value="{{ old('realert_max_count', 4) }}" min="1" max="20">
+                            <label for="realert_max_count" class="form-label text-primary fw-bold">Máximo de alertas <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control @error('realert_max_count') is-invalid @enderror" id="realert_max_count" name="realert_max_count" value="{{ old('realert_max_count', 4) }}" min="1" max="20" maxlength="2">
                             <small class="form-text text-muted">Número máximo de re-alertas antes de detener las notificaciones</small>
+                            @error('realert_max_count')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <input type="hidden" id="realert_interval_minutes" name="realert_interval_minutes" value="{{ old('realert_interval_minutes', 15) }}">
+                        @error('realert_interval_minutes')
+                            <div class="alert alert-danger mt-2" role="alert">
+                                <small>{{ $message }}</small>
+                            </div>
+                        @enderror
 
                         <div class="mb-0">
                             <small class="text-success" id="interval-summary">Intervalo: <strong>15 minutos</strong> entre cada re-alerta</small>

@@ -103,7 +103,7 @@ class BusinessManagementController extends Controller
             'longitude' => 'nullable|numeric|between:-180,180',
             'plan_id' => 'required|exists:plans,plan_id',
             'is_active' => 'boolean',
-            'password' => 'nullable|string|min:8',
+            'password' => 'nullable|string|min:8|max:12',
             'photo' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ], [
             'business_name.required' => 'El nombre del negocio es obligatorio.',
@@ -117,6 +117,7 @@ class BusinessManagementController extends Controller
             'latitude.between' => 'La latitud debe estar entre -90 y 90.',
             'longitude.between' => 'La longitud debe estar entre -180 y 180.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.max' => 'La contraseña no debe superar los 12 caracteres.',
             'photo.image' => 'El archivo debe ser una imagen.',
             'photo.mimes' => 'La imagen debe ser formato JPEG, PNG o JPG.',
             'photo.max' => 'La imagen no debe superar los 2MB.',

@@ -98,9 +98,9 @@
 
                     <div class="mb-4">
                         <label for="new_password" class="form-label text-primary fw-bold">Nueva Contraseña</label>
-                        <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="new_password" name="new_password">
+                        <input type="password" class="form-control @error('new_password') is-invalid @enderror" id="new_password" name="new_password" minlength="8" maxlength="12">
                         <small class="form-text text-muted">
-                            Mínimo 8 caracteres, debe incluir mayúsculas, minúsculas y números
+                            Entre 8 y 12 caracteres, debe incluir mayúsculas, minúsculas y números
                         </small>
                         @error('new_password')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -109,7 +109,7 @@
 
                     <div class="mb-4">
                         <label for="new_password_confirmation" class="form-label text-primary fw-bold">Confirmar Nueva Contraseña</label>
-                        <input type="password" class="form-control @error('new_password_confirmation') is-invalid @enderror" id="new_password_confirmation" name="new_password_confirmation">
+                        <input type="password" class="form-control @error('new_password_confirmation') is-invalid @enderror" id="new_password_confirmation" name="new_password_confirmation" minlength="8" maxlength="12">
                         @error('new_password_confirmation')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

@@ -130,7 +130,7 @@
                                             <div role="separator" class="dropdown-divider my-1"></div>
 
                                             <a class="dropdown-item d-flex align-items-center text-danger" href="#"
-                                               onclick="event.preventDefault(); if(confirm('¿Estás seguro de eliminar este plan?')) { document.getElementById('delete-form-{{ $plan->plan_id }}').submit(); }">
+                                               onclick="event.preventDefault(); confirmDelete({{ $plan->plan_id }}, '{{ $plan->name }}')">
                                                 <x-icon name="action.delete" class="text-danger me-2"/> Eliminar
                                             </a>
 
@@ -268,6 +268,24 @@ function confirmEdit(planId, businessCount, planName) {
         // No businesses, redirect directly
         window.location.href = `/superadmin/plans/${planId}/edit`;
     }
+}
+
+// Function to confirm delete with sweet alert
+function confirmDelete(planId, planName) {
+    Swal.fire({
+        icon: 'question',
+        title: '¿Estás seguro?',
+        html: `¿Estás seguro de eliminar el plan <strong>${planName}</strong>?<br><br>Esta acción no se puede deshacer.`,
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, eliminar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('delete-form-' + planId).submit();
+        }
+    });
 }
 </script>
 @endpush

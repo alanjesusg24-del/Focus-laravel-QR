@@ -11,7 +11,7 @@
                 <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
                     <li class="breadcrumb-item">
                         <a href="{{ route('business.dashboard.index') }}">
-                            <x-icon name="home" />
+                            <x-icon name="nav.home" />
                         </a>
                     </li>
                     <li class="breadcrumb-item"><a href="{{ route('business.profile.index') }}">Mi Perfil</a></li>
@@ -20,12 +20,6 @@
             </nav>
             <h2 class="h4">Cambiar Contraseña</h2>
             <p class="mb-0">Actualiza tu contraseña de acceso</p>
-        </div>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="{{ route('business.profile.index') }}" class="btn btn-sm btn-gray-800 d-inline-flex align-items-center">
-                <x-icon name="arrowLeft" class="me-2" />
-                Volver al Perfil
-            </a>
         </div>
     </div>
 
@@ -78,11 +72,13 @@
                                            class="form-control @error('password') is-invalid @enderror"
                                            id="password"
                                            name="password"
+                                           minlength="8"
+                                           maxlength="12"
                                            required>
                                     @error('password')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-muted">La contraseña debe tener al menos 8 caracteres</small>
+                                    <small class="text-muted">La contraseña debe tener entre 8 y 12 caracteres</small>
                                 </div>
                             </div>
 
@@ -93,18 +89,20 @@
                                            class="form-control"
                                            id="password_confirmation"
                                            name="password_confirmation"
+                                           minlength="8"
+                                           maxlength="12"
                                            required>
                                 </div>
                             </div>
                         </div>
 
                         <div class="d-flex justify-content-end gap-2 mt-4">
-                            <a href="{{ route('business.profile.index') }}" class="btn btn-light">
+                            <a href="{{ route('business.profile.index') }}" class="btn btn-gray-300">
                                 Cancelar
                             </a>
                             <button type="submit" class="btn btn-primary">
-                                <x-icon name="save" class="me-2" />
-                                Actualizar Contraseña
+                                <x-icon name="action.save" class="me-2" />
+                                Guardar
                             </button>
                         </div>
                     </form>

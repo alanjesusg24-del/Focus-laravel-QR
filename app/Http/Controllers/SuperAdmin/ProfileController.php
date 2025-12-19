@@ -56,7 +56,7 @@ class ProfileController extends Controller
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:super_admins,email,' . $superAdmin->super_admin_id . ',super_admin_id'],
             'current_password' => ['nullable', 'required_with:new_password'],
-            'new_password' => ['nullable', 'string', Password::min(8)->mixedCase()->numbers()],
+            'new_password' => ['nullable', 'string', Password::min(8)->max(12)->mixedCase()->numbers()],
             'new_password_confirmation' => ['nullable', 'required_with:new_password', 'same:new_password'],
         ]);
 

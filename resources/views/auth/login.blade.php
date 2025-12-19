@@ -38,6 +38,8 @@
                                                id="email"
                                                name="email"
                                                value="{{ old('email') }}"
+                                               pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                               title="Debe incluir @ y un dominio válido (ejemplo: usuario@dominio.com)"
                                                autofocus>
                                     </div>
                                     @error('email')
