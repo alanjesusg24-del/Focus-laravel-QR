@@ -14,8 +14,9 @@
  *   Description: Controller to handle payment operations |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Payments;
 
+use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\Plan;
 use App\Services\PaymentService;

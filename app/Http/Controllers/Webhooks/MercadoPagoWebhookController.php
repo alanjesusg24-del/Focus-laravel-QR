@@ -14,8 +14,9 @@
  *   Description: Refactored to comply  |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Webhooks;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Services\MercadoPagoService;

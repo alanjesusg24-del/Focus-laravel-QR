@@ -14,8 +14,9 @@
  *   Description: Refactored to comply  |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Business;
 
+use App\Http\Controllers\Controller;
 use App\Models\Business;
 use App\Models\Order;
 use Illuminate\Http\Request;

@@ -14,8 +14,9 @@
  *   Description: Refactored to comply with CETAM Point 5 standards |
  */
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Chat;
 
+use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ChatMessage;
 use App\Models\MobileUser;

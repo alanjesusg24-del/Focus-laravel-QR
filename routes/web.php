@@ -79,84 +79,84 @@ Route::group(['prefix' => 'business', 'as' => 'business.'], function () {
     Route::post('/login', [App\Http\Controllers\Auth\AuthController::class, 'login']);
     Route::post('/logout', [App\Http\Controllers\Auth\AuthController::class, 'logout'])->name('logout');
     Route::get('/register', RegisterWizard::class)->name('register');
-    Route::post('/register', [App\Http\Controllers\BusinessController::class, 'store']);
+    Route::post('/register', [App\Http\Controllers\Business\BusinessController::class, 'store']);
 
     // Payments Management (NO requiere subscription activa para renovar)
     Route::middleware(['auth:business'])->group(function () {
         Route::prefix('payments')->as('payments.')->group(function () {
-            Route::get('/', [App\Http\Controllers\PaymentController::class, 'index'])->name('index');
-            Route::get('/plans/{plan}/checkout', [App\Http\Controllers\PaymentController::class, 'create'])->name('checkout');
-            Route::post('/plans/{plan}/process-simulation', [App\Http\Controllers\PaymentController::class, 'processSimulation'])->name('process-simulation');
-            Route::get('/success', [App\Http\Controllers\PaymentController::class, 'success'])->name('success');
-            Route::get('/cancel', [App\Http\Controllers\PaymentController::class, 'cancel'])->name('cancel');
-            Route::get('/history', [App\Http\Controllers\PaymentController::class, 'history'])->name('history');
-            Route::delete('/subscription/cancel', [App\Http\Controllers\PaymentController::class, 'cancelSubscription'])->name('cancel-subscription');
-            Route::get('/statistics', [App\Http\Controllers\PaymentController::class, 'statistics'])->name('statistics');
+            Route::get('/', [App\Http\Controllers\Payments\PaymentController::class, 'index'])->name('index');
+            Route::get('/plans/{plan}/checkout', [App\Http\Controllers\Payments\PaymentController::class, 'create'])->name('checkout');
+            Route::post('/plans/{plan}/process-simulation', [App\Http\Controllers\Payments\PaymentController::class, 'processSimulation'])->name('process-simulation');
+            Route::get('/success', [App\Http\Controllers\Payments\PaymentController::class, 'success'])->name('success');
+            Route::get('/cancel', [App\Http\Controllers\Payments\PaymentController::class, 'cancel'])->name('cancel');
+            Route::get('/history', [App\Http\Controllers\Payments\PaymentController::class, 'history'])->name('history');
+            Route::delete('/subscription/cancel', [App\Http\Controllers\Payments\PaymentController::class, 'cancelSubscription'])->name('cancel-subscription');
+            Route::get('/statistics', [App\Http\Controllers\Payments\PaymentController::class, 'statistics'])->name('statistics');
         });
     });
 
     // Authenticated routes (using business guard) with subscription check
     Route::middleware(['auth:business', 'subscription.active'])->group(function () {
         // Dashboard
-        Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard.index');
-        Route::get('/analytics', [App\Http\Controllers\DashboardController::class, 'analytics'])->name('dashboard.analytics');
+        Route::get('/dashboard', [App\Http\Controllers\Business\DashboardController::class, 'index'])->name('dashboard.index');
+        Route::get('/analytics', [App\Http\Controllers\Business\DashboardController::class, 'analytics'])->name('dashboard.analytics');
 
         // Chat (only for businesses with chat module enabled)
-        Route::get('/chat', [App\Http\Controllers\ChatController::class, 'index'])->name('chat.index');
-        Route::get('/chat/messages/{order}', [App\Http\Controllers\ChatController::class, 'getMessages'])->name('chat.messages');
-        Route::post('/chat/send/{order}', [App\Http\Controllers\ChatController::class, 'sendMessage'])->name('chat.send');
+        Route::get('/chat', [App\Http\Controllers\Chat\ChatController::class, 'index'])->name('chat.index');
+        Route::get('/chat/messages/{order}', [App\Http\Controllers\Chat\ChatController::class, 'getMessages'])->name('chat.messages');
+        Route::post('/chat/send/{order}', [App\Http\Controllers\Chat\ChatController::class, 'sendMessage'])->name('chat.send');
 
         // Orders Management
         Route::prefix('orders')->as('orders.')->group(function () {
-            Route::get('/', [App\Http\Controllers\OrderController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\OrderController::class, 'create'])->name('create');
-            Route::post('/', [App\Http\Controllers\OrderController::class, 'store'])->name('store');
-            Route::get('/{order}', [App\Http\Controllers\OrderController::class, 'show'])->name('show');
-            Route::get('/{order}/edit', [App\Http\Controllers\OrderController::class, 'edit'])->name('edit');
-            Route::put('/{order}', [App\Http\Controllers\OrderController::class, 'update'])->name('update');
-            Route::delete('/{order}', [App\Http\Controllers\OrderController::class, 'destroy'])->name('destroy');
-            Route::put('/{order}/mark-ready', [App\Http\Controllers\OrderController::class, 'markAsReady'])->name('markAsReady');
-            Route::put('/{order}/mark-delivered', [App\Http\Controllers\OrderController::class, 'markAsDelivered'])->name('markAsDelivered');
-            Route::put('/{order}/cancel', [App\Http\Controllers\OrderController::class, 'cancel'])->name('cancel');
-            Route::get('/{order}/download-qr', [App\Http\Controllers\OrderController::class, 'downloadQr'])->name('downloadQr');
-            Route::get('/{order}/check-linked', [App\Http\Controllers\OrderController::class, 'checkLinked'])->name('checkLinked');
+            Route::get('/', [App\Http\Controllers\Orders\OrderController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Orders\OrderController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Orders\OrderController::class, 'store'])->name('store');
+            Route::get('/{order}', [App\Http\Controllers\Orders\OrderController::class, 'show'])->name('show');
+            Route::get('/{order}/edit', [App\Http\Controllers\Orders\OrderController::class, 'edit'])->name('edit');
+            Route::put('/{order}', [App\Http\Controllers\Orders\OrderController::class, 'update'])->name('update');
+            Route::delete('/{order}', [App\Http\Controllers\Orders\OrderController::class, 'destroy'])->name('destroy');
+            Route::put('/{order}/mark-ready', [App\Http\Controllers\Orders\OrderController::class, 'markAsReady'])->name('markAsReady');
+            Route::put('/{order}/mark-delivered', [App\Http\Controllers\Orders\OrderController::class, 'markAsDelivered'])->name('markAsDelivered');
+            Route::put('/{order}/cancel', [App\Http\Controllers\Orders\OrderController::class, 'cancel'])->name('cancel');
+            Route::get('/{order}/download-qr', [App\Http\Controllers\Orders\OrderController::class, 'downloadQr'])->name('downloadQr');
+            Route::get('/{order}/check-linked', [App\Http\Controllers\Orders\OrderController::class, 'checkLinked'])->name('checkLinked');
         });
-        Route::get('/orders-statistics', [App\Http\Controllers\OrderController::class, 'statistics'])->name('orders.statistics');
+        Route::get('/orders-statistics', [App\Http\Controllers\Orders\OrderController::class, 'statistics'])->name('orders.statistics');
 
         // Support Tickets
         Route::prefix('support')->as('support.')->group(function () {
-            Route::get('/', [App\Http\Controllers\SupportTicketController::class, 'index'])->name('index');
-            Route::get('/create', [App\Http\Controllers\SupportTicketController::class, 'create'])->name('create');
-            Route::post('/', [App\Http\Controllers\SupportTicketController::class, 'store'])->name('store');
-            Route::get('/{supportTicket}', [App\Http\Controllers\SupportTicketController::class, 'show'])->name('show');
-            Route::get('/{supportTicket}/edit', [App\Http\Controllers\SupportTicketController::class, 'edit'])->name('edit');
-            Route::put('/{supportTicket}', [App\Http\Controllers\SupportTicketController::class, 'update'])->name('update');
-            Route::delete('/{supportTicket}', [App\Http\Controllers\SupportTicketController::class, 'destroy'])->name('destroy');
-            Route::post('/{supportTicket}/close', [App\Http\Controllers\SupportTicketController::class, 'close'])->name('close');
-            Route::post('/{supportTicket}/reopen', [App\Http\Controllers\SupportTicketController::class, 'reopen'])->name('reopen');
+            Route::get('/', [App\Http\Controllers\Support\SupportTicketController::class, 'index'])->name('index');
+            Route::get('/create', [App\Http\Controllers\Support\SupportTicketController::class, 'create'])->name('create');
+            Route::post('/', [App\Http\Controllers\Support\SupportTicketController::class, 'store'])->name('store');
+            Route::get('/{supportTicket}', [App\Http\Controllers\Support\SupportTicketController::class, 'show'])->name('show');
+            Route::get('/{supportTicket}/edit', [App\Http\Controllers\Support\SupportTicketController::class, 'edit'])->name('edit');
+            Route::put('/{supportTicket}', [App\Http\Controllers\Support\SupportTicketController::class, 'update'])->name('update');
+            Route::delete('/{supportTicket}', [App\Http\Controllers\Support\SupportTicketController::class, 'destroy'])->name('destroy');
+            Route::post('/{supportTicket}/close', [App\Http\Controllers\Support\SupportTicketController::class, 'close'])->name('close');
+            Route::post('/{supportTicket}/reopen', [App\Http\Controllers\Support\SupportTicketController::class, 'reopen'])->name('reopen');
         });
 
         // Business Profile Management
-        Route::get('/profile', [App\Http\Controllers\BusinessController::class, 'profile'])->name('profile.index');
-        Route::get('/profile/edit', [App\Http\Controllers\BusinessController::class, 'edit'])->name('profile.edit');
-        Route::put('/profile', [App\Http\Controllers\BusinessController::class, 'update'])->name('profile.update');
-        Route::patch('/profile/logo', [App\Http\Controllers\BusinessController::class, 'updateLogo'])->name('profile.update-logo');
-        Route::get('/profile/change-password', [App\Http\Controllers\BusinessController::class, 'showChangePassword'])->name('profile.change-password');
-        Route::put('/profile/password', [App\Http\Controllers\BusinessController::class, 'updatePassword'])->name('profile.update-password');
-        Route::post('/profile/deactivate', [App\Http\Controllers\BusinessController::class, 'deactivate'])->name('profile.deactivate');
+        Route::get('/profile', [App\Http\Controllers\Business\BusinessController::class, 'profile'])->name('profile.index');
+        Route::get('/profile/edit', [App\Http\Controllers\Business\BusinessController::class, 'edit'])->name('profile.edit');
+        Route::put('/profile', [App\Http\Controllers\Business\BusinessController::class, 'update'])->name('profile.update');
+        Route::patch('/profile/logo', [App\Http\Controllers\Business\BusinessController::class, 'updateLogo'])->name('profile.update-logo');
+        Route::get('/profile/change-password', [App\Http\Controllers\Business\BusinessController::class, 'showChangePassword'])->name('profile.change-password');
+        Route::put('/profile/password', [App\Http\Controllers\Business\BusinessController::class, 'updatePassword'])->name('profile.update-password');
+        Route::post('/profile/deactivate', [App\Http\Controllers\Business\BusinessController::class, 'deactivate'])->name('profile.deactivate');
     });
 });
 
 // Public webhook endpoints (no auth required)
-Route::post('/webhook/stripe', [App\Http\Controllers\PaymentController::class, 'webhook'])->name('webhook.stripe');
-Route::post('/webhook/mercadopago', [App\Http\Controllers\MercadoPagoWebhookController::class, 'handleWebhook'])->name('webhook.mercadopago');
+Route::post('/webhook/stripe', [App\Http\Controllers\Payments\PaymentController::class, 'webhook'])->name('webhook.stripe');
+Route::post('/webhook/mercadopago', [App\Http\Controllers\Webhooks\MercadoPagoWebhookController::class, 'handleWebhook'])->name('webhook.mercadopago');
 
 // Public order association route (for QR code scanning without mobile app)
-Route::get('/orders/associate/{qr_token}', [App\Http\Controllers\OrderController::class, 'associateOrder'])->name('orders.associate');
+Route::get('/orders/associate/{qr_token}', [App\Http\Controllers\Orders\OrderController::class, 'associateOrder'])->name('orders.associate');
 
 // Test QR Scanner
 Route::get('/test-scanner', function() {
-    return view('test-scanner');
+    return view('testing.test-scanner');
 })->name('test.scanner');
 
 // Mobile App Configuration QR
@@ -165,7 +165,7 @@ Route::get('/mobile-config', function() {
     $isNgrok = str_contains(config('app.url'), 'ngrok');
     $serverType = $isNgrok ? 'ngrok' : 'local';
 
-    return view('mobile-config', compact('apiUrl', 'isNgrok', 'serverType'));
+    return view('mobile.config', compact('apiUrl', 'isNgrok', 'serverType'));
 })->name('mobile.config');
 
 // API endpoint to get current server URL (for mobile app auto-discovery)
@@ -239,4 +239,4 @@ Route::prefix('superadmin')->as('superadmin.')->group(function () {
         Route::put('/profile', [App\Http\Controllers\SuperAdmin\ProfileController::class, 'update'])->name('profile.update');
     });
 });
-Route::get('/test-icons', function() { return view('test-icons'); });
+Route::get('/test-icons', function() { return view('testing.test-icons'); });
