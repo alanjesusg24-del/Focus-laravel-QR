@@ -91,7 +91,7 @@
                                 Guardar
                             </button>
 
-                            <a href="{{ route('business.orders.index') }}" class="btn btn-gray-500">
+                            <a href="{{ route('business.orders.index') }}" class="btn btn-gray-300">
                                 Cancelar
                             </a>
                             

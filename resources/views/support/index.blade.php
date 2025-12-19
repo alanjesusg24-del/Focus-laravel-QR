@@ -94,7 +94,7 @@
                             <th class="border-bottom" scope="col">Estado</th>
                             <th class="border-bottom" scope="col">Respuesta</th>
                             <th class="border-bottom" scope="col">Creado</th>
-                            <th class="border-bottom text-center" scope="col">Acciones</th>
+                            <th class="border-bottom" scope="col">Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -150,8 +150,8 @@
 
                             <td class="text-gray-500">{{ $ticket->created_at->format('d/m/Y') }}</td>
                             
-                            {{-- 4. Actions (Centered 3 dots) --}}
-                            <td class="text-center">
+                            {{-- 4. Actions (Left aligned 3 dots) --}}
+                            <td class="ps-3">
                                 <div class="dropdown">
                                     <button class="btn btn-link text-dark dropdown-toggle m-0 p-0" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">

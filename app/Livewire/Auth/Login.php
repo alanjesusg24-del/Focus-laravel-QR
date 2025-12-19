@@ -9,7 +9,7 @@ use Livewire\Attributes\Rule;
 class Login extends Component
 {
 
-    #[Rule('required|email:rfc,dns')]
+    #[Rule('required|email')]
     public $email = '';
 
     #[Rule('required|min:6')]

@@ -11,31 +11,38 @@
 @section('title', 'Crear Plan')
 
 @section('page')
-<div class="py-4">
-    <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
-        <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.dashboard') }}">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{{ route('superadmin.plans.index') }}">Planes</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Crear</li>
-        </ol>
-    </nav>
-    <div class="d-flex justify-content-between w-100 flex-wrap">
-        <div class="mb-3 mb-lg-0">
-            <h1 class="h4">Crear Nuevo Plan</h1>
-            <p class="mb-0">Agrega un nuevo plan de suscripción</p>
-        </div>
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+    <div class="d-block mb-4 mb-md-0">
+        <nav aria-label="breadcrumb" class="d-none d-md-inline-block">
+            <ol class="breadcrumb breadcrumb-dark breadcrumb-transparent">
+                <li class="breadcrumb-item">
+                    <a href="{{ route('superadmin.dashboard') }}" class="text-primary">
+                        <x-icon name="nav.home" />
+                    </a>
+                </li>
+                <li class="breadcrumb-item">
+                    <a href="{{ route('superadmin.plans.index') }}" class="text-primary">Planes</a>
+                </li>
+                <li class="breadcrumb-item active" aria-current="page">Crear</li>
+            </ol>
+        </nav>
+        <h2 class="h4 mt-1">Crear Nuevo Plan</h2>
+        <p class="mb-0 text-muted">Agrega un nuevo plan de suscripción</p>
     </div>
 </div>
 
 @if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <strong>¡Error!</strong> Por favor corrige los siguientes errores:
-        <ul class="mb-0 mt-2">
-            @foreach($errors->all() as $error)
-                <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <div class="alert alert-danger d-flex align-items-center mb-4" role="alert">
+        <x-icon name="state.error" class="me-2" />
+        <div>
+            <strong>¡Error!</strong> Por favor corrige los siguientes errores:
+            <ul class="mb-0 mt-2">
+                @foreach($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        <button type="button" class="btn-close ms-auto" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 
@@ -43,17 +50,17 @@
     @csrf
 
     <div class="row justify-content-center">
-        <div class="col-12 col-xl-8">
+        <div class="col-12 col-lg-10 col-xl-8">
 
             {{-- Basic Information --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom">
-                    <h2 class="fs-5 fw-bold mb-0">Información Básica</h2>
+                    <h2 class="fs-5 text-primary fw-bold mb-0">Información Básica</h2>
                 </div>
                 <div class="card-body">
                     {{-- Plan Name --}}
                     <div class="mb-4">
-                        <label for="name" class="form-label fw-bold">Nombre del Plan <span class="text-danger">*</span></label>
+                        <label for="name" class="form-label text-primary fw-bold">Nombre del Plan <span class="text-danger">*</span></label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" required>
                         @error('name')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -62,7 +69,7 @@
 
                     {{-- Duration --}}
                     <div class="mb-4">
-                        <label for="duration_months" class="form-label fw-bold">Duración (meses) <span class="text-danger">*</span></label>
+                        <label for="duration_months" class="form-label text-primary fw-bold">Duración (meses) <span class="text-danger">*</span></label>
                         <select class="form-select @error('duration_days') is-invalid @enderror" id="duration_months" onchange="updateDurationDays()">
                             <option value="1" {{ old('duration_days', 30) == 30 ? 'selected' : '' }}>1 mes (30 días)</option>
                             <option value="2" {{ old('duration_days') == 60 ? 'selected' : '' }}>2 meses (60 días)</option>
@@ -78,7 +85,7 @@
 
                     {{-- Description --}}
                     <div class="mb-4">
-                        <label for="description" class="form-label fw-bold">Descripción <span class="text-danger">*</span></label>
+                        <label for="description" class="form-label text-primary fw-bold">Descripción <span class="text-danger">*</span></label>
                         <textarea class="form-control @error('description') is-invalid @enderror" id="description" name="description" rows="3" required>{{ old('description') }}</textarea>
                         @error('description')
                             <div class="invalid-feedback">{{ $message }}</div>
@@ -87,7 +94,7 @@
 
                     {{-- Data Retention --}}
                     <div class="mb-4">
-                        <label for="retention_months" class="form-label fw-bold">Retención de datos (meses) <span class="text-danger">*</span></label>
+                        <label for="retention_months" class="form-label text-primary fw-bold">Retención de datos (meses) <span class="text-danger">*</span></label>
                         <select class="form-select @error('retention_days') is-invalid @enderror" id="retention_months" onchange="updateRetentionDays()">
                             <option value="1" {{ old('retention_days', 30) == 30 ? 'selected' : '' }}>1 mes (incluido)</option>
                             <option value="2" {{ old('retention_days') == 60 ? 'selected' : '' }}>2 meses (+$20)</option>
@@ -116,53 +123,53 @@
             {{-- Chat Module --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h2 class="fs-5 fw-bold mb-0">Módulo de Chat</h2>
+                    <h2 class="fs-5 text-primary fw-bold mb-0">Módulo de Chat</h2>
                     <span class="text-success fw-bold" id="chat-price-badge">+$50</span>
                 </div>
                 <div class="card-body">
                     <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" id="has_chat_module" name="has_chat_module" value="1" {{ old('has_chat_module') ? 'checked' : '' }} onchange="calculatePrice()">
-                        <label class="form-check-label fw-bold" for="has_chat_module">Habilitar módulo de chat</label>
+                        <label class="form-check-label text-primary fw-bold" for="has_chat_module">Habilitar módulo de chat</label>
                     </div>
                     <small class="text-muted" id="chat-price-detail">$50 por 1 mes</small>
                 </div>
             </div>
 
-            {{-- Re-Alert System --}}
+            {{-- Alert System --}}
             <div class="card border-0 shadow mb-4">
                 <div class="card-header border-bottom d-flex align-items-center justify-content-between">
-                    <h2 class="fs-5 fw-bold mb-0">Sistema de Re-Alertas</h2>
+                    <h2 class="fs-5 text-primary fw-bold mb-0">Sistema de Re-Alertas</h2>
                     <span class="text-info fw-bold" id="realerts-price-badge">Variable</span>
                 </div>
                 <div class="card-body">
                     <div class="form-check form-switch mb-2">
                         <input class="form-check-input" type="checkbox" id="has_realerts" name="has_realerts" value="1" {{ old('has_realerts') ? 'checked' : '' }} onchange="toggleRealertFields()">
-                        <label class="form-check-label fw-bold" for="has_realerts">Habilitar re-alertas automáticas</label>
+                        <label class="form-check-label text-primary fw-bold" for="has_realerts">Habilitar re-alertas automáticas</label>
                     </div>
 
                     <div id="realert-fields" style="display: {{ old('has_realerts') ? 'block' : 'none' }};" class="mt-4">
 
-                        {{-- DDays --}}
+                        {{-- Days --}}
                         <div class="mb-4">
-                            <label for="realert_days" class="form-label fw-bold">Días</label>
+                            <label for="realert_days" class="form-label text-primary fw-bold">Días</label>
                             <input type="number" class="form-control" id="realert_days" name="realert_days" value="{{ old('realert_days', 0) }}" min="0" max="30" onchange="updateIntervalMinutes()">
                         </div>
 
                         {{-- Hours --}}
                         <div class="mb-4">
-                            <label for="realert_hours" class="form-label fw-bold">Horas</label>
+                            <label for="realert_hours" class="form-label text-primary fw-bold">Horas</label>
                             <input type="number" class="form-control" id="realert_hours" name="realert_hours" value="{{ old('realert_hours', 0) }}" min="0" max="23" onchange="updateIntervalMinutes()">
                         </div>
 
-                         {{-- Minutes --}}
+                        {{-- Minutes --}}
                         <div class="mb-4">
-                            <label for="realert_minutes" class="form-label fw-bold">Minutos</label>
+                            <label for="realert_minutes" class="form-label text-primary fw-bold">Minutos</label>
                             <input type="number" class="form-control" id="realert_minutes" name="realert_minutes" value="{{ old('realert_minutes', 15) }}" min="1" max="59" onchange="updateIntervalMinutes()">
                         </div>
 
-                         {{-- Max Alerts --}}
+                        {{-- Maximum Alerts --}}
                         <div class="mb-4">
-                            <label for="realert_max_count" class="form-label fw-bold">Máximo de alertas</label>
+                            <label for="realert_max_count" class="form-label text-primary fw-bold">Máximo de alertas</label>
                             <input type="number" class="form-control" id="realert_max_count" name="realert_max_count" value="{{ old('realert_max_count', 4) }}" min="1" max="20">
                             <small class="form-text text-muted">Número máximo de re-alertas antes de detener las notificaciones</small>
                         </div>
@@ -197,15 +204,18 @@
                 </div>
             </div>
 
-            {{-- Hidden field for calculated price --}}
             <input type="hidden" id="price" name="price" value="{{ old('price', 200) }}">
 
-            {{-- Action Buttons --}}
             <div class="card border-0 shadow">
                 <div class="card-body">
-                    <div class="d-grid gap-2">
-                        <button type="submit" class="btn btn-primary btn-lg">Crear Plan</button>
-                        <a href="{{ route('superadmin.plans.index') }}" class="btn btn-primary btn-lg">Cancelar</a>
+                    <div class="d-flex justify-content-start gap-3">
+                        <button type="submit" class="btn btn-primary d-inline-flex align-items-center">
+                            <x-icon name="action.save" class="me-2" />
+                            Guardar
+                        </button>
+                        <a href="{{ route('superadmin.plans.index') }}" class="btn btn-gray-300 d-inline-flex align-items-center">
+                            Cancelar
+                        </a>
                     </div>
                 </div>
             </div>

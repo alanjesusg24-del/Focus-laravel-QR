@@ -14,7 +14,7 @@
 
                             </p>
                         </div>
-                        <form wire:submit.prevent="login" action="#" class="mt-4" method="POST">
+                        <form wire:submit.prevent="login" action="#" class="mt-4" method="POST" novalidate>
                             <div class="form-group mb-4">
                                 <label for="email">Your Email</label>
                                 <div class="input-group">
@@ -26,10 +26,10 @@
                                             </path>
                                             <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
                                         </svg></span>
-                                    <input wire:model="email" type="email" class="form-control"
-                                        placeholder="example@company.com" id="email" autofocus required>
+                                    <input wire:model.blur="email" type="email" class="form-control @error('email') is-invalid @enderror"
+                                        placeholder="example@company.com" id="email" autofocus>
                                 </div>
-                                @error('email') <div wire:key="form" class="invalid-feedback"> {{$message}} </div>
+                                @error('email') <div class="invalid-feedback d-block"> {{$message}} </div>
                                 @enderror
                             </div>
                             <div class="form-group">
@@ -43,10 +43,10 @@
                                                     d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
                                                     clip-rule="evenodd"></path>
                                             </svg></span>
-                                        <input wire:model.lazy="password" type="password" placeholder="Password"
-                                            class="form-control" id="password" required>
+                                        <input wire:model.blur="password" type="password" placeholder="Password"
+                                            class="form-control @error('password') is-invalid @enderror" id="password">
                                     </div>
-                                    @error('password') <div class="invalid-feedback"> {{ $message }} </div> @enderror
+                                    @error('password') <div class="invalid-feedback d-block"> {{ $message }} </div> @enderror
                                 </div>
                                 <div class="d-flex justify-content-between align-items-top mb-4">
                                     <div class="form-check">

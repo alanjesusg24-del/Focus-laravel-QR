@@ -177,7 +177,7 @@
                             Guardar
                         </button>
 
-                        <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-gray-500">
+                        <a href="{{ route('superadmin.businesses.index') }}" class="btn btn-gray-300">
                             Cancelar
                         </a>
                     </div>

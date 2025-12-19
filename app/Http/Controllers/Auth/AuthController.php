@@ -40,11 +40,12 @@ class AuthController extends Controller
     {
         $credentials = $request->validate([
             'email' => 'required|email',
-            'password' => 'required',
+            'password' => 'required|min:8',
         ], [
             'email.required' => 'El campo correo electrónico es obligatorio.',
             'email.email' => 'El correo electrónico debe ser una dirección válida.',
             'password.required' => 'El campo contraseña es obligatorio.',
+            'password.min' => 'El campo contraseña debe tener al menos 8 caracteres.',
         ]);
 
         $remember = $request->filled('remember');
