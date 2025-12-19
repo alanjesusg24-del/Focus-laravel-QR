@@ -139,8 +139,8 @@
                     {{-- New Password --}}
                     <div class="mb-4">
                         <label for="password" class="form-label fw-bold">Nueva Contraseña</label>
-                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Dejar en blanco para mantener la actual">
-                        <small class="form-text text-muted">Mínimo 8 caracteres. Solo completar si desea cambiar la contraseña.</small>
+                        <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Dejar en blanco para mantener la actual" minlength="8" maxlength="12">
+                        <small class="form-text text-muted">Entre 8 y 12 caracteres. Solo completar si desea cambiar la contraseña.</small>
                         @error('password')
                             <div class="invalid-feedback">{{ $message }}</div>
                         @enderror

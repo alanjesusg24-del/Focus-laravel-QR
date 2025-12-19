@@ -202,11 +202,13 @@
                                            class="form-control @error('password') is-invalid @enderror"
                                            id="password"
                                            name="password"
+                                           minlength="8"
+                                           maxlength="12"
                                            placeholder="Ingresa tu nueva contraseña">
                                     @error('password')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="text-muted">La contraseña debe tener al menos 8 caracteres</small>
+                                    <small class="text-muted">La contraseña debe tener entre 8 y 12 caracteres</small>
                                 </div>
                             </div>
 
@@ -217,6 +219,8 @@
                                            class="form-control"
                                            id="password_confirmation"
                                            name="password_confirmation"
+                                           minlength="8"
+                                           maxlength="12"
                                            placeholder="Confirma tu nueva contraseña">
                                 </div>
                             </div>

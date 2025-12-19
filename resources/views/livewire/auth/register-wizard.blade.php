@@ -44,11 +44,14 @@
                                 <input type="text" wire:model.blur="rfc"
                                        class="form-control @error('rfc') is-invalid @enderror"
                                        placeholder="XAXX010101000" maxlength="13"
+                                       pattern="[A-ZÑ&]{3,4}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])[A-Z\d]{3}"
+                                       title="Formato: 3 o 4 letras, 6 dígitos (fecha AAMMDD), 3 caracteres alfanuméricos"
                                        style="text-transform: uppercase;">
-                                @error('rfc') 
+                                @error('rfc')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                                 <div class="form-text">
+                                    <small class="text-muted">Formato: XAXX010101000 (3-4 letras + fecha + homoclave)</small>
                                 </div>
                             </div>
 
@@ -75,8 +78,10 @@
                                 <label class="form-label">Correo Electrónico <span class="text-danger">*</span></label>
                                 <input type="email" wire:model.blur="email"
                                        class="form-control @error('email') is-invalid @enderror"
-                                       placeholder="ejemplo@institucion.com">
-                                @error('email') 
+                                       placeholder="ejemplo@institucion.com"
+                                       pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
+                                       title="Debe incluir @ y un dominio válido (ejemplo: usuario@dominio.com)">
+                                @error('email')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -85,7 +90,7 @@
                                 <label class="form-label">Contraseña <span class="text-danger">*</span></label>
                                 <input type="password" wire:model.blur="password"
                                        class="form-control @error('password') is-invalid @enderror"
-                                       placeholder="Mínimo 8 caracteres" maxlength="12">
+                                       placeholder="Mínimo 8 caracteres" minlength="8" maxlength="12">
                                 @error('password')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -98,7 +103,7 @@
                                 <label class="form-label">Confirmar Contraseña <span class="text-danger">*</span></label>
                                 <input type="password" wire:model.blur="password_confirmation"
                                        class="form-control @error('password_confirmation') is-invalid @enderror"
-                                       placeholder="Confirmar contraseña" maxlength="12">
+                                       placeholder="Confirmar contraseña" minlength="8" maxlength="12">
                                 @error('password_confirmation')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

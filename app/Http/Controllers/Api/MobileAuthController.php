@@ -34,7 +34,7 @@ class MobileAuthController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
+            'password' => 'required|string|min:8|max:12|confirmed',
             'device_id' => 'required|string',
         ]);
 
@@ -242,7 +242,7 @@ class MobileAuthController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'current_password' => 'required|string',
-            'new_password' => 'required|string|min:8|confirmed',
+            'new_password' => 'required|string|min:8|max:12|confirmed',
         ]);
 
         // 5.4.1: Early Return - Validation failure

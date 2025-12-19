@@ -34,13 +34,12 @@
 </div>
 
 <div class="row">
-        
-        {{-- COLUMNA DERECHA: TARJETA DE IDENTIDAD --}}
+  
         <div class="col-12 col-xl-4 order-xl-2">
             <div class="card shadow border-0 text-center mb-3">
                 <div class="card-body py-3">
                     
-                    {{-- Avatar / Logo Logic --}}
+             
                     <div class="mx-auto mb-4 position-relative avatar-container">
                         @if(isset($business->logo_url) && $business->logo_url)
                             @php
@@ -53,7 +52,7 @@
                                  alt="Logo del negocio"
                                  id="identityLogo">
                         @else
-                            {{-- Lógica de Iniciales --}}
+                      
                             @php
                                 $businessName = $business->business_name ?? 'NN';
                                 $words = explode(' ', trim($businessName));
@@ -76,11 +75,11 @@
                 </div>
             </div>
 
-            {{-- Card para subir foto de perfil --}}
+       
             <div class="card card-body border-0 shadow mb-4">
                 <h5 class="text-primary fw-bold mb-4">Seleccionar foto de perfil</h5>
 
-                {{-- Formulario para el logo --}}
+         
                 <form action="{{ route('business.profile.update-logo') }}" method="POST" enctype="multipart/form-data" id="logoForm">
                     @csrf
                     @method('PATCH')
@@ -148,10 +147,9 @@
         </div>
 
         
-        {{-- COLUMNA IZQUIERDA: INFORMACIÓN DETALLADA --}}
         <div class="col-12 col-xl-8 order-xl-1">
             
-            {{-- 1. Información General --}}
+
             <div class="card card-body border-0 shadow mb-4">
                 <h2 class="h5 mb-4 text-primary fw-bold">Información General del Negocio</h2>
                 
@@ -199,7 +197,6 @@
                     </div>
                 </div>
                 
-                {{-- Botón de Editar Perfil --}}
                 <div class="d-flex justify-content-start mt-3">
                     <a href="{{ route('business.profile.edit') }}" class="btn btn-primary d-inline-flex align-items-center">
                         <x-icon name="action.edit" class="me-2" />
@@ -208,24 +205,10 @@
                 </div>
             </div>
 
-            {{-- 2. Configuración del Sistema --}}
             <div class="card card-body border-0 shadow mb-4">
                 <h2 class="h5 mb-4 text-primary fw-bold">Configuración</h2>
                 <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="text-primary fw-bold">Módulo de Chat</label>
-                        <div class="mt-1">
-                            @if($business->has_chat_module)
-                                <span class="d-inline-flex align-items-center text-success fw-bold">
-                                    <x-icon name="state.success" class="me-1"/> Activado
-                                </span>
-                            @else
-                                <span class="d-inline-flex align-items-center text-danger fw-bold">
-                                    <x-icon name="state.error" class="text-danger me-1"/> No incluido
-                                </span>
-                            @endif
-                        </div>
-                    </div>
+                
                     <div class="col-md-6">
                         <label class="text-primary fw-bold">Retención de Datos</label>
                         <div class="mt-1 fw-bold text-dark">
@@ -238,7 +221,6 @@
                 </div>
             </div>
 
-            {{-- 3. Mapa de Ubicación --}}
             @if($business->latitude && $business->longitude)
                 <div class="card card-body border-0 shadow mb-4">
                     <h2 class="h5 mb-3 text-primary fw-bold">Ubicación Registrada</h2>
@@ -251,7 +233,7 @@
 @endsection
 
 @push('scripts')
-{{-- JavaScript para previsualización de logo --}}
+
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const logoUpload = document.getElementById('logo-upload');
@@ -259,10 +241,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const saveLogoSection = document.getElementById('saveLogoSection');
     const cancelLogoBtn = document.getElementById('cancelLogo');
     
-    // Guardar el contenido original del preview
+
     const originalPreviewContent = logoPreview.outerHTML;
     
-    // Obtener la imagen de la tarjeta de identidad y guardar su estado original
+ 
     let originalIdentityLogo = null;
     const identityElement = document.getElementById('identityLogo');
     if (identityElement) {
@@ -276,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const file = e.target.files[0];
         
         if (file) {
-            // Debug info
+            
             console.log('File selected:', {
                 name: file.name,
                 size: file.size,
@@ -284,14 +266,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 lastModified: file.lastModified
             });
 
-            // Validar tamaño (2MB máximo)
             if (file.size > 2 * 1024 * 1024) {
                 alert('El archivo es demasiado grande. Máximo 2MB permitido.\nTamaño actual: ' + (file.size / (1024 * 1024)).toFixed(2) + ' MB');
                 e.target.value = '';
                 return;
             }
 
-            // Validar tipo de archivo (más específico)
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/webp'];
             if (!allowedTypes.includes(file.type)) {
                 alert('Tipo de archivo no permitido.\nTipo detectado: ' + file.type + '\nTipos permitidos: JPEG, PNG, JPG, GIF, WebP');
@@ -301,35 +281,31 @@ document.addEventListener('DOMContentLoaded', function() {
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                // Actualizar la imagen de preview en la card de foto de perfil
+               
                 const currentLogoPreview = document.getElementById('logoPreview');
                 if (currentLogoPreview) {
-                    // Crear nueva imagen para el preview
+                    
                     const newPreviewImg = document.createElement('img');
                     newPreviewImg.src = e.target.result;
                     newPreviewImg.className = 'rounded border logo-preview-size object-fit-cover';
                     newPreviewImg.alt = 'Preview';
                     newPreviewImg.id = 'logoPreview';
                     
-                    // Reemplazar el elemento actual
+                   
                     currentLogoPreview.parentNode.replaceChild(newPreviewImg, currentLogoPreview);
                 }
                 
-                // También actualizar la imagen en la tarjeta de identidad si existe
                 const currentIdentityLogo = document.getElementById('identityLogo');
                 if (currentIdentityLogo) {
-                    // Crear nueva imagen para la tarjeta de identidad
                     const newIdentityImg = document.createElement('img');
                     newIdentityImg.src = e.target.result;
                     newIdentityImg.className = 'avatar-xl rounded-circle border border-gray-300 shadow w-100 h-100 object-fit-cover';
                     newIdentityImg.alt = 'Preview logo del negocio';
                     newIdentityImg.id = 'identityLogo';
-                    
-                    // Reemplazar el elemento actual
+                 
                     currentIdentityLogo.parentNode.replaceChild(newIdentityImg, currentIdentityLogo);
                 }
-                
-                // Mostrar botones de guardar/cancelar
+
                 saveLogoSection.classList.remove('d-none');
             };
             
@@ -342,11 +318,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Cancelar selección
     cancelLogoBtn.addEventListener('click', function() {
         logoUpload.value = '';
         
-        // Restaurar la imagen original en el preview
+
         const currentLogoPreview = document.getElementById('logoPreview');
         if (currentLogoPreview && originalPreviewContent) {
             const tempDiv = document.createElement('div');
@@ -354,16 +329,15 @@ document.addEventListener('DOMContentLoaded', function() {
             const restoredElement = tempDiv.firstElementChild;
             currentLogoPreview.parentNode.replaceChild(restoredElement, currentLogoPreview);
         }
-        
-        // Restaurar la imagen original en la tarjeta de identidad
+    
         const currentIdentityLogo = document.getElementById('identityLogo');
         if (currentIdentityLogo && originalIdentityLogo) {
             console.log('Restaurando imagen original de identidad');
-            // Restaurar el elemento original completo
+
             const clonedOriginal = originalIdentityLogo.cloneNode(true);
             currentIdentityLogo.parentNode.replaceChild(clonedOriginal, currentIdentityLogo);
         } else {
-            // Si no tenemos el original guardado, recargar la página como fallback
+
             console.log('No se pudo restaurar la imagen, recargando...');
             location.reload();
         }
@@ -371,7 +345,7 @@ document.addEventListener('DOMContentLoaded', function() {
         saveLogoSection.classList.add('d-none');
     });
 
-    // Validar antes de enviar el formulario
+
     const logoForm = document.getElementById('logoForm');
     logoForm.addEventListener('submit', function(e) {
         const file = logoUpload.files[0];
@@ -388,7 +362,7 @@ document.addEventListener('DOMContentLoaded', function() {
             type: file.type
         });
         
-        // Deshabilitar botón para evitar doble envío
+
         const submitBtn = logoForm.querySelector('button[type="submit"]');
         if (submitBtn) {
             submitBtn.disabled = true;
@@ -396,22 +370,19 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Manejar respuesta del servidor después del submit
     @if(session('success'))
-        // Si hay mensaje de éxito, significa que el logo se actualizó
         document.addEventListener('DOMContentLoaded', function() {
-            // Esperar a que Livewire esté disponible
             if (typeof Livewire !== 'undefined') {
                 const currentLogoPreview = document.getElementById('logoPreview');
                 if (currentLogoPreview && currentLogoPreview.tagName === 'IMG') {
-                    // Emitir evento para actualizar el topbar
+
                     Livewire.emit('profile-photo-updated', {
                         logoUrl: currentLogoPreview.src
                     });
                     console.log('Logo actualizado exitosamente, evento emitido para topbar');
                 }
             } else {
-                // Fallback: usar evento personalizado del DOM
+
                 const currentLogoPreview = document.getElementById('logoPreview');
                 if (currentLogoPreview && currentLogoPreview.tagName === 'IMG') {
                     window.dispatchEvent(new CustomEvent('profile-photo-updated', {
@@ -425,7 +396,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-{{-- Script de Google Maps (UNIFICADO) --}}
 @if($business->latitude && $business->longitude)
 <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}"></script>
 <script>

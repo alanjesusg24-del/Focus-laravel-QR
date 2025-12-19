@@ -48,10 +48,6 @@
               <x-icon name="access.lock" class="dropdown-icon text-gray-400 me-2" />
               Cambiar Contraseña
             </a>
-            <a class="dropdown-item d-flex align-items-center" href="{{ route('business.support.index') }}">
-              <x-icon name="state.info" class="dropdown-icon text-gray-400 me-2" />
-              Soporte
-            </a>
             <div role="separator" class="dropdown-divider my-1"></div>
             <form action="{{ route('business.logout') }}" method="POST">
               @csrf
@@ -74,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const avatar = document.getElementById('topbar-user-avatar');
         if (avatar) {
             if (imageSrc) {
-                // Si es una imagen, reemplazar con img
+              
                 const newImg = document.createElement('img');
                 newImg.id = 'topbar-user-avatar';
                 newImg.src = imageSrc.startsWith('/storage') ? imageSrc : '/storage/' + imageSrc;
@@ -86,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Escuchar eventos de Livewire
     if (window.Livewire) {
         Livewire.on('profile-photo-updated', function(data) {
             if (data && data.logo_url) {
@@ -95,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Escuchar eventos DOM como fallback
     document.addEventListener('profile-photo-updated', function(event) {
         if (event.detail && event.detail.logo_url) {
             updateTopbarPhoto(event.detail.logo_url);

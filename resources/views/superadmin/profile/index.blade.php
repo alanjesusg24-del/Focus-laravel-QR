@@ -35,12 +35,10 @@
 
 <div class="row">
 
-        {{-- COLUMNA DERECHA: TARJETA DE IDENTIDAD --}}
         <div class="col-12 col-xl-4 order-xl-2">
             <div class="card shadow border-0 text-center mb-3">
                 <div class="card-body py-3">
 
-                    {{-- Avatar con Iniciales --}}
                     <div class="mx-auto mb-4 position-relative avatar-container">
                         @php
                             $fullName = $superAdmin->full_name ?? 'SA';
@@ -65,10 +63,9 @@
         </div>
 
 
-        {{-- COLUMNA IZQUIERDA: INFORMACIÓN DETALLADA --}}
         <div class="col-12 col-xl-8 order-xl-1">
 
-            {{-- 1. Información Personal --}}
+      
             <div class="card card-body border-0 shadow mb-4">
                 <h2 class="h5 mb-4 text-primary fw-bold">Información Personal</h2>
 
@@ -91,7 +88,7 @@
                     </div>
                 </div>
 
-                {{-- Botón de Editar Perfil --}}
+    
                 <div class="d-flex justify-content-start mt-3">
                     <a href="{{ route('superadmin.profile.edit') }}" class="btn btn-primary d-inline-flex align-items-center">
                         <x-icon name="action.edit" class="me-2" />
@@ -99,8 +96,6 @@
                     </a>
                 </div>
             </div>
-
-            {{-- 2. Información del Sistema --}}
             <div class="card card-body border-0 shadow mb-4">
                 <h2 class="h5 mb-4 text-primary fw-bold">Información del Sistema</h2>
                 <div class="row g-3">

@@ -56,12 +56,12 @@ class RegisterWizard extends Component
         return [
             1 => [
                 'business_name' => 'required|string|max:255',
-                'rfc' => 'required|string|min:12|max:13|unique:businesses,rfc',
-                'phone' => 'required|string|regex:/^[0-9]{10}$/',
+                'rfc' => ['required', 'string', 'min:12', 'max:13', 'unique:businesses,rfc', 'regex:/^[A-ZÑ&]{3,4}\d{2}(0[1-9]|1[0-2])(0[1-9]|[12]\d|3[01])[A-Z\d]{3}$/'],
+                'phone' => ['required', 'string', 'regex:/^[0-9]{10}$/'],
             ],
             2 => [
-                'email' => 'required|email|max:255|unique:businesses,email',
-                'password' => 'required|string|min:8',
+                'email' => ['required', 'email', 'max:255', 'unique:businesses,email', 'regex:/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/'],
+                'password' => 'required|string|min:8|max:12',
                 'password_confirmation' => 'required|same:password',
             ],
             3 => [
@@ -79,13 +79,16 @@ class RegisterWizard extends Component
         'rfc.min' => 'El campo RFC debe tener al menos 12 caracteres.',
         'rfc.max' => 'El campo RFC debe tener máximo 13 caracteres.',
         'rfc.unique' => 'Este RFC ya está registrado.',
+        'rfc.regex' => 'El formato del RFC no es válido. Debe seguir el formato estándar (ejemplo: XAXX010101000).',
         'phone.required' => 'El campo teléfono es obligatorio.',
         'phone.regex' => 'El campo teléfono debe tener exactamente 10 dígitos.',
         'email.required' => 'El campo correo electrónico es obligatorio.',
         'email.email' => 'El campo correo electrónico debe ser válido.',
         'email.unique' => 'Este correo electrónico ya está registrado.',
+        'email.regex' => 'El correo electrónico debe tener un formato válido con dominio (ejemplo: usuario@dominio.com).',
         'password.required' => 'El campo contraseña es obligatorio.',
         'password.min' => 'El campo contraseña debe tener al menos 8 caracteres.',
+        'password.max' => 'El campo contraseña no debe superar los 12 caracteres.',
         'password.confirmed' => 'Las contraseñas no coinciden.',
         'password_confirmation.required' => 'El campo confirmación de contraseña es obligatorio.',
         'password_confirmation.same' => 'Las contraseñas no coinciden.',
@@ -100,8 +103,16 @@ class RegisterWizard extends Component
         }
         
         if ($propertyName === 'phone') {
-            $this->phone = preg_replace('/[^0-9]/', '', $this->phone);
-            $this->phone = substr($this->phone, 0, 10); // Limitar a 10 dígitos
+            // Eliminar todo excepto números usando str_replace
+            $this->phone = str_replace([' ', '-', '(', ')', '+', '.'], '', $this->phone);
+            // Mantener solo caracteres numéricos
+            $cleanPhone = '';
+            for ($i = 0; $i < strlen($this->phone); $i++) {
+                if (is_numeric($this->phone[$i])) {
+                    $cleanPhone .= $this->phone[$i];
+                }
+            }
+            $this->phone = substr($cleanPhone, 0, 10); // Limitar a 10 dígitos
         }
         
         // Validar el campo específico según el paso actual
